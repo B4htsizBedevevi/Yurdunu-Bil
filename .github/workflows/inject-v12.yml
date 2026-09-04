@@ -4,6 +4,9 @@ on:
     branches: [main]
 permissions:
   contents: write
+concurrency:
+  group: yurdunu-bil-inject
+  cancel-in-progress: true
 jobs:
   inject:
     runs-on: ubuntu-latest
@@ -18,7 +21,11 @@ jobs:
           marker = '</body>'
           if marker not in s:
               raise SystemExit('index.html içinde </body> bulunamadı')
-          tags = ['<script src="advanced.js"></script>', '<script src="quickfacts.js"></script>']
+          tags = [
+              '<script src="advanced.js"></script>',
+              '<script src="quickfacts.js"></script>',
+              '<script src="news.js"></script>'
+          ]
           for tag in tags:
               if tag not in s:
                   s = s.replace(marker, tag + '\n' + marker, 1)
@@ -29,5 +36,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || git commit -m 'feat: add KPSS quick facts and mobile map fix'
+          if git diff --cached --quiet; then
+            echo 'Script tags already up to date.'
+            exit 0
+          fi
+          git commit -m 'feat: add live current information feed'
           git push
