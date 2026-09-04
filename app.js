@@ -1,5 +1,5 @@
 ﻿/**
- * Yurdunu Bil â€” app.js
+ * Yurdunu Bil — app.js
  * v8.1.0
  *
  * Supabase:
@@ -49,7 +49,7 @@
         }
       );
     } catch (error) {
-      console.error("Supabase baÅŸlatÄ±lamadÄ±:", error);
+      console.error("Supabase başlatılamadı:", error);
       sb = null;
     }
   }
@@ -95,7 +95,7 @@
     results: [],
     streak: [],
     profile: {
-      displayName: "Ã–ÄŸrenci",
+      displayName: "Öğrenci",
       email: ""
     },
     dailyDone: [],
@@ -124,11 +124,11 @@
   let selectedProvinceName = null;
 
   const MAP_LEGENDS = {
-    default: "Standart gÃ¶rÃ¼nÃ¼m: keÅŸfedilen iller yeÅŸil, diÄŸer iller bÃ¶lgesel renkte.",
-    agriculture: "TarÄ±m gÃ¶rÃ¼nÃ¼mÃ¼: Ã§ay, zeytin, pamuk, Ã¼zÃ¼m, fÄ±ndÄ±k ve kayÄ±sÄ± Ã¶ne Ã§Ä±karÄ±lÄ±r.",
-    climate: "Ä°klim gÃ¶rÃ¼nÃ¼mÃ¼: Akdeniz, Karadeniz ve karasal iklim alanlarÄ± renklendirilir.",
-    terrain: "Arazi gÃ¶rÃ¼nÃ¼mÃ¼: daÄŸ, ova ve plato vurgulanÄ±r.",
-    mining: "Maden gÃ¶rÃ¼nÃ¼mÃ¼: bor, kÃ¶mÃ¼r, krom, petrol ve bakÄ±r Ã¶ne Ã§Ä±karÄ±lÄ±r."
+    default: "Standart görünüm: keşfedilen iller yeşil, diğer iller bölgesel renkte.",
+    agriculture: "Tarım görünümü: çay, zeytin, pamuk, üzüm, fındık ve kayısı öne çıkarılır.",
+    climate: "İklim görünümü: Akdeniz, Karadeniz ve karasal iklim alanları renklendirilir.",
+    terrain: "Arazi görünümü: dağ, ova ve plato vurgulanır.",
+    mining: "Maden görünümü: bor, kömür, krom, petrol ve bakır öne çıkarılır."
   };
 
   /* =========================================================
@@ -154,17 +154,17 @@
       .toLocaleLowerCase("tr-TR")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/Ä±/g, "i")
-      .replace(/ÄŸ/g, "g")
-      .replace(/Ã¼/g, "u")
-      .replace(/ÅŸ/g, "s")
-      .replace(/Ã¶/g, "o")
-      .replace(/Ã§/g, "c")
+      .replace(/ı/g, "i")
+      .replace(/ğ/g, "g")
+      .replace(/ü/g, "u")
+      .replace(/ş/g, "s")
+      .replace(/ö/g, "o")
+      .replace(/ç/g, "c")
       .trim();
   }
 
   function initials(name) {
-    return String(name || "Ã–ÄŸrenci")
+    return String(name || "Öğrenci")
       .trim()
       .split(/\s+/)
       .filter(Boolean)
@@ -259,7 +259,7 @@
           : []
       };
     } catch (error) {
-      console.warn("LocalStorage okunamadÄ±:", error);
+      console.warn("LocalStorage okunamadı:", error);
       return cloneDefaultState();
     }
   }
@@ -290,9 +290,9 @@
 
     const icon =
       type === "success"
-        ? "âœ“"
+        ? "✓"
         : type === "error"
-          ? "âœ•"
+          ? "✕"
           : "i";
 
     element.innerHTML = `
@@ -321,10 +321,10 @@
 
   /*
    * SCREEN GATE
-   * Auth ve uygulama ekranÄ±nÄ± yalnÄ±zca class ile deÄŸil,
+   * Auth ve uygulama ekranını yalnızca class ile değil,
    * inline display + aria/inert ile de kilitliyoruz.
-   * BÃ¶ylece eski CSS/cache yÃ¼zÃ¼nden auth katmanÄ±nÄ±n uygulamanÄ±n
-   * Ã¼zerinde kalmasÄ± veya tÄ±klamalarÄ± engellemesi mÃ¼mkÃ¼n olmaz.
+   * Böylece eski CSS/cache yüzünden auth katmanının uygulamanın
+   * üzerinde kalması veya tıklamaları engellemesi mümkün olmaz.
    */
   let appMapsBooted = false;
 
@@ -368,18 +368,18 @@
     STATE.profile.email = "";
     saveState();
     showAppScreen();
-    toast("Misafir modundasÄ±n. Ä°lerlemen bu tarayÄ±cÄ±da saklanÄ±r.", "success");
+    toast("Misafir modundasın. İlerlemen bu tarayıcıda saklanır.", "success");
   }
 
   function showAppScreen() {
     /*
-     * Kritik sÄ±ra:
-     * 1) Ã–nce auth'u tamamen kaldÄ±r.
-     * 2) Sonra app'i gÃ¶rÃ¼nÃ¼r ve tÄ±klanabilir yap.
-     * 3) Navigasyonu Ã§alÄ±ÅŸtÄ±r.
+     * Kritik sıra:
+     * 1) Önce auth'u tamamen kaldır.
+     * 2) Sonra app'i görünür ve tıklanabilir yap.
+     * 3) Navigasyonu çalıştır.
      *
-     * BÃ¶ylece SIGNED_IN listener + doLogin aynÄ± anda Ã§alÄ±ÅŸsa bile
-     * login ekranÄ± uygulamanÄ±n Ã¼zerinde kalamaz.
+     * Böylece SIGNED_IN listener + doLogin aynı anda çalışsa bile
+     * login ekranı uygulamanın üzerinde kalamaz.
      */
     setScreenVisibility($("auth-screen"), false);
     setScreenVisibility($("app-screen"), true);
@@ -394,10 +394,10 @@
       appMapsBooted = true;
       setTimeout(() => {
         try { initDashboardMap(); } catch (error) {
-          console.warn("Dashboard haritasÄ± baÅŸlatÄ±lamadÄ±:", error);
+          console.warn("Dashboard haritası başlatılamadı:", error);
         }
         try { initFullMap(); } catch (error) {
-          console.warn("TÃ¼rkiye haritasÄ± baÅŸlatÄ±lamadÄ±:", error);
+          console.warn("Türkiye haritası başlatılamadı:", error);
         }
       }, 120);
     }
@@ -1131,14 +1131,14 @@
 
     } catch (error) {
       console.warn(
-        "Supabase genel senkronizasyon hatasÄ±:",
+        "Supabase genel senkronizasyon hatası:",
         error
       );
     }
   }
 
   /* =========================================================
-     SUPABASE PUSH â€” PROVINCE
+     SUPABASE PUSH — PROVINCE
   ========================================================= */
 
   async function pushDiscovered(provinceName) {
@@ -1166,14 +1166,14 @@
 
     if (error) {
       console.warn(
-        "Ä°l ilerlemesi kaydedilemedi:",
+        "İl ilerlemesi kaydedilemedi:",
         error
       );
     }
   }
 
   /* =========================================================
-     SUPABASE PUSH â€” TOPIC
+     SUPABASE PUSH — TOPIC
   ========================================================= */
 
   async function pushTopicProgress(
@@ -1218,7 +1218,7 @@
   }
 
   /* =========================================================
-     SUPABASE PUSH â€” QUIZ RESULT
+     SUPABASE PUSH — QUIZ RESULT
   ========================================================= */
 
   async function pushResult(result) {
@@ -1265,7 +1265,7 @@
   }
 
   /* =========================================================
-     SUPABASE PUSH â€” FAVORITE
+     SUPABASE PUSH — FAVORITE
   ========================================================= */
 
   async function pushFavorite(
@@ -1342,7 +1342,7 @@
   function renderUserUI() {
     const name =
       STATE.profile.displayName ||
-      "Ã–ÄŸrenci";
+      "Öğrenci";
 
     const email =
       STATE.profile.email ||
@@ -1440,8 +1440,8 @@
 
     if (sessionNote) {
       sessionNote.innerHTML = isRemoteSession()
-        ? "Senkronize hesap modundasÄ±n â€” verilerin gÃ¼venle cihazlar arasÄ±nda eÅŸitlenir."
-        : "Yerel moddasÄ±n â€” ilerlemen yalnÄ±zca bu tarayÄ±cÄ±da saklanÄ±r. Ä°stersen hesap oluÅŸturarak cihazlar arasÄ±nda eÅŸitleyebilirsin.";
+        ? "Senkronize hesap modundasın — verilerin güvenle cihazlar arasında eşitlenir."
+        : "Yerel moddasın — ilerlemen yalnızca bu tarayıcıda saklanır. İstersen hesap oluşturarak cihazlar arasında eşitleyebilirsin.";
     }
   }
 
@@ -1453,7 +1453,7 @@
     const appScreen = $("app-screen");
     if (!appScreen || appScreen.classList.contains("hidden") || appScreen.getAttribute("aria-hidden") === "true") return false;
     const target = $(`view-${viewId}`);
-    if (!target) { console.warn(`Yurdunu Bil: "${viewId}" gÃ¶rÃ¼nÃ¼mÃ¼ bulunamadÄ±.`); return false; }
+    if (!target) { console.warn(`Yurdunu Bil: "${viewId}" görünümü bulunamadı.`); return false; }
 
     QA(".nav-item[data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === viewId));
     QA(".mobile-bottom-nav [data-view]").forEach(button => button.classList.toggle("active", button.dataset.view === viewId));
@@ -1464,7 +1464,7 @@
       view.inert = !active;
     });
 
-    const titles = {dashboard:"Genel BakÄ±ÅŸ",map:"TÃ¼rkiye HaritasÄ±",topics:"Konu KÃ¼tÃ¼phanesi",library:"Ã‡alÄ±ÅŸma KÃ¼tÃ¼phanesi",quiz:"Mini Test",stats:"Ä°statistikler",favorites:"Favoriler",settings:"Ayarlar & Profil"};
+    const titles = {dashboard:"Genel Bakış",map:"Türkiye Haritası",topics:"Konu Kütüphanesi",library:"Çalışma Kütüphanesi",quiz:"Mini Test",stats:"İstatistikler",favorites:"Favoriler",settings:"Ayarlar & Profil"};
     setText("page-title", titles[viewId] || viewId);
 
     if (options.history !== false) {
@@ -1585,14 +1585,14 @@
       "dash-accuracy",
       accuracy !== null
         ? `%${accuracy}`
-        : "â€”"
+        : "—"
     );
 
     setText(
       "dash-accuracy-ring",
       accuracy !== null
         ? `%${accuracy}`
-        : "â€”"
+        : "—"
     );
 
     setText(
@@ -1650,16 +1650,16 @@
         id: "map3",
         icon: "ğŸ—ºï¸",
         title:
-          "3 yeni il keÅŸfet",
+          "3 yeni il keşfet",
         meta:
-          "Haritaya git â†’ tÄ±kla",
+          "Haritaya git → tıkla",
         view: "map"
       },
       {
         id: "quiz5",
         icon: "âœï¸",
         title:
-          "Mini test Ã§Ã¶z",
+          "Mini test çöz",
         meta:
           "5 soruluk test",
         view: "quiz"
@@ -1668,9 +1668,9 @@
         id: "topic1",
         icon: "ğŸ“š",
         title:
-          "Bir konu kartÄ± aÃ§",
+          "Bir konu kartı aç",
         meta:
-          "Konu kÃ¼tÃ¼phanesini gez",
+          "Konu kütüphanesini gez",
         view: "topics"
       }
     ];
@@ -1693,7 +1693,7 @@
             role="listitem"
           >
             <div class="study-check">
-              ${isDone ? "âœ“" : ""}
+              ${isDone ? "✓" : ""}
             </div>
 
             <div class="study-body">
@@ -1771,7 +1771,7 @@
               <b>%${pct}</b>
             </div>
             <div class="topic-bar-track"><div class="topic-bar-fill" style="width:${pct}%"></div></div>
-            <small>${pct === 0 ? 'BaÅŸlamadÄ±' : pct < 50 ? 'Temel atÄ±lÄ±yor' : pct < 100 ? 'Ä°lerliyorsun' : 'TamamlandÄ±'}</small>
+            <small>${pct === 0 ? 'Başlamadı' : pct < 50 ? 'Temel atılıyor' : pct < 100 ? 'İlerliyorsun' : 'Tamamlandı'}</small>
           </div>
         `;
       }).join("");
@@ -1787,7 +1787,7 @@
     }
 
     if (location.protocol === "file:") {
-      throw new Error("Site doÄŸrudan dosyaya Ã§ift tÄ±klanarak aÃ§Ä±lmÄ±ÅŸ. GeoJSON iÃ§in Live Server veya bir web sunucusu ile aÃ§Ä±n.");
+      throw new Error("Site doğrudan dosyaya çift tıklanarak açılmış. GeoJSON için Live Server veya bir web sunucusu ile açın.");
     }
 
     const response =
@@ -1811,7 +1811,7 @@
       !json?.features?.length
     ) {
       throw new Error(
-        "GeoJSON boÅŸ"
+        "GeoJSON boş"
       );
     }
 
@@ -1897,7 +1897,7 @@
       properties.adi ||
       properties.il ||
       properties.province ||
-      "Bilinmeyen Ä°l"
+      "Bilinmeyen İl"
     );
   }
 
@@ -1947,7 +1947,7 @@
         );
 
       if (
-        agriculture.includes("Ã§ay")
+        agriculture.includes("çay")
       ) return "#0f9e6a";
 
       if (
@@ -1964,19 +1964,19 @@
 
       if (
         agriculture.includes(
-          "Ã¼zÃ¼m"
+          "üzüm"
         )
       ) return "#8b52c4";
 
       if (
         agriculture.includes(
-          "fÄ±ndÄ±k"
+          "fındık"
         )
       ) return "#b87333";
 
       if (
         agriculture.includes(
-          "kayÄ±sÄ±"
+          "kayısı"
         ) ||
         agriculture.includes(
           "kayisi"
@@ -2032,7 +2032,7 @@
         );
 
       if (
-        terrain.includes("daÄŸ") ||
+        terrain.includes("dağ") ||
         terrain.includes("dag")
       ) return "#7e3db5";
 
@@ -2069,7 +2069,7 @@
 
       if (
         mining.includes(
-          "kÃ¶mÃ¼r"
+          "kömür"
         ) ||
         mining.includes(
           "komur"
@@ -2088,7 +2088,7 @@
 
       if (
         mining.includes(
-          "bakÄ±r"
+          "bakır"
         ) ||
         mining.includes(
           "bakir"
@@ -2120,14 +2120,14 @@
 
   /* =========================================================
      MAP TILE LAYERS
-     Google Maps / Mapbox API anahtarÄ± kullanÄ±lmaz.
-     Ã–nce CARTO, hata olursa OpenStreetMap denenir.
+     Google Maps / Mapbox API anahtarı kullanılmaz.
+     Önce CARTO, hata olursa OpenStreetMap denenir.
   ========================================================= */
 
   function addReliableTiles(map, options = {}) {
     if (!map || typeof L === "undefined") return null;
     const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "Â© OpenStreetMap contributors",
+      attribution: "© OpenStreetMap contributors",
       maxZoom: 19,
       detectRetina: true,
       crossOrigin: true
@@ -2259,13 +2259,13 @@
                 margin-bottom:12px;
               "
             >
-              âš ï¸
+              ⚠ï¸
             </div>
 
             <strong
               style="color:var(--red)"
             >
-              Harita yÃ¼klenemedi
+              Harita yüklenemedi
             </strong>
 
             <br>
@@ -2451,7 +2451,7 @@
       })
       .catch(error => {
         console.warn(
-          "Mini harita yÃ¼klenemedi:",
+          "Mini harita yüklenemedi:",
           error
         );
       });
@@ -2613,7 +2613,7 @@
       nameNorm;
 
     toast(
-      `${friendly} keÅŸfedildi! ğŸ—ºï¸`,
+      `${friendly} keşfedildi! ğŸ—ºï¸`,
       "success"
     );
 
@@ -2685,7 +2685,7 @@
           <h3>${esc(name)}</h3>
 
           <p>
-            Veri bulunamadÄ±.
+            Veri bulunamadı.
           </p>
         </div>
       `;
@@ -2759,7 +2759,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸŒ¦ï¸ Ä°klim
+              ğŸŒ¦ï¸ İklim
             </div>
             <p>
               ${esc(data.climate)}
@@ -2768,7 +2768,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸŒ¾ TarÄ±m
+              ğŸŒ¾ Tarım
             </div>
             <p>
               ${esc(data.agriculture)}
@@ -2804,7 +2804,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸ‘¥ NÃ¼fus
+              ğŸ‘¥ Nüfus
             </div>
             <p>
               ${esc(data.population)}
@@ -2822,8 +2822,8 @@
           >
             ${
               discovered
-                ? "âœ“ KeÅŸfedildi"
-                : "â— KeÅŸfet"
+                ? "✓ Keşfedildi"
+                : "â— Keşfet"
             }
           </button>
 
@@ -2834,8 +2834,8 @@
           >
             ${
               favorite
-                ? "â˜… Favoride"
-                : "â˜† Favori Ekle"
+                ? "★ Favoride"
+                : "☆ Favori Ekle"
             }
           </button>
 
@@ -2866,7 +2866,7 @@
             );
 
             button.textContent =
-              "âœ“ KeÅŸfedildi";
+              "✓ Keşfedildi";
           }
         }
       );
@@ -2927,25 +2927,25 @@
   function updateMapLegend() {
     const description = MAP_LEGENDS[mapMode] || MAP_LEGENDS.default;
     setText("map-legend", description);
-    const modeNames = { default: "Standart", agriculture: "TarÄ±m", climate: "Ä°klim", terrain: "Arazi", mining: "Maden" };
+    const modeNames = { default: "Standart", agriculture: "Tarım", climate: "İklim", terrain: "Arazi", mining: "Maden" };
     setText("map-legend-mode", modeNames[mapMode] || "Standart");
     const items = {
       default: [
-        ["#43d59b", "KeÅŸfedilen il", "Ä°ncelediÄŸin iller"],
-        ["#4f6f91", "KeÅŸfedilmemiÅŸ il", "HenÃ¼z aÃ§madÄ±ÄŸÄ±n iller"],
-        ["#67bfff", "SeÃ§ili il", "Detay paneli aÃ§Ä±k"]
+        ["#43d59b", "Keşfedilen il", "İncelediğin iller"],
+        ["#4f6f91", "Keşfedilmemiş il", "Henüz açmadığın iller"],
+        ["#67bfff", "Seçili il", "Detay paneli açık"]
       ],
       agriculture: [
-        ["#d9ad46", "TahÄ±l", "Ä°Ã§ kesimler"], ["#4fc88f", "Ã‡ay / fÄ±ndÄ±k", "DoÄŸu Karadeniz"], ["#e57c5c", "Pamuk / narenciye", "GÃ¼ney ve Ege kÄ±yÄ±larÄ±"]
+        ["#d9ad46", "Tahıl", "İç kesimler"], ["#4fc88f", "Çay / fındık", "Doğu Karadeniz"], ["#e57c5c", "Pamuk / narenciye", "Güney ve Ege kıyıları"]
       ],
       climate: [
-        ["#ef8b62", "Akdeniz", "Yaz sÄ±cak-kurak"], ["#4fc9a0", "Karadeniz", "Her mevsim yaÄŸÄ±ÅŸlÄ±"], ["#8c73d6", "Karasal", "Ä°Ã§ ve doÄŸu kesimler"]
+        ["#ef8b62", "Akdeniz", "Yaz sıcak-kurak"], ["#4fc9a0", "Karadeniz", "Her mevsim yağışlı"], ["#8c73d6", "Karasal", "İç ve doğu kesimler"]
       ],
       terrain: [
-        ["#8d68d8", "DaÄŸlÄ±k", "YÃ¼kselti / daÄŸ kuÅŸaklarÄ±"], ["#d7aa54", "Plato", "YÃ¼ksek dÃ¼zlÃ¼kler"], ["#4eb889", "Ova", "TarÄ±m alanlarÄ±"]
+        ["#8d68d8", "Dağlık", "Yükselti / dağ kuşakları"], ["#d7aa54", "Plato", "Yüksek düzlükler"], ["#4eb889", "Ova", "Tarım alanları"]
       ],
       mining: [
-        ["#f0c15c", "Bor", "BatÄ± Anadolu"], ["#8e9db2", "KÃ¶mÃ¼r / linyit", "Zonguldak ve iÃ§ kesimler"], ["#d97561", "Metal madenleri", "Krom / demir / bakÄ±r"]
+        ["#f0c15c", "Bor", "Batı Anadolu"], ["#8e9db2", "Kömür / linyit", "Zonguldak ve iç kesimler"], ["#d97561", "Metal madenleri", "Krom / demir / bakır"]
       ]
     };
     const container = $("map-legend-items");
@@ -2977,9 +2977,9 @@
     else url.searchParams.delete("il");
     try {
       await navigator.clipboard.writeText(url.toString());
-      toast("Harita baÄŸlantÄ±sÄ± kopyalandÄ±.", "success");
+      toast("Harita bağlantısı kopyalandı.", "success");
     } catch {
-      toast("BaÄŸlantÄ± kopyalanamadÄ±. TarayÄ±cÄ± izinlerini kontrol et.", "error");
+      toast("Bağlantı kopyalanamadı. Tarayıcı izinlerini kontrol et.", "error");
     }
   }
 
@@ -2997,7 +2997,7 @@
     }
 
     if (!geoLayer) {
-      toast("Harita hazÄ±rlanÄ±yor; birkaÃ§ saniye sonra tekrar dene.", "info");
+      toast("Harita hazırlanıyor; birkaç saniye sonra tekrar dene.", "info");
       return;
     }
 
@@ -3025,7 +3025,7 @@
 
     if (!found) {
       toast(
-        "Ä°l bulunamadÄ±.",
+        "İl bulunamadı.",
         "error"
       );
       return;
@@ -3100,7 +3100,7 @@
           ) {
             return (
               topic.level ===
-              "YÃ¼ksek Getiri"
+              "Yüksek Getiri"
             );
           }
 
@@ -3128,7 +3128,7 @@
             padding:32px;
           "
         >
-          Bu filtrede konu bulunamadÄ±.
+          Bu filtrede konu bulunamadı.
         </div>
       `;
 
@@ -3146,7 +3146,7 @@
 
         const levelClass =
           topic.level ===
-          "YÃ¼ksek Getiri"
+          "Yüksek Getiri"
             ? "high"
             : "medium";
 
@@ -3248,10 +3248,10 @@
       const pct = Math.max(0, Math.min(100, Number(STATE.topicPct?.[topic.id] || 0)));
       const bullets = Array.isArray(topic.bullets) ? topic.bullets.slice(0, 4) : [];
       return `
-        <article class="library-card" data-topic-id="${esc(topic.id)}" tabindex="0" role="listitem" aria-label="${esc(topic.title)} Ã§alÄ±ÅŸma notlarÄ±">
+        <article class="library-card" data-topic-id="${esc(topic.id)}" tabindex="0" role="listitem" aria-label="${esc(topic.title)} çalışma notları">
           <div class="library-card-top">
             <div class="library-icon">${topic.icon}</div>
-            <span class="library-level ${topic.level === "YÃ¼ksek Getiri" ? "high" : "mid"}">${esc(topic.level)}</span>
+            <span class="library-level ${topic.level === "Yüksek Getiri" ? "high" : "mid"}">${esc(topic.level)}</span>
           </div>
           <div class="library-card-number">${String(index + 1).padStart(2, "0")}</div>
           <h3>${esc(topic.title)}</h3>
@@ -3260,9 +3260,9 @@
             ${bullets.map((b, i) => `<div class="library-note"><span>${i + 1}</span><p>${esc(b)}</p></div>`).join("")}
           </div>
           <div class="library-card-foot">
-            <div><span>Ä°lerleme</span><strong>%${pct}</strong></div>
+            <div><span>İlerleme</span><strong>%${pct}</strong></div>
             <div class="library-progress"><i style="width:${pct}%"></i></div>
-            <button class="library-open" type="button">DetaylarÄ± aÃ§ <svg width="15" height="15"><use href="#ic-arrow-right"/></svg></button>
+            <button class="library-open" type="button">Detayları aç <svg width="15" height="15"><use href="#ic-arrow-right"/></svg></button>
           </div>
         </article>`;
     }).join("");
@@ -3344,7 +3344,7 @@
     const studiedButton = $("topic-modal-studied");
     const currentPct = Math.max(0, Math.min(100, Number(STATE.topicPct?.[topicId] || 0)));
     if (studiedButton) {
-      studiedButton.textContent = currentPct >= 100 ? "âœ“ Konu tamamlandÄ±" : "âœ“ Bu konuyu Ã§alÄ±ÅŸtÄ±m";
+      studiedButton.textContent = currentPct >= 100 ? "✓ Konu tamamlandı" : "✓ Bu konuyu çalıştım";
       studiedButton.classList.toggle("is-complete", currentPct >= 100);
       studiedButton.onclick = () => {
         if (!STATE.topicPct) STATE.topicPct = {};
@@ -3355,7 +3355,7 @@
         if (!Array.isArray(STATE.dailyDone)) STATE.dailyDone = [];
         if (!STATE.dailyDone.includes("topic1")) STATE.dailyDone.push("topic1");
         saveState();
-        studiedButton.textContent = next >= 100 ? "âœ“ Konu tamamlandÄ±" : `âœ“ Ã‡alÄ±ÅŸÄ±ldÄ± Â· %${next}`;
+        studiedButton.textContent = next >= 100 ? "✓ Konu tamamlandı" : `✓ Çalışıldı · %${next}`;
         studiedButton.classList.add("is-complete");
         renderDashboard();
         renderLibrary(currentLibraryFilter || "all");
@@ -3412,7 +3412,7 @@
 
     if (!pool.length) {
       toast(
-        "HenÃ¼z soru bulunamadÄ±.",
+        "Henüz soru bulunamadı.",
         "error"
       );
       return;
@@ -3463,7 +3463,7 @@
     const question = questions[index];
     if (!question) { finishQuiz(); return; }
     const progress = Math.round((index / questions.length) * 100);
-    const topic = TOPICS.find(item => item.id === question.topic)?.title || question.topic || "CoÄŸrafya";
+    const topic = TOPICS.find(item => item.id === question.topic)?.title || question.topic || "Coğrafya";
     const difficulty = String(question.difficulty || "").toLocaleUpperCase('tr-TR');
     const selected = quizSession.pendingSelected;
     shell.innerHTML = `
@@ -3474,18 +3474,18 @@
         </div>
         <div class="quiz-card-body">
           <div class="quiz-meta"><span class="quiz-counter">${index+1}. Soru</span><span class="quiz-topic-tag">${esc(topic)}</span><span class="quiz-difficulty">${esc(difficulty || 'KPSS')}</span></div>
-          <div class="quiz-reading-label">Ã–NCE OKU Â· SONRA CEVAPLA</div>
+          <div class="quiz-reading-label">ÖNCE OKU · SONRA CEVAPLA</div>
           <h3 class="quiz-question-v8">${esc(question.q)}</h3>
           <div class="quiz-options-v8">
             ${optionsSafe(question.options).map((option,i)=>{
               const correctIndex = Number(question.answer);
               const stateClass = quizSession.submitted ? (i === correctIndex ? 'is-correct' : (i === selected ? 'is-wrong' : '')) : '';
-              const stateIcon = quizSession.submitted ? (i === correctIndex ? 'âœ“' : (i === selected ? 'Ã—' : '')) : '';
+              const stateIcon = quizSession.submitted ? (i === correctIndex ? '✓' : (i === selected ? 'Ã—' : '')) : '';
               return `<button class="quiz-option quiz-option-v8 ${selected===i?'selected':''} ${stateClass}" data-idx="${i}" type="button" ${quizSession.submitted?'disabled':''}><span class="option-label">${String.fromCharCode(65+i)}</span><span class="option-text">${esc(option)}</span><span class="option-state" aria-hidden="true">${stateIcon}</span></button>`;
             }).join('')}
           </div>
           <div class="quiz-action-row">
-            ${quizSession.submitted ? `<div class="quiz-result-inline ${quizSession.currentRight?'is-correct':'is-wrong'}"><strong>${quizSession.currentRight?'DoÄŸru cevap!':'Cevap kontrol edildi.'}</strong><span>${esc(question.explain || 'AÃ§Ä±klama bulunmuyor.')}</span>${question.source ? `<small class="quiz-source">Kaynak: ${esc(question.source)}</small>` : ''}</div><button class="primary-btn quiz-next-btn" id="quiz-next-btn" type="button">${index+1 < questions.length ? 'Sonraki Soru' : 'Testi Bitir'} â†’</button>` : `<div class="quiz-selection-note">${selected === undefined ? 'Bir ÅŸÄ±k seÃ§. CevabÄ± hemen gÃ¶stermiyoruz.' : 'SeÃ§imin hazÄ±r. Åimdi cevabÄ± kontrol edebilirsin.'}</div><button class="primary-btn quiz-check-btn" id="quiz-check-btn" type="button" ${selected === undefined ? 'disabled' : ''}>CevabÄ± Kontrol Et âœ“</button>`}
+            ${quizSession.submitted ? `<div class="quiz-result-inline ${quizSession.currentRight?'is-correct':'is-wrong'}"><strong>${quizSession.currentRight?'Doğru cevap!':'Cevap kontrol edildi.'}</strong><span>${esc(question.explain || 'Açıklama bulunmuyor.')}</span>${question.source ? `<small class="quiz-source">Kaynak: ${esc(question.source)}</small>` : ''}</div><button class="primary-btn quiz-next-btn" id="quiz-next-btn" type="button">${index+1 < questions.length ? 'Sonraki Soru' : 'Testi Bitir'} →</button>` : `<div class="quiz-selection-note">${selected === undefined ? 'Bir şık seç. Cevabı hemen göstermiyoruz.' : 'Seçimin hazır. Şimdi cevabı kontrol edebilirsin.'}</div><button class="primary-btn quiz-check-btn" id="quiz-check-btn" type="button" ${selected === undefined ? 'disabled' : ''}>Cevabı Kontrol Et ✓</button>`}
           </div>
         </div>
       </article>`;
@@ -3638,12 +3638,12 @@
 
     const message =
       pct >= 80
-        ? "Harika! KPSS'ye hazÄ±rsÄ±n."
+        ? "Harika! KPSS'ye hazırsın."
         : pct >= 60
-          ? "Ä°yi gidiyorsun!"
+          ? "İyi gidiyorsun!"
           : pct >= 40
-            ? "Biraz daha Ã§alÄ±ÅŸalÄ±m."
-            : "Tekrar Ã§alÄ±ÅŸmak iyi olur.";
+            ? "Biraz daha çalışalım."
+            : "Tekrar çalışmak iyi olur.";
 
     const degree =
       Math.round(
@@ -3693,7 +3693,7 @@
             <strong>
               ${correct}/${total}
             </strong>
-            doÄŸru.
+            doğru.
             ${esc(message)}
           </p>
 
@@ -3713,8 +3713,8 @@
               id="quiz-stats-btn"
               type="button"
             >
-              Ä°statistikler
-              <span>â†’</span>
+              İstatistikler
+              <span>→</span>
             </button>
 
           </div>
@@ -3733,7 +3733,7 @@
                 justify-content:center;
               "
             >
-              â† Test EkranÄ±na DÃ¶n
+              â† Test Ekranına Dön
             </button>
           </div>
 
@@ -3767,7 +3767,7 @@
       );
 
     toast(
-      `Test bitti: ${correct}/${total} doÄŸru (%${pct})`,
+      `Test bitti: ${correct}/${total} doğru (%${pct})`,
       pct >= 60
         ? "success"
         : "info"
@@ -3798,7 +3798,7 @@
         <div class="quiz-start-copy">
 
           <div class="eyebrow">
-            5 SORU â€¢ KARIÅIK COÄRAFYA
+            5 SORU • KARIŞIK COĞRAFYA
           </div>
 
           <h3>
@@ -3806,20 +3806,20 @@
           </h3>
 
           <p>
-            Her soruda tek doÄŸru cevap var.
+            Her soruda tek doğru cevap var.
           </p>
 
           <div class="quiz-rules">
             <span>
-              â± ~3 dk
+              ⏱ ~3 dk
             </span>
 
             <span>
-              âœ“ 5 soru
+              ✓ 5 soru
             </span>
 
             <span>
-              â˜… KPSS odaklÄ±
+              ★ KPSS odaklı
             </span>
           </div>
 
@@ -3828,8 +3828,8 @@
             id="start-quiz-btn"
             type="button"
           >
-            Teste BaÅŸla
-            <span>â†’</span>
+            Teste Başla
+            <span>→</span>
           </button>
 
         </div>
@@ -3881,7 +3881,7 @@
             (correct / total) *
               100
           )}`
-        : "â€”";
+        : "—";
 
     setText(
       "stats-total",
@@ -3960,7 +3960,7 @@
             padding:16px 20px;
           "
         >
-          HenÃ¼z konu Ã§alÄ±ÅŸmasÄ± yok.
+          Henüz konu çalışması yok.
         </p>
       `;
 
@@ -4111,7 +4111,7 @@
             padding:16px 20px;
           "
         >
-          HenÃ¼z test Ã§Ã¶zÃ¼lmedi.
+          Henüz test çözülmedi.
         </p>
       `;
 
@@ -4150,9 +4150,9 @@
             (
               result.topicId ===
               "mixed"
-                ? "KarÄ±ÅŸÄ±k"
+                ? "Karışık"
                 : result.topicId ||
-                  "KarÄ±ÅŸÄ±k"
+                  "Karışık"
             );
 
           return `
@@ -4297,7 +4297,7 @@
         }
 
         console.warn(
-          "Favori senkronizasyonu baÅŸarÄ±sÄ±z:",
+          "Favori senkronizasyonu başarısız:",
           error
         );
 
@@ -4313,8 +4313,8 @@
     toast(
       `${displayName || key} ${
         wasFavorite
-          ? "favorilerden Ã§Ä±karÄ±ldÄ±."
-          : "favorilere eklendi. â˜…"
+          ? "favorilerden çıkarıldı."
+          : "favorilere eklendi. ★"
       }`,
       wasFavorite
         ? "info"
@@ -4339,15 +4339,15 @@
           <div
             class="empty-fav-icon"
           >
-            â˜…
+            ★
           </div>
 
           <h3>
-            HenÃ¼z favori eklenmedi
+            Henüz favori eklenmedi
           </h3>
 
           <p>
-            Haritada bir ile tÄ±kla
+            Haritada bir ile tıkla
             ve "Favori Ekle"
             butonunu kullan.
           </p>
@@ -4407,7 +4407,7 @@
                   </h4>
 
                   <p>
-                    Konu â€¢
+                    Konu •
                     ${esc(
                       topic.level
                     )}
@@ -4418,9 +4418,9 @@
                   class="fav-remove"
                   data-fav-key="${esc(key)}"
                   type="button"
-                  aria-label="Favoriden Ã§Ä±kar"
+                  aria-label="Favoriden çıkar"
                 >
-                  âœ•
+                  ✕
                 </button>
 
               </div>
@@ -4471,7 +4471,7 @@
                 </h4>
 
                 <p>
-                  Ä°l â€¢
+                  İl •
                   ${esc(
                     data.region ||
                     ""
@@ -4483,9 +4483,9 @@
                 class="fav-remove"
                 data-fav-key="${esc(key)}"
                 type="button"
-                aria-label="Favoriden Ã§Ä±kar"
+                aria-label="Favoriden çıkar"
               >
-                âœ•
+                ✕
               </button>
 
             </div>
@@ -4498,11 +4498,11 @@
       `
         <div class="empty-fav">
           <div class="empty-fav-icon">
-            â˜…
+            ★
           </div>
 
           <h3>
-            Favori bulunamadÄ±
+            Favori bulunamadı
           </h3>
         </div>
       `;
@@ -4637,7 +4637,7 @@
   }
 
   /* =========================================================
-     SETTINGS â€” PROFILE
+     SETTINGS — PROFILE
   ========================================================= */
 
   async function saveProfile() {
@@ -4656,7 +4656,7 @@
       newName.length < 2
     ) {
       toast(
-        "GeÃ§erli bir ad gir.",
+        "Geçerli bir ad gir.",
         "error"
       );
       return;
@@ -4694,7 +4694,7 @@
         );
 
         toast(
-          "Profil gÃ¼ncellendi ancak sunucuya kaydedilemedi.",
+          "Profil güncellendi ancak sunucuya kaydedilemedi.",
           "error"
         );
 
@@ -4710,14 +4710,14 @@
         });
       } catch (error) {
         console.warn(
-          "Auth metadata gÃ¼ncellenemedi:",
+          "Auth metadata güncellenemedi:",
           error
         );
       }
     }
 
     toast(
-      "Profil gÃ¼ncellendi.",
+      "Profil güncellendi.",
       "success"
     );
   }
@@ -4729,7 +4729,7 @@
   async function resetAllData() {
     const confirmed =
       confirm(
-        "TÃ¼m keÅŸif, konu ilerlemesi, test sonuÃ§larÄ± ve favori verilerin silinecek. HesabÄ±n silinmeyecek. Emin misin?"
+        "Tüm keşif, konu ilerlemesi, test sonuçları ve favori verilerin silinecek. Hesabın silinmeyecek. Emin misin?"
       );
 
     if (!confirmed) {
@@ -4743,7 +4743,7 @@
         "@"
       )[0] ||
       STATE.profile.displayName ||
-      "Ã–ÄŸrenci";
+      "Öğrenci";
 
     const email =
       currentUser?.email ||
@@ -4808,7 +4808,7 @@
 
       if (remoteError) {
         console.warn(
-          "BazÄ± Supabase verileri silinemedi:",
+          "Bazı Supabase verileri silinemedi:",
           responses
         );
       }
@@ -4850,12 +4850,12 @@
 
     if (remoteError) {
       toast(
-        "Yerel veriler sÄ±fÄ±rlandÄ± ancak bazÄ± sunucu verileri silinemedi.",
+        "Yerel veriler sıfırlandı ancak bazı sunucu verileri silinemedi.",
         "error"
       );
     } else {
       toast(
-        "TÃ¼m verilerin sÄ±fÄ±rlandÄ±.",
+        "Tüm verilerin sıfırlandı.",
         "success"
       );
     }
@@ -4949,7 +4949,7 @@
     }
 
     toast(
-      "SonuÃ§ bulunamadÄ±.",
+      "Sonuç bulunamadı.",
       "info"
     );
   }
@@ -5145,7 +5145,7 @@
           ) {
             showFormError(
               "login-error",
-              "TÃ¼m alanlarÄ± doldur."
+              "Tüm alanları doldur."
             );
 
             return;
@@ -5165,7 +5165,7 @@
             showFormError(
               "login-error",
               error.message ||
-                "GiriÅŸ baÅŸarÄ±sÄ±z."
+                "Giriş başarısız."
             );
           } finally {
             setButtonLoading(
@@ -5213,7 +5213,7 @@
           ) {
             showFormError(
               "register-error",
-              "TÃ¼m alanlarÄ± doldur."
+              "Tüm alanları doldur."
             );
 
             return;
@@ -5225,7 +5225,7 @@
           ) {
             showFormError(
               "register-error",
-              "Åifre en az 6 karakter."
+              "Şifre en az 6 karakter."
             );
 
             return;
@@ -5237,7 +5237,7 @@
           ) {
             showFormError(
               "register-error",
-              "Åifreler eÅŸleÅŸmiyor."
+              "Şifreler eşleşmiyor."
             );
 
             return;
@@ -5246,7 +5246,7 @@
           if (!terms) {
             showFormError(
               "register-error",
-              "KullanÄ±m koÅŸullarÄ±nÄ± kabul et."
+              "Kullanım koşullarını kabul et."
             );
 
             return;
@@ -5267,7 +5267,7 @@
             showFormError(
               "register-error",
               error.message ||
-                "KayÄ±t baÅŸarÄ±sÄ±z."
+                "Kayıt başarısız."
             );
           } finally {
             setButtonLoading(
@@ -5331,7 +5331,7 @@
           button.textContent =
             show
               ? "Gizle"
-              : "GÃ¶ster";
+              : "Göster";
         }
       );
     });
@@ -5422,7 +5422,7 @@
       () => {
         if (
           confirm(
-            "Ã‡Ä±kÄ±ÅŸ yapmak istediÄŸinden emin misin?"
+            "Çıkış yapmak istediğinden emin misin?"
           )
         ) {
           doLogout();
@@ -5706,7 +5706,7 @@
           event.stopPropagation();
 
           toast(
-            "BugÃ¼nkÃ¼ hedef: 3 il keÅŸfet + 1 test Ã§Ã¶z. Hadi! ğŸ¯",
+            "Bugünkü hedef: 3 il keşfet + 1 test çöz. Hadi! ğŸ¯",
             "info"
           );
 
@@ -5889,7 +5889,7 @@
     candidates.forEach(el => {
       el.textContent = ms > 0
         ? `${days}g ${hours}s ${mins}dk`
-        : "SÄ±nav zamanÄ± geldi";
+        : "Sınav zamanı geldi";
     });
   }
 
@@ -5908,9 +5908,9 @@
       geojson: () => Boolean(geoCache)
     };
 
-    if (!PROVINCES.length) console.warn("Yurdunu Bil: provinces.js verisi yÃ¼klenmemiÅŸ.");
-    if (!TOPICS.length) console.warn("Yurdunu Bil: topics.js verisi yÃ¼klenmemiÅŸ.");
-    if (!QUESTIONS.length) console.warn("Yurdunu Bil: questions.js verisi yÃ¼klenmemiÅŸ.");
+    if (!PROVINCES.length) console.warn("Yurdunu Bil: provinces.js verisi yüklenmemiş.");
+    if (!TOPICS.length) console.warn("Yurdunu Bil: topics.js verisi yüklenmemiş.");
+    if (!QUESTIONS.length) console.warn("Yurdunu Bil: questions.js verisi yüklenmemiş.");
   }
 
   /* =========================================================
