@@ -13,11 +13,11 @@ for(const ref of localRefs){if(!fs.existsSync(path.join(root,ref)))fail.push(`Mi
 const scripts=[...new Set(localRefs.filter(x=>x.endsWith('.js')))];
 const core=['core/runtime.js','core/app.js','core/atlas.js','core/province.js','core/quiz.js','core/library.js','core/stats.js'];
 for(const file of [...core,...scripts]){if(!fs.existsSync(path.join(root,file)))fail.push(`Missing core/script: ${file}`);else try{execFileSync(process.execPath,['--check',path.join(root,file)],{stdio:'pipe'})}catch(e){fail.push(`JS syntax error: ${file}`)}}
+for(const file of core){if(!index.includes(file+'?v='+version))fail.push(`Core reference is missing or stale: ${file}`)}
 try{const g=JSON.parse(read('data/provinces.geojson'));if(!Array.isArray(g.features)||g.features.length!==81)fail.push(`GeoJSON province count is ${g.features?.length}, expected 81`)}catch(e){fail.push('GeoJSON cannot be parsed')}
 const mobile=(index.match(/<nav class="mobile-nav">([\s\S]*?)<\/nav>/)||[])[1]||'';
 const mobileMaps=(mobile.match(/data-view="map"/g)||[]).length;
 if(mobileMaps!==1)fail.push(`Mobile nav map target count is ${mobileMaps}, expected 1`);
-if(!index.includes('core/runtime.js?v='+version))fail.push('canonical runtime core reference is missing');
 if(!index.includes('v41-atlas.css?v='+version)||!index.includes('v41-atlas.js?v='+version))fail.push('v41 cache-busting references are not aligned');
 if(!index.includes('v44-architecture.css?v='+version)||!index.includes('v44-architecture.js?v='+version))fail.push('v44 architecture references are not aligned');
 if(!index.includes('v44-map-engine.js?v='+version))fail.push('v44 map engine reference is missing');
