@@ -1,4 +1,4 @@
 {
-  "version":"27.0.0",
-  "message":"Yurdunu Bil 27 — etkileşimli atlas gezinmesi, mobil sürükleme ve yakınlaştırma, Güncel Veriler geçişleri ve çalışan yenileme davranışı eklendi."
+  "version":"27.0.1",
+  "message":"Yurdunu Bil 27.0.1 — il tıklama çakışması giderildi, harita sürükleme güvenli hale getirildi, Güncel Veriler yenilemesi artık sayfayı yeniden yüklemiyor."
 }
