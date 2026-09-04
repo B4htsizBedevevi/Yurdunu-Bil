@@ -1,2 +1,2 @@
-/* Yurdunu Bil 44 — library module boundary */
-(()=>{'use strict';const r=window.YB44;if(!r)return;const topics=()=>Array.isArray(window.TOPICS)?window.TOPICS:[];r.register('library',{count:()=>topics().length,topics});})();
+/* Yurdunu Bil 44 — study library intelligence core */
+(()=>{'use strict';const r=window.YB44;if(!r)return;const topics=()=>Array.isArray(window.TOPICS)?window.TOPICS:[];const api={version:'44.0.0',count:()=>topics().length,topics,find:id=>topics().find(t=>t.id===id)||null,search:q=>{const n=String(q||'').toLocaleLowerCase('tr-TR');return n?topics().filter(t=>JSON.stringify(t).toLocaleLowerCase('tr-TR').includes(n)):topics()}};r.register('library',api);})();
