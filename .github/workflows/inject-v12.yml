@@ -32,7 +32,8 @@ jobs:
               '<script src="quickfacts.js"></script>',
               '<script src="innovation.js"></script>',
               '<script src="pomodoro.js?v=1.0.1"></script>',
-              '<script src="province-study.js?v=1.0.0"></script>'
+              '<script src="province-study.js?v=1.0.0"></script>',
+              '<script src="ux-v16.js?v=16.0.0"></script>'
           ]
           for tag in tags:
               if tag not in s:
@@ -48,5 +49,5 @@ jobs:
             echo 'Dashboard scripts already up to date.'
             exit 0
           fi
-          git commit -m 'feat: connect province study flow'
+          git commit -m 'feat: load v16 mobile stability layer'
           git push
