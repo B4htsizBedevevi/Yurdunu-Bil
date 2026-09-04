@@ -1,16 +1,17 @@
 {
-  "version":"40.0.0",
-  "message":"Yurdunu Bil 40 — harita yükleme hatası giderildi; akarsu, göl, ova, dağ, plato ve maden katmanları zenginleştirildi.",
+  "version":"41.0.0",
+  "message":"Yurdunu Bil 41 — tek kanonik harita, daha zengin coğrafya katmanları ve dağıtıma dayanıklı güncelleme sistemi.",
   "changes":[
-    "Leaflet artık statik ve güvenilir şekilde yükleniyor; haritanın açılmasını bozan async render yarış durumu giderildi.",
-    "Dashboard ikinci haritayı üretmiyor; Türkiye Atlası tek kanonik harita olarak açılıyor.",
-    "81 il GeoJSON sınırı gerçek harita altyapısı üzerinde çalışıyor.",
-    "OSM tabanı yanında yerel KPSS coğrafya verileriyle akarsular, göller, ovalar, dağlar, platolar ve maden noktaları görselleştirildi.",
-    "Sular katmanında önemli akarsular ve göller etiketleniyor.",
-    "Yer Şekilleri katmanında ovalar, platolar ve dağlar harita üzerinde ayrı görsel katmanlar olarak gösteriliyor.",
-    "Maden katmanında maden/kaynak noktaları doğrudan harita üzerinde işaretleniyor.",
-    "Mobil kullanım için yatay katman şeridi ve dokunma odaklı kontroller iyileştirildi.",
-    "Güncelleme sistemi ayrı ve kalıcı bir updater ile yenilendi; güncelleme sırasında Cache Storage ve eski service worker kayıtları temizleniyor.",
-    "Sürüm bilgisi HTML meta alanından okunuyor; gelecekteki sürüm kontrolü tek kaynaktan yapılıyor."
+    "Leaflet bağımlılığı kaldırıldı; harita artık yerel GeoJSON + SVG altyapısıyla çalışıyor.",
+    "Harita yüklenemezse ikinci kaynak olarak GitHub ham GeoJSON deneniyor.",
+    "81 il sınırı ve il isimleri tek harita üzerinde etkileşimli hale getirildi.",
+    "Akarsular, göller, ovalar, dağlar, platolar ve madenler aynı atlas içinde görselleştirildi.",
+    "Harita katmanları Standart, Bölgeler, İklim, Tarım, Yer Şekilleri, Sular, Maden ve Nüfus olarak düzenlendi.",
+    "Bir ile dokununca il çalışma kartı; yer şekilleri, sular, tarım ve temel KPSS bilgileriyle açılıyor.",
+    "Mobilde harita alt menüde tek kanonik hedef olarak bırakıldı; ikinci harita üretimi kaldırıldı.",
+    "Genel Bakış ekranındaki ikinci harita yerine tek haritaya yönlendiren atlas köprüsü kullanılıyor.",
+    "Güncelleme sistemi artık aynı dosyayı kendi kendine yeni sürüm gibi göstermiyor; GitHub kaynak sürümünü ve canlı Render sürümünü ayrı kontrol ediyor.",
+    "Yeni sürüm kaynakta çıktığında updater Render dağıtımını bekliyor ve canlı sürüm geldiğinde otomatik yeniliyor.",
+    "Tüm statik varlık sürümleri 41.0.0 ile cache-bust edildi."
   ]
 }
