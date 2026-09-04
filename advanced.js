@@ -23,13 +23,13 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 
-/* v13 loader — register the Leaflet hardening hook immediately, before authentication boot */
+/* v14 loader — mobile layout hardening + deterministic SVG Türkiye map */
 (() => {
   const load = () => {
-    if (document.querySelector('script[data-yb-v13]')) return;
+    if (document.querySelector('script[data-yb-v14]')) return;
     const s = document.createElement('script');
-    s.src = 'ux-v13.js?v=13.0.1';
-    s.dataset.ybV13 = '1';
+    s.src = 'ux-v14.js?v=14.0.0';
+    s.dataset.ybV14 = '1';
     s.async = false;
     document.head.appendChild(s);
   };
