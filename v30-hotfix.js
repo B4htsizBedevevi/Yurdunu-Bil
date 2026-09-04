@@ -7,7 +7,8 @@ function settings(){const v=$('#view-settings');if(!v||v.querySelector('.v30-set
 $('[data-v30-theme]',v).onclick=()=>{const isLight=document.body.classList.toggle('light');let raw={};try{raw=JSON.parse(localStorage.getItem('yb_state_25')||'{}')}catch{}raw.theme=isLight?'light':'dark';localStorage.setItem('yb_state_25',JSON.stringify(raw));settings()};
 $('[data-v30-labels]',v).onchange=e=>{localStorage.setItem('yb30_labels',e.target.checked?'1':'0');document.body.classList.toggle('hide-map-labels',!e.target.checked)};
 $('[data-v30-compact]',v).onchange=e=>{localStorage.setItem('yb30_compact',e.target.checked?'1':'0');document.body.classList.toggle('v30-compact',e.target.checked)};
-$('[data-v30-reset]',v).onclick=()=>{if(confirm('Yerel test geçmişi ve favoriler silinsin mi?')){localStorage.removeItem('yb_state_25');localStorage.removeItem('yb30_labels');localStorage.removeItem('yb30_compact');localStorage.removeItem('yb_province_study_v31');localStorage.removeItem('yb_last_seen_version');localStorage.removeItem('yb_update_dismissed');location.reload()}}}
+$('[data-v30-reset]',v).onclick=()=>{if(confirm('Yerel test geçmişi ve favoriler silinsin mi?')){localStorage.removeItem('yb_state_25');localStorage.removeItem('yb30_labels');localStorage.removeItem('yb30_compact');localStorage.removeItem('yb_province_study_v31');localStorage.removeItem('yb_last_seen_version');localStorage.removeItem('yb_update_dismissed');location.reload()}};
+}
 function refresh(){dashboard();settings()}
 function loadAsset(type,src,id){if(document.getElementById(id))return;const e=document.createElement(type==='css'?'link':'script');e.id=id;if(type==='css'){e.rel='stylesheet';e.href=src}else{e.src=src;e.defer=true}document.head.appendChild(e)}
 new MutationObserver(()=>setTimeout(refresh,80)).observe(document.body,{subtree:true,childList:true});
@@ -29,6 +30,5 @@ loadAsset('css','v35-beta-contact.css?v=35.1.0','v35-beta-contact-css');
 loadAsset('js','v35-beta-contact.js?v=35.1.0','v35-beta-contact-js');
 loadAsset('css','v36-map-upgrade.css?v=36.0.0','v36-map-upgrade-css');
 loadAsset('js','v36-map-upgrade.js?v=36.0.0','v36-map-upgrade-js');
-/* v36-layout, v36-atlas-core and v37-real-atlas are statically loaded by index.html.
-   Keeping a second copy here caused duplicate observers/listeners and mobile flicker. */
+/* v36-layout, v36-atlas-core and v37-real-atlas are statically loaded by index.html. */
 })();
