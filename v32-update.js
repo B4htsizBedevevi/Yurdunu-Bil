@@ -1,7 +1,7 @@
-/* Yurdunu Bil v32 — sürüm bildirimi + 2026 KPSS Ön Lisans geri sayımı */
+/* Yurdunu Bil v33 — sürüm bildirimi + 2026 KPSS Ön Lisans geri sayımı */
 (()=>{
 'use strict';
-const VERSION='32.0.0';
+const VERSION='33.0.0';
 const EXAM_DATE=new Date('2026-10-04T10:15:00+03:00');
 const $=(s,r=document)=>r.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
