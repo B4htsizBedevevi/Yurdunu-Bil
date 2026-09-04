@@ -13,43 +13,29 @@ window.YURDUNUBIL_CONFIG = {
 
 /* =========================================================
    v10.1 — UTF-8 / MOBİL POLISH
-   app.js içindeki eski mojibake metinlerini kullanıcıya
-   göstermeden düzeltir. Kod mantığına dokunmaz.
+   Eski mojibake metinlerini DOM seviyesinde düzeltir.
 ========================================================= */
 (() => {
   "use strict";
 
-  const CP1252 = {
-    "€":0x80,"‚":0x82,"ƒ":0x83,"„":0x84,"…":0x85,"†":0x86,"‡":0x87,
-    "ˆ":0x88,"‰":0x89,"Š":0x8A,"‹":0x8B,"Œ":0x8C,"Ž":0x8E,"‘":0x91,
-    "’":0x92,"“":0x93,"”":0x94,"•":0x95,"–":0x96,"—":0x97,"˜":0x98,
-    "™":0x99,"š":0x9A,"›":0x9B,"œ":0x9C,"ž":0x9E,"Ÿ":0x9F
-  };
-
-  const BAD_MARKERS = /(?:Ã|Â|Ä|Å|â|ð|ï)/;
+  const replacements = [
+    ["Ã„Â°", "İ"], ["Ã„Â±", "ı"], ["Ã„ÂŸ", "ğ"], ["Ã…Å¸", "ş"],
+    ["Ã‡", "Ç"], ["Ãœ", "Ü"], ["Ã–", "Ö"], ["Äž", "Ğ"],
+    ["Ã¼", "ü"], ["Ã¶", "ö"], ["Ã§", "ç"], ["Ä±", "ı"],
+    ["ÄŸ", "ğ"], ["ÅŸ", "ş"], ["Ä°", "İ"],
+    ["âœ“", "✓"], ["âœ•", "✕"], ["â€”", "—"], ["â€“", "–"],
+    ["â†’", "→"], ["âš¡", "⚡"], ["Â°", "°"], ["Â·", "·"],
+    ["âœ¨", "✨"], ["âš ", "⚠"], ["Â©", "©"], ["Â®", "®"],
+    ["âœ”", "✔"], ["â˜…", "★"], ["â˜†", "☆"], ["â†‘", "↑"],
+    ["â†“", "↓"], ["â†", "←"], ["â€¢", "•"], ["â€¦", "…"],
+    ["â€˜", "‘"], ["â€™", "’"], ["â€œ", "“"], ["â€", "”"]
+  ];
 
   function fixMojibake(value) {
-    const input = String(value ?? "");
-    if (!input || !BAD_MARKERS.test(input)) return input;
-
-    try {
-      const bytes = [];
-      for (const ch of input) {
-        const code = ch.charCodeAt(0);
-        if (code <= 0xFF) {
-          bytes.push(code);
-        } else if (Object.prototype.hasOwnProperty.call(CP1252, ch)) {
-          bytes.push(CP1252[ch]);
-        } else {
-          return input;
-        }
-      }
-
-      const decoded = new TextDecoder("utf-8", { fatal: true }).decode(new Uint8Array(bytes));
-      return decoded || input;
-    } catch {
-      return input;
-    }
+    let text = String(value ?? "");
+    if (!/[ÃÂÄÅâ]/.test(text)) return text;
+    for (const [bad, good] of replacements) text = text.split(bad).join(good);
+    return text;
   }
 
   function fixTextNode(node) {
@@ -60,12 +46,10 @@ window.YURDUNUBIL_CONFIG = {
 
   function fixElement(root) {
     if (!root) return;
-
     if (root.nodeType === Node.TEXT_NODE) {
       fixTextNode(root);
       return;
     }
-
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     let node;
     while ((node = walker.nextNode())) fixTextNode(node);
@@ -73,6 +57,7 @@ window.YURDUNUBIL_CONFIG = {
 
   function bootEncodingFix() {
     fixElement(document.body);
+    if (window.__YURDUNUBIL_ENCODING_FIX__) return;
 
     const observer = new MutationObserver(mutations => {
       for (const mutation of mutations) {
@@ -93,11 +78,8 @@ window.YURDUNUBIL_CONFIG = {
     window.__YURDUNUBIL_ENCODING_FIX__ = true;
   }
 
-  if (document.body) {
-    bootEncodingFix();
-  } else {
-    document.addEventListener("DOMContentLoaded", bootEncodingFix, { once: true });
-  }
+  if (document.body) bootEncodingFix();
+  else document.addEventListener("DOMContentLoaded", bootEncodingFix, { once: true });
 })();
 
 /* =========================================================
