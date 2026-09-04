@@ -1,11 +1,11 @@
 {
-  "version":"36.4.0",
-  "message":"Yurdunu Bil 36.4 — manuel güncelleme kontrolü ve daha güvenilir sürüm yenileme sistemi.",
+  "version":"37.0.0",
+  "message":"Yurdunu Bil 37 — gerçek coğrafi göl ve akarsu altlığı ile yeni atlas denemesi.",
   "changes":[
-    "Ayarlar bölümüne Güncellemeleri kontrol et butonu eklendi.",
-    "Manuel kontrol cache kullanmadan güncel sürümü doğruluyor.",
-    "Yeni sürüm varsa güncelleme bildirimi doğrudan açılıyor.",
-    "Güncelleme yükleme işlemi cache kırıcı URL ile yeniden başlatılıyor.",
-    "Sürüm, paket ve yayın manifestleri 36.4.0 olarak hizalandı."
+    "Gerçek göl poligonları atlasın altlığına eklendi.",
+    "Gerçek akarsu güzergâhları atlasın altlığına eklendi.",
+    "Önemli su yolları ve göller harita üzerinde daha doğal görünüyor.",
+    "Mevcut 81 il ve KPSS katmanları korunuyor.",
+    "Yeni altlık masaüstü, tablet ve telefonda aynı atlas üzerinde çalışıyor."
   ]
 }
