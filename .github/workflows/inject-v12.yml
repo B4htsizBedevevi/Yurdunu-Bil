@@ -1,4 +1,4 @@
-name: Load V12 Smart Study Center
+name: Load Study Center Scripts
 on:
   push:
     branches: [main]
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject dashboard scripts
+      - name: Sync dashboard scripts
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -21,11 +21,16 @@ jobs:
           marker = '</body>'
           if marker not in s:
               raise SystemExit('index.html içinde </body> bulunamadı')
+
+          # Remove the old live-news module completely from the page.
+          s = s.replace('<script src="news.js"></script>\n', '')
+          s = s.replace('<script src="news.js"></script>', '')
+
           tags = [
               '<script src="advanced.js"></script>',
               '<script src="quickfacts.js"></script>',
-              '<script src="news.js"></script>',
-              '<script src="innovation.js"></script>'
+              '<script src="innovation.js"></script>',
+              '<script src="pomodoro.js?v=1.0.0"></script>'
           ]
           for tag in tags:
               if tag not in s:
@@ -38,8 +43,8 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
           if git diff --cached --quiet; then
-            echo 'Script tags already up to date.'
+            echo 'Dashboard scripts already up to date.'
             exit 0
           fi
-          git commit -m 'feat: add daily challenge mode'
+          git commit -m 'feat: add pomodoro study timer'
           git push
