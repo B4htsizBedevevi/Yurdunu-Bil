@@ -1,0 +1,29 @@
+/* Yurdunu Bil 36.3 — canonical atlas component
+ * Dashboard ve Türkiye Haritası aynı atlas geometri/toolbar/selection sözleşmesini kullanır.
+ */
+.atlas-shell{position:relative;isolation:isolate;overflow:hidden}
+.atlas-shell>.map-v31-panel,.atlas-shell>.map-v31-tooltip{display:none!important}
+.atlas-shell .feature-layer{display:none!important}
+.atlas-shell .v30-feature-layer{display:none!important}
+.atlas-shell .v36-feature-layer{pointer-events:none!important}
+.atlas-shell .atlas-tools{z-index:12}
+.atlas-shell .legend{z-index:11}
+.atlas-shell .atlas-svg{z-index:5}
+.atlas-shell .atlas-bottom{z-index:13}
+.atlas-shell .mode-tabs{scrollbar-width:none}
+.atlas-shell .mode-tabs::-webkit-scrollbar{display:none}
+.atlas-shell .mode-tabs button{white-space:nowrap}
+.atlas-shell .province-shape{cursor:pointer;transition:filter .16s ease,opacity .16s ease,transform .16s ease}
+.atlas-shell .province-shape.selected{filter:brightness(1.16) drop-shadow(0 0 7px rgba(255,255,255,.35))}
+.atlas-shell .province-label.selected{font-weight:900}
+@media(max-width:900px){
+  .atlas-card{overflow:visible}
+  .atlas-head{min-width:0}
+  .atlas-head h2,.atlas-head p{overflow-wrap:anywhere}
+  .atlas-shell{touch-action:pan-y}
+  .atlas-shell .atlas-svg{touch-action:none}
+}
+@media(max-width:560px){
+  .atlas-head h2{font-size:19px!important}
+  .atlas-head p{font-size:10px!important}
+}
