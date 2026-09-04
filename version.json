@@ -1,4 +1,4 @@
 {
-  "version": "21.1.0",
-  "message": "Yurdunu Bil 21.1.0: harita etkileşimi, kart/buton geometrisi ve responsive çakışmalar stabilize edildi."
+  "version": "21.2.0",
+  "message": "Yurdunu Bil 21.2.0 — yeni responsive arayüz, CSS stabilizasyonu ve saf SVG 3D Türkiye atlası."
 }

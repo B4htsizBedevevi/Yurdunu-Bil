@@ -1,12 +1,12 @@
 {
   "name": "yurdunu-bil",
   "private": true,
+  "version": "21.2.0",
   "scripts": {
     "test": "node scripts/validate-data.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.115.0"
-  },
-  "version": "21.1.0"
+  }
 }
