@@ -1,4 +1,4 @@
 {
-  "version":"29.1.0",
-  "message":"Yurdunu Bil 29.1 — il tıklama akışı düzeltildi, seçim sonrası harita yakınlığı korunuyor, sağ-sol kontrollerinin yönü düzeltildi, katman projeksiyonları eşitlendi, il ve özellik etiket çakışmaları azaltıldı, zengin il kartları aktif edildi."
+  "version":"30.0.0",
+  "message":"Yurdunu Bil 30 — KPSS odaklı sade arayüz, 160 soruluk banka, ayrı göl/nehr/plato katmanları, mobil konfor ve baştan düzenlenmiş aydınlık tema."
 }
