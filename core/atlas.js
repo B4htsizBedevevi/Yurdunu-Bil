@@ -1,2 +1,2 @@
-/* Yurdunu Bil 44 — atlas module boundary */
-(()=>{'use strict';const r=window.YB44;if(!r)return;const features=()=>window.GEO_FEATURES||{};r.register('atlas',{legacy:'v41-atlas.js',engine:'v44-map-engine.js',features});})();
+/* Yurdunu Bil 44 — atlas intelligence core */
+(()=>{'use strict';const r=window.YB44;if(!r)return;const features=()=>window.GEO_FEATURES||{};const api={version:'44.0.0',legacy:'v41-atlas.js',engine:'v44-map-engine.js',features,counts:()=>Object.fromEntries(Object.entries(features()).map(([k,v])=>[k,Array.isArray(v)?v.length:0])),layer:(name)=>Array.isArray(features()[name])?features()[name]:[]};r.register('atlas',api);})();
