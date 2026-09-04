@@ -20,9 +20,13 @@ async function poll(remote,manual=false){const s=$('[data-yb41-update-state]');t
 async function check(manual=false){try{const remote=await remoteVersion();if(!newer(remote,CURRENT)){remove();return}const r=await release();show(remote,r.message);await poll(remote,manual)}catch(e){if(manual)console.warn('Yurdunu Bil update:',e)}}
 function start(){check(false);setInterval(()=>check(false),10*60*1000);window.YBCheckUpdate=()=>check(true)}
 function loadStudyFirst(){
- const addCss=()=>{if(document.querySelector('link[data-yb45-css]'))return;const l=document.createElement('link');l.rel='stylesheet';l.href='v45-study.css?v=45.0.0';l.dataset.yb45Css='1';document.head.appendChild(l)};
+ const addCss=(src,key)=>{if(document.querySelector('link['+key+']'))return;const l=document.createElement('link');l.rel='stylesheet';l.href=src;l.setAttribute(key,'1');document.head.appendChild(l)};
  const addJs=(src,key)=>{if(document.querySelector('script['+key+']'))return;const s=document.createElement('script');s.src=src;s.setAttribute(key,'1');document.body.appendChild(s)};
- addCss();addJs('v45-study-fixed.js?v=45.0.0','data-yb45-js');addJs('v45-study-ui-hotfix.js?v=45.0.0','data-yb45-ui-hotfix');
+ addCss('v45-study.css?v=45.0.0','data-yb45-css');
+ addCss('v45-activity-pack.css?v=45.0.0','data-yb45-activity-css');
+ addJs('v45-study-fixed.js?v=45.0.0','data-yb45-js');
+ addJs('v45-study-ui-hotfix.js?v=45.0.0','data-yb45-ui-hotfix');
+ addJs('v45-activity-pack.js?v=45.0.0','data-yb45-activity-js');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{start();loadStudyFirst()},{once:true});else{start();loadStudyFirst()}
 })();
