@@ -1,10 +1,11 @@
 {
-  "version":"33.0.0",
-  "message":"Yurdunu Bil 33 — mobil atlas düzeltildi; Panel ve Türkiye Haritası aynı katman, il seçimi ve harita durumunu kullanıyor.",
+  "version":"34.0.0",
+  "message":"Yurdunu Bil 34 — mobil arayüz sadeleştirildi; tekrar eden harita kartları kaldırıldı ve içerik daha net bölümlere ayrıldı.",
   "changes":[
-    "Paneldeki haritanın mobilde bilgi kartlarının üzerine binmesi düzeltildi.",
-    "Panel ve Türkiye Haritası aynı harita katmanı ile senkron çalışıyor.",
-    "Seçilen il ve aktif harita modu iki görünüm arasında korunuyor.",
+    "Mobilde harita ile il bilgi kartlarının üst üste binmesi kaldırıldı.",
+    "Panel ve Türkiye Haritası tek atlas mantığında çalışıyor.",
+    "Ana panelde gereksiz uzun 'günün hap bilgileri' bölümü kaldırıldı; hızlı başlangıç kartları korundu.",
+    "Mobil üst bar, kartlar, boşluklar ve alt navigasyon daha kompakt hale getirildi.",
     "Sürüm bildirimi ve 2026 KPSS Ön Lisans geri sayımı devam ediyor."
   ]
 }
