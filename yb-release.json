@@ -1,12 +1,11 @@
 {
-  "version":"36.3.0",
-  "message":"Yurdunu Bil 36.3 — tek atlas çekirdeği ve responsive tutarlılık iyileştirmeleri.",
+  "version":"36.4.0",
+  "message":"Yurdunu Bil 36.4 — manuel güncelleme kontrolü ve daha güvenilir sürüm yenileme sistemi.",
   "changes":[
-    "Genel Bakış ve Türkiye Haritası aynı atlas davranış sözleşmesine bağlandı.",
-    "Harita modları data-mode ve data-v30-mode olarak tek biçimde senkronize ediliyor.",
-    "Eski harita katmanı kopyaları gizlenerek çift çizgi ve çift etiket riski azaltıldı.",
-    "Seçilen il vurgusu iki atlas arasında tek localStorage kaynağından yönetiliyor.",
-    "Telefon, tablet ve masaüstünde atlas araçları aynı hiyerarşiyi koruyor.",
-    "Yeni atlas çekirdeği için syntax kontrolü package.json check komutuna eklendi."
+    "Ayarlar bölümüne Güncellemeleri kontrol et butonu eklendi.",
+    "Manuel kontrol cache kullanmadan güncel sürümü doğruluyor.",
+    "Yeni sürüm varsa güncelleme bildirimi doğrudan açılıyor.",
+    "Güncelleme yükleme işlemi cache kırıcı URL ile yeniden başlatılıyor.",
+    "Sürüm, paket ve yayın manifestleri 36.4.0 olarak hizalandı."
   ]
 }
