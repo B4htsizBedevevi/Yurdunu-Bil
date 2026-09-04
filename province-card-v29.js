@@ -22,26 +22,21 @@
     return String(value || '').replace(/\s+/g, ' ').trim();
   }
 
-  function toNumber(value) {
-    if (typeof value === 'number') return value;
-    return Number(String(value || '').replace(/\./g, '').replace(/,/g, '')) || 0;
-  }
-
-  function density(population, area) {
-    const n = toNumber(population);
+  function density(pop, area) {
+    const n = Number(String(pop || '').replace(/\./g, '').replace(/,/g, ''));
     const a = Number(area || 0);
     if (!n || !a) return null;
     return Math.round(n / a);
   }
 
-  function compact(value, max=90) {
+  function compact(value, max=82) {
     const text = clean(value);
     if (text.length <= max) return text;
     return `${text.slice(0, max - 1).trimEnd()}…`;
   }
 
-  function keywords(p) {
-    const values = [p.climate, p.plains, p.lakes, p.rivers, p.agriculture, p.mining]
+  function tokens(p) {
+    const values = [p.climate, p.plains, p.rivers, p.agriculture, p.mining]
       .map(clean)
       .filter(Boolean);
 
@@ -57,18 +52,16 @@
     const population = POP[p.name] || p.population;
     const area = AREAS[p.name];
     const dens = density(population, area);
-    const popNumber = toNumber(population);
-    const nationalShare = popNumber
-      ? ((popNumber / TOTAL) * 100).toFixed(2).replace('.', ',')
-      : null;
-    const tags = keywords(p);
+    const share = Number(String(population || '').replace(/\./g, '').replace(/,/g, ''));
+    const nationalShare = share ? ((share / TOTAL) * 100).toFixed(2).replace('.', ',') : null;
+    const keywords = tokens(p);
 
     return `
       <div class="province-extra-v29">
         <div class="province-extra-head">
           <div>
-            <span>🧭 İLİ HIZLI OKU</span>
-            <p>${esc(p.region || '')} • ${esc(clean(p.climate) || 'Coğrafya verileri')}</p>
+            <span>🧭 İLİ 3 SATIRDA OKU</span>
+            <p>${esc(p.region || '')} • ${esc(clean(p.climate) || 'Coğrafi özellikleriyle çalış')}</p>
           </div>
           <span class="province-extra-badge">KPSS</span>
         </div>
@@ -76,21 +69,24 @@
         <div class="province-extra-grid">
           <article>
             <small>📊 NÜFUS YOĞUNLUĞU</small>
-            <b>${dens ? `${dens.toLocaleString('tr-TR')} kişi/km²` : 'Hesaplanamadı'}</b>
+            <b>${dens ? `${dens.toLocaleString('tr-TR')} kişi/km²` : 'Veri hesaplanamadı'}</b>
             ${nationalShare ? `<span>Türkiye nüfusunun yaklaşık %${nationalShare}’i</span>` : ''}
           </article>
 
           <article>
             <small>📌 HARİTA ANAHTARLARI</small>
             <div class="province-keywords">
-              ${tags.map(x => `<span>${esc(compact(x, 54))}</span>`).join('') || '<span>İl bilgileri mevcut</span>'}
+              ${keywords.map(x => `<span>${esc(compact(x, 54))}</span>`).join('') || '<span>İl bilgileri mevcut</span>'}
             </div>
           </article>
         </div>
 
         <div class="province-memory-row">
           <span>🧠 HIZLI EŞLEŞTİR</span>
-          <p><b>${esc(p.name)}</b> → ${esc(compact(p.agriculture || p.mining || p.fact || p.kpss || '', 120))}</p>
+          <p>
+            <b>${esc(p.name)}</b>
+            → ${esc(compact(p.agriculture || p.mining || p.fact || '', 110))}
+          </p>
         </div>
       </div>
     `;
@@ -98,11 +94,15 @@
 
   function enhance(panel) {
     const title = panel.querySelector('.province-top h2');
-    if (!title || panel.querySelector('.province-extra-v29')) return;
+    if (!title) return;
+
+    if (panel.querySelector('.province-extra-v29')) return;
 
     const p = findProvince(title.textContent);
+    if (!p) return;
+
     const actions = panel.querySelector('.province-actions');
-    if (!p || !actions) return;
+    if (!actions) return;
 
     actions.insertAdjacentHTML('beforebegin', buildExtra(p));
   }
@@ -112,18 +112,21 @@
     clearTimeout(timer);
     timer = setTimeout(() => {
       document.querySelectorAll('.province-panel').forEach(enhance);
-    }, 50);
+    }, 40);
   }
 
   const observer = new MutationObserver(scan);
 
   function start() {
     scan();
-    observer.observe(document.body, {subtree:true, childList:true});
+    observer.observe(document.body, {
+      subtree:true,
+      childList:true
+    });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, {once:true});
+    document.addEventListener('DOMContentLoaded', start, { once:true });
   } else {
     start();
   }

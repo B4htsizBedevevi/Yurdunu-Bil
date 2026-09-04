@@ -34,11 +34,18 @@
     let state = mapStates.get(key);
     if (!state) {
       state = {
-        x: 0, y: 0, zoom: 1,
-        dragging: false, moved: false,
-        startX: 0, startY: 0, baseX: 0, baseY: 0,
+        x: 0,
+        y: 0,
+        zoom: 1,
+        dragging: false,
+        moved: false,
+        startX: 0,
+        startY: 0,
+        baseX: 0,
+        baseY: 0,
         suppressClick: false,
-        pinchDistance: 0, pinchZoom: 1
+        pinchDistance: 0,
+        pinchZoom: 1
       };
       mapStates.set(key, state);
     }
@@ -50,9 +57,11 @@
     const w = Math.max(280, rect.width || 900);
     const h = Math.max(220, rect.height || 500);
     const z = getState(svg).zoom;
+    const extraX = Math.max(70, (w * Math.max(z - 1, .08)) * .56);
+    const extraY = Math.max(50, (h * Math.max(z - 1, .08)) * .56);
     return {
-      x: Math.min(360, Math.max(90, (w * Math.max(z - 1, .08)) * .56 + 120)),
-      y: Math.min(220, Math.max(65, (h * Math.max(z - 1, .08)) * .56 + 70))
+      x: Math.min(360, extraX + 120),
+      y: Math.min(220, extraY + 70)
     };
   }
 
@@ -64,21 +73,30 @@
     state.zoom = clamp(state.zoom, .82, 2.35);
     svg.style.transform = `translate3d(${state.x}px,${state.y}px,0) scale(${state.zoom})`;
     svg.classList.toggle('atlas-panning', state.dragging);
-    const note = svg.closest('.atlas-shell')?.querySelector('.atlas-reset-note');
+
+    const shell = svg.closest('.atlas-shell');
+    const note = shell?.querySelector('.atlas-reset-note');
     if (note) note.textContent = `${Math.round(state.zoom * 100)}%`;
   }
 
-  function reset(svg) {
+  function reset(svg, soft=false) {
     const state = getState(svg);
-    state.x = 0; state.y = 0; state.zoom = 1;
-    state.dragging = false; state.moved = false;
-    state.suppressClick = false; state.pinchDistance = 0; state.pinchZoom = 1;
+    state.x = 0;
+    state.y = 0;
+    state.zoom = 1;
+    state.dragging = false;
+    state.moved = false;
+    state.suppressClick = false;
+    state.pinchDistance = 0;
+    state.pinchZoom = 1;
     apply(svg);
+    if (!soft) svg.dispatchEvent(new CustomEvent('atlasreset', { bubbles:true }));
   }
 
   function pan(svg, dx, dy) {
     const state = getState(svg);
-    state.x += dx; state.y += dy;
+    state.x += dx;
+    state.y += dy;
     apply(svg);
   }
 
@@ -115,6 +133,7 @@
       <button type="button" data-map-right aria-label="Sağa kaydır">›</button>
       <span class="atlas-reset-note">100%</span>
     `;
+
     shell.appendChild(nav);
 
     const hint = document.createElement('div');
@@ -127,6 +146,7 @@
       if (!button) return;
       event.preventDefault();
       event.stopPropagation();
+
       if (button.dataset.mapLeft !== undefined) pan(svg, -90, 0);
       else if (button.dataset.mapRight !== undefined) pan(svg, 90, 0);
       else if (button.dataset.mapZoomIn !== undefined) zoom(svg, .18);
@@ -138,12 +158,14 @@
   function pointerDistance() {
     const values = [...pointers.values()];
     if (values.length < 2) return 0;
-    return Math.hypot(values[0].x - values[1].x, values[0].y - values[1].y);
+    const a = values[0];
+    const b = values[1];
+    return Math.hypot(a.x - b.x, a.y - b.y);
   }
 
   function bindMap(svg) {
     if (!svg || svg.dataset.atlasV272 === '1') {
-      if (svg) { addControls(svg); apply(svg); }
+      if (svg) addControls(svg);
       return;
     }
 
@@ -159,7 +181,9 @@
 
     svg.addEventListener('pointerdown', (event) => {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      pointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
+
+      pointers.set(event.pointerId, { x:event.clientX, y:event.clientY });
+
       try { svg.setPointerCapture(event.pointerId); } catch {}
 
       if (pointers.size >= 2) {
@@ -181,13 +205,14 @@
 
     svg.addEventListener('pointermove', (event) => {
       if (pointers.has(event.pointerId)) {
-        pointers.set(event.pointerId, {x:event.clientX, y:event.clientY});
+        pointers.set(event.pointerId, { x:event.clientX, y:event.clientY });
       }
 
       if (pointers.size >= 2) {
         const distance = pointerDistance();
         if (!distance || !state.pinchDistance) return;
-        state.zoom = clamp(state.pinchZoom * (distance / state.pinchDistance), .82, 2.35);
+        const factor = distance / state.pinchDistance;
+        state.zoom = clamp(state.pinchZoom * factor, .82, 2.35);
         apply(svg);
         event.preventDefault();
         return;
@@ -214,11 +239,17 @@
     const end = (event) => {
       pointers.delete(event.pointerId);
       try { svg.releasePointerCapture(event.pointerId); } catch {}
-      if (pointers.size < 2) state.pinchDistance = 0;
+
+      if (pointers.size < 2) {
+        state.pinchDistance = 0;
+      }
+
       if (pointers.size === 0) {
         state.dragging = false;
         apply(svg);
-        if (state.suppressClick) setTimeout(() => { state.suppressClick = false; }, 120);
+        if (state.suppressClick) {
+          setTimeout(() => { state.suppressClick = false; }, 120);
+        }
       }
     };
 
@@ -239,7 +270,7 @@
   }
 
   function enhanceMaps() {
-    ROOTS.forEach(id => {
+    ROOTS.forEach((id) => {
       const svg = document.getElementById(id);
       if (svg) bindMap(svg);
     });
@@ -253,12 +284,19 @@
 
     main.innerHTML = `
       <span class="live-icon">${item.icon}</span>
-      <div><small>${item.label}</small><strong>${item.value}</strong><p>${item.note}</p></div>
+      <div>
+        <small>${item.label}</small>
+        <strong>${item.value}</strong>
+        <p>${item.note}</p>
+      </div>
     `;
 
     $$('.live-dots i', el).forEach((dot, index) => {
       dot.classList.toggle('active', index === liveIndex % LIVE.length);
     });
+
+    main.classList.remove('live-swap');
+    requestAnimationFrame(() => main.classList.add('live-swap'));
   }
 
   function syncLiveIndex(el) {
@@ -273,6 +311,7 @@
 
     if (el.dataset.atlasLive272 === '1') {
       syncLiveIndex(el);
+      renderLive(el);
       return;
     }
 
@@ -307,32 +346,37 @@
       if (!button) return;
       event.preventDefault();
       event.stopPropagation();
-      liveIndex += button.dataset.livePrev !== undefined ? -1 : 1;
+
+      if (button.dataset.livePrev !== undefined) liveIndex--;
+      else liveIndex++;
+
       liveIndex = (liveIndex + LIVE.length) % LIVE.length;
       renderLive(el);
     });
 
     let startX = 0;
     let startY = 0;
-    el.addEventListener('touchstart', event => {
+
+    el.addEventListener('touchstart', (event) => {
       const touch = event.touches[0];
       if (!touch) return;
       startX = touch.clientX;
       startY = touch.clientY;
-    }, {passive:true});
+    }, { passive:true });
 
-    el.addEventListener('touchend', event => {
+    el.addEventListener('touchend', (event) => {
       const touch = event.changedTouches[0];
       if (!touch) return;
       const dx = touch.clientX - startX;
       const dy = touch.clientY - startY;
+
       if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
         liveIndex += dx < 0 ? 1 : -1;
         liveIndex = (liveIndex + LIVE.length) % LIVE.length;
         renderLive(el);
         event.preventDefault();
       }
-    }, {passive:false});
+    }, { passive:false });
 
     renderLive(el);
   }
@@ -360,11 +404,11 @@
     enhanceMaps();
     bindLive();
     startLiveRotation();
-    observer.observe(document.body, {subtree:true, childList:true});
+    observer.observe(document.body, { subtree:true, childList:true });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, {once:true});
+    document.addEventListener('DOMContentLoaded', start, { once:true });
   } else {
     start();
   }
