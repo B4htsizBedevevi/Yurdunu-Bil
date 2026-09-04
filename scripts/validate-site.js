@@ -17,5 +17,8 @@ const mobile=(index.match(/<nav class="mobile-nav">([\s\S]*?)<\/nav>/)||[])[1]||
 const mobileMaps=(mobile.match(/data-view="map"/g)||[]).length;
 if(mobileMaps!==1)fail.push(`Mobile nav map target count is ${mobileMaps}, expected 1`);
 if(!index.includes('v41-atlas.css?v='+version)||!index.includes('v41-atlas.js?v='+version))fail.push('v41 cache-busting references are not aligned');
+if(!index.includes('v44-architecture.css?v='+version)||!index.includes('v44-architecture.js?v='+version))fail.push('v44 architecture references are not aligned');
+if(!index.includes('v44-map-engine.js?v='+version))fail.push('v44 map engine reference is missing');
+if(!index.includes('data/geo-features-v44.js?v='+version))fail.push('v44 feature data reference is missing');
 if(fail.length){console.error('YB SITE VALIDATION FAILED');fail.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log(`YB SITE VALIDATION OK — ${version} — ${scripts.length} JS files — 81 provinces`);
+console.log(`YB SITE VALIDATION OK — ${version} — ${scripts.length} JS files — 81 provinces — canonical v44 bridge active`);
