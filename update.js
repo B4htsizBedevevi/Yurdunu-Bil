@@ -27,6 +27,7 @@ function loadStudyFirst(){
  addJs('v45-study-fixed.js?v=45.0.0','data-yb45-js');
  addJs('v45-study-ui-hotfix.js?v=45.0.0','data-yb45-ui-hotfix');
  addJs('v45-activity-pack.js?v=45.0.0','data-yb45-activity-js');
+ addJs('v45-activity-bridge.js?v=45.0.0','data-yb45-activity-bridge');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{start();loadStudyFirst()},{once:true});else{start();loadStudyFirst()}
 })();
