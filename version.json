@@ -1,4 +1,4 @@
 {
-  "version": "20.0.0",
-  "message": "Yurdunu Bil 20.0.0: mobil drawer, navigasyon katmanı, harita çakışması ve kart taşmaları düzeltildi."
+  "version": "21.0.0",
+  "message": "Yurdunu Bil 21.0.0: 3D harita efektleri, CARTO dark tiles, unified responsive CSS, emoji düzeltmeleri, performans iyileştirmeleri."
 }

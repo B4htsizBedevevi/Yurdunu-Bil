@@ -22,16 +22,3 @@
   function start(){let tries=0;const tick=()=>{tries++;try{render()}catch(e){console.warn('V12 merkez hatası',e)}if(tries<30)setTimeout(tick,500)};tick();new MutationObserver(()=>{if(!$('.v12-center'))render()}).observe(document.body,{childList:true,subtree:true})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
-
-/* v15 loader — mobile-first layout and custom 3D atlas */
-(() => {
-  const load = () => {
-    if (document.querySelector('script[data-yb-v15]')) return;
-    const s = document.createElement('script');
-    s.src = 'ux-v15.js?v=15.0.0';
-    s.dataset.ybV15 = '1';
-    s.async = false;
-    document.head.appendChild(s);
-  };
-  load();
-})();

@@ -393,11 +393,14 @@
     if (!appMapsBooted) {
       appMapsBooted = true;
       setTimeout(() => {
-        try { initDashboardMap(); } catch (error) {
-          console.warn("Dashboard haritası başlatılamadı:", error);
-        }
-        try { initFullMap(); } catch (error) {
-          console.warn("Türkiye haritası başlatılamadı:", error);
+        try {
+          // Only initialize the visible map here. Leaflet must not be
+          // measured inside a display:none page. The full map is created
+          // lazily when the Map view becomes active.
+          initDashboardMap();
+          if (getInitialView() === "map") initFullMap();
+        } catch (error) {
+          console.warn("Harita başlatılamadı:", error);
         }
       }, 120);
     }
@@ -1486,8 +1489,22 @@
     if (viewId === "favorites") renderFavorites();
     if (viewId === "quiz" && !quizSession) resetQuizShell();
     if (viewId === "map") {
-      setTimeout(() => { try { fullMap?.invalidateSize({pan:false}); dashMap?.invalidateSize({pan:false}); } catch {} }, 100);
-      setTimeout(() => { try { fullMap?.invalidateSize({pan:false}); } catch {} }, 500);
+      // The map page is normally hidden until navigation. Initialize Leaflet
+      // after the page becomes active, then recalculate its size a few times
+      // to cover fonts/layout transitions on desktop and mobile.
+      setTimeout(() => {
+        try { initFullMap(); } catch (error) {
+          console.warn("Türkiye haritası başlatılamadı:", error);
+        }
+        try { fullMap?.invalidateSize({pan:false}); } catch {}
+      }, 0);
+      [120, 350, 800].forEach(ms => setTimeout(() => {
+        try { fullMap?.invalidateSize({pan:false}); } catch {}
+      }, ms));
+    } else if (viewId === "dashboard") {
+      [80, 300].forEach(ms => setTimeout(() => {
+        try { dashMap?.invalidateSize({pan:false}); } catch {}
+      }, ms));
     }
     closeSidebar();
     closeProfileDropdown();
@@ -1648,7 +1665,7 @@
     const tasks = [
       {
         id: "map3",
-        icon: "ğŸ—ºï¸",
+        icon: "🗺️",
         title:
           "3 yeni il keşfet",
         meta:
@@ -2108,12 +2125,20 @@
     feature
   ) {
     return {
-      color:
-        "rgba(120,180,230,.3)",
-      weight: 0.6,
-      fillColor:
-        provinceColor(feature),
-      fillOpacity: 0.68,
+      color: "rgba(100,190,255,.22)",
+      weight: 0.8,
+      fillColor: provinceColor(feature),
+      fillOpacity: 0.72,
+      opacity: 1
+    };
+  }
+
+  function provinceStyleHighlight(feature) {
+    return {
+      color: "#62d9ff",
+      weight: 2.4,
+      fillColor: provinceColor(feature),
+      fillOpacity: 0.92,
       opacity: 1
     };
   }
@@ -2121,19 +2146,65 @@
   /* =========================================================
      MAP TILE LAYERS
      Google Maps / Mapbox API anahtarı kullanılmaz.
-     Önce CARTO, hata olursa OpenStreetMap denenir.
+     Önce CARTO dark, hata olursa OSM.
   ========================================================= */
 
   function addReliableTiles(map, options = {}) {
     if (!map || typeof L === "undefined") return null;
-    const tiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors",
+
+    const withLabels = options.withLabels !== false;
+
+    // CARTO dark matter — en iyi görünüm
+    const cartoDark = withLabels
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png";
+
+    const primary = L.tileLayer(cartoDark, {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: "abcd",
       maxZoom: 19,
       detectRetina: true,
       crossOrigin: true
     });
-    tiles.addTo(map);
-    return tiles;
+
+    primary.addTo(map);
+
+    // Hata olursa OSM'ye düş
+    primary.on("tileerror", () => {
+      map.eachLayer(layer => {
+        if (layer !== primary) return;
+        map.removeLayer(layer);
+      });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap contributors",
+        maxZoom: 19
+      }).addTo(map);
+    });
+
+    return primary;
+  }
+
+  /* =========================================================
+     3D GLOW OVERLAY — harita üzerinde animasyonlu efektler
+  ========================================================= */
+  function addMapGlowEffects(mapInstance) {
+    if (!mapInstance || typeof L === "undefined") return;
+
+    // Harita container'ına 3D perspektif CSS ekle
+    const container = mapInstance.getContainer();
+    if (!container) return;
+
+    // Parıltı katmanı (canvas overlay)
+    const glowDiv = document.createElement("div");
+    glowDiv.className = "yb-map-glow-overlay";
+    glowDiv.setAttribute("aria-hidden", "true");
+    container.appendChild(glowDiv);
+
+    // Kenar efekti
+    const edgeDiv = document.createElement("div");
+    edgeDiv.className = "yb-map-edge-overlay";
+    edgeDiv.setAttribute("aria-hidden", "true");
+    container.appendChild(edgeDiv);
   }
 
   /* =========================================================
@@ -2160,27 +2231,20 @@
       L.map(
         element,
         {
-          center: [
-            39,
-            35.5
-          ],
+          center: [39, 35.5],
           zoom: 6,
           minZoom: 5,
           maxZoom: 11,
           zoomControl: false,
-          preferCanvas: true
+          preferCanvas: true,
+          renderer: L.canvas({ padding: 0.5 })
         }
       );
 
     addReliableTiles(fullMap, { withLabels: true });
+    addMapGlowEffects(fullMap);
 
-    L.control
-      .zoom({
-        position:
-          "bottomright"
-      })
-      .addTo(fullMap);
-
+    L.control.zoom({ position: "bottomright" }).addTo(fullMap);
     L.control.scale({ position: "bottomleft", imperial: false }).addTo(fullMap);
 
     loadGeoJSON()
@@ -2488,57 +2552,36 @@
 
     layer.on({
       mouseover(event) {
-        if (
-          window.innerWidth <=
-          768
-        ) {
-          return;
-        }
+        if (window.innerWidth <= 768) return;
 
-        event.target.setStyle(
-          {
-            weight: 2,
-            color: "#fff",
-            fillOpacity: 0.88
-          }
-        );
-
+        event.target.setStyle(provinceStyleHighlight(feature));
         event.target.bringToFront();
 
-        layer
-          .bindTooltip(
-            `<strong>${esc(name)}</strong>`,
-            {
-              direction:
-                "top",
-              className:
-                "province-tooltip",
-              offset: [
-                0,
-                -4
-              ],
-              sticky: true
-            }
-          )
-          .openTooltip(
-            event.latlng
-          );
+        const data = getProvinceData(feature);
+        const discovered = data && STATE.discovered.includes(norm(data.name));
+        const tooltipContent = `
+          <div class="yb-tooltip">
+            <strong>${esc(name)}</strong>
+            ${data ? `<span class="yb-tooltip-region">${esc(data.region)}</span>` : ""}
+            ${discovered ? `<span class="yb-tooltip-badge">✓ Keşfedildi</span>` : ""}
+          </div>
+        `;
+
+        layer.bindTooltip(tooltipContent, {
+          direction: "top",
+          className: "province-tooltip yb-province-tooltip",
+          offset: [0, -6],
+          sticky: true
+        }).openTooltip(event.latlng);
       },
 
       mouseout(event) {
-        if (geoLayer) {
-          geoLayer.resetStyle(
-            event.target
-          );
-        }
-
+        if (geoLayer) geoLayer.resetStyle(event.target);
         layer.closeTooltip();
       },
 
       click() {
-        markDiscovered(
-          norm(name)
-        );
+        markDiscovered(norm(name));
 
         selectedProvinceName = name;
         const url = new URL(location.href);
@@ -2549,22 +2592,21 @@
         if (search) search.value = name;
 
         if (fullMap) {
-          fullMap.flyToBounds(
-            layer.getBounds(),
-            {
-              maxZoom: 8,
-              duration: 0.7,
-              padding: [
-                40,
-                40
-              ]
-            }
-          );
+          fullMap.flyToBounds(layer.getBounds(), {
+            maxZoom: 8,
+            duration: 0.8,
+            easeLinearity: 0.35,
+            padding: [40, 40]
+          });
         }
 
-        renderProvinceDetail(
-          name
-        );
+        renderProvinceDetail(name);
+
+        // Pulse animasyonu — seçilen ile parıldama efekti
+        event?.target?.setStyle({ color: "#62d9ff", weight: 2.8 });
+        setTimeout(() => {
+          if (geoLayer) geoLayer.setStyle(provinceStyle);
+        }, 800);
       }
     });
   }
@@ -2613,7 +2655,7 @@
       nameNorm;
 
     toast(
-      `${friendly} keşfedildi! ğŸ—ºï¸`,
+      `${friendly} keşfedildi! 🗺️`,
       "success"
     );
 
@@ -2759,7 +2801,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸŒ¦ï¸ İklim
+              🌦️ İklim
             </div>
             <p>
               ${esc(data.climate)}
@@ -2768,7 +2810,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸŒ¾ Tarım
+              🌾 Tarım
             </div>
             <p>
               ${esc(data.agriculture)}
@@ -2777,7 +2819,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              â›ï¸ Maden
+              ⛏️ Maden
             </div>
             <p>
               ${esc(data.mining)}
@@ -2786,7 +2828,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              â›°ï¸ Arazi
+              ⛰️ Arazi
             </div>
             <p>
               ${esc(data.terrain)}
@@ -2795,7 +2837,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸ’§ Akarsu
+              💧 Akarsu
             </div>
             <p>
               ${esc(data.rivers)}
@@ -2804,7 +2846,7 @@
 
           <div class="fact-cell">
             <div class="fact-cell-label">
-              ğŸ‘¥ Nüfus
+              👥 Nüfus
             </div>
             <p>
               ${esc(data.population)}
@@ -2823,7 +2865,7 @@
             ${
               discovered
                 ? "✓ Keşfedildi"
-                : "â— Keşfet"
+                : "● Keşfet"
             }
           </button>
 
@@ -4457,7 +4499,7 @@
               <div
                 class="fav-icon"
               >
-                ğŸ—ºï¸
+                🗺️
               </div>
 
               <div
@@ -4959,39 +5001,18 @@
   ========================================================= */
 
   function openSidebar() {
-    $("sidebar")
-      ?.classList.add(
-        "open"
-      );
-
-    $("sidebar-overlay")
-      ?.classList.add(
-        "show"
-      );
-
-    $("mobile-menu-btn")
-      ?.setAttribute(
-        "aria-expanded",
-        "true"
-      );
+    $("sidebar")?.classList.add("open", "yb-mobile-open");
+    $("sidebar-overlay")?.classList.add("show");
+    $("mobile-menu-btn")?.setAttribute("aria-expanded", "true");
+    document.body.classList.add("yb-drawer-open");
   }
 
   function closeSidebar() {
-    $("sidebar")
-      ?.classList.remove(
-        "open"
-      );
-
-    $("sidebar-overlay")
-      ?.classList.remove(
-        "show"
-      );
-
-    $("mobile-menu-btn")
-      ?.setAttribute(
-        "aria-expanded",
-        "false"
-      );
+    $("sidebar")?.classList.remove("open", "yb-mobile-open");
+    $("sidebar-overlay")?.classList.remove("show");
+    $("mobile-menu-btn")?.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("yb-drawer-open");
+    $(".yb-sidebar-backdrop")?.classList.remove("show");
   }
 
   /* =========================================================
