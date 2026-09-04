@@ -1,4 +1,4 @@
 {
-  "version": "16.0.0",
-  "message": "Yurdunu Bil 16.0.0: mobil taşmalar için güvenlik katmanı, özel atlas watchdog, arama ve kodlama düzeltmeleri."
+  "version": "17.0.0",
+  "message": "Yurdunu Bil 17.0.0: mobil harita taşmaları düzeltildi, OSM katmanı yerine 81 il KPSS atlası, il arama, il bilgi paneli ve güvenli mobil menü eklendi."
 }
