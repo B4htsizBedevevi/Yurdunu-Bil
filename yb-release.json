@@ -1,11 +1,12 @@
 {
-  "version":"36.0.0",
-  "message":"Yurdunu Bil 36 — atlas su katmanları ve harita okunabilirliği geliştirildi.",
+  "version":"36.2.0",
+  "message":"Yurdunu Bil 36.2 — tek responsive atlas düzeni ve mobil gezinme iyileştirmeleri.",
   "changes":[
-    "Göller katmanında göl yüzeyleri daha belirgin hale getirildi.",
-    "Akarsular katmanında ana akarsular daha kalın ve görünür çizgilerle gösteriliyor.",
-    "Başlıca göl ve akarsu adları harita üzerinde daha okunabilir hale getirildi.",
-    "Harita modlarına açıklayıcı mini lejant eklendi.",
-    "Dağ, ova, plato ve maden etiketlerinin okunabilirliği iyileştirildi."
+    "Masaüstü, tablet ve telefon için tek responsive atlas düzeni uygulandı.",
+    "Harita sekmesinde il paneli artık daha kompakt ve okunabilir.",
+    "Mobilde gereksiz uzun coğrafya notu ve hafıza blokları harita ekranında gizlendi.",
+    "İki sütunlu il bilgi kartlarıyla dikey kaydırma azaltıldı.",
+    "Sekmeler arasında geçişte sayfa kaydırma konumu sıfırlanıyor.",
+    "Harita ve seçili il görünümü farklı ekranlarda aynı davranışa getirildi."
   ]
 }
