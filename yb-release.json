@@ -1,4 +1,10 @@
 {
-  "version":"32.0.0",
-  "message":"Yurdunu Bil 32 — sürüm bildirimleri, otomatik güncelleme kontrolü ve 2026 KPSS Ön Lisans geri sayımı."
+  "version":"33.0.0",
+  "message":"Yurdunu Bil 33 — mobil atlas düzeltildi; Panel ve Türkiye Haritası aynı katman, il seçimi ve harita durumunu kullanıyor.",
+  "changes":[
+    "Paneldeki haritanın mobilde bilgi kartlarının üzerine binmesi düzeltildi.",
+    "Panel ve Türkiye Haritası aynı harita katmanı ile senkron çalışıyor.",
+    "Seçilen il ve aktif harita modu iki görünüm arasında korunuyor.",
+    "Sürüm bildirimi ve 2026 KPSS Ön Lisans geri sayımı devam ediyor."
+  ]
 }
