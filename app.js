@@ -1,4 +1,4 @@
-/* Yurdunu Bil 22.0 — rebuilt application core */
+/* Yurdunu Bil 21.2 — rebuilt application core */
 (() => {
   'use strict';
   const CFG = window.YURDUNUBIL_CONFIG || {};
@@ -23,11 +23,10 @@
   let sb = null, user = null;
   const DEMO_SESSION_KEY = 'yb_demo_session_21';
   try { if(CFG.SUPABASE_URL && CFG.SUPABASE_PUBLISHABLE_KEY && window.supabase) sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_PUBLISHABLE_KEY); } catch(e){ console.warn(e); }
-
   function loadState(){try{return {...clone(DEFAULT),...JSON.parse(localStorage.getItem('yb_state_21')||'{}')}}catch(_){return clone(DEFAULT)}}
   function saveState(){try{localStorage.setItem('yb_state_21',JSON.stringify(state))}catch(_){}}
-  function toast(msg,type='ok'){const root=$('#toast-root');if(!root)return;const el=document.createElement('div');el.className='toast '+type;el.textContent=msg;root.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250)},2600)}
-  function province(name){const key=norm(name);return DATA.find(p=>norm(p.name)===key)||null}
+  function toast(msg,type='ok'){const root=$('#toast-root');const el=document.createElement('div');el.className='toast '+type;el.textContent=msg;root.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250)},2600)}
+  function province(name){const aliases={'afyon':'Afyonkarahisar'};const key=norm(name);return DATA.find(p=>norm(p.name)===key)||DATA.find(p=>norm(p.name)===norm(aliases[key]||''))||null}
   function topic(id){return TOPICS.find(t=>String(t.id)===String(id))||null}
   function pctFor(id){return Math.max(0,Math.min(100,Number(state.topicPct?.[id]||0)))}
   function discoveredCount(){return state.discovered.length}
@@ -38,16 +37,13 @@
   function setProfileUI(){const name=state.profile.displayName||user?.user_metadata?.display_name||user?.email?.split('@')[0]||'Öğrenci';const email=state.profile.email||user?.email||'Misafir hesap';const av=initials(name);['#side-name','#top-name','#menu-name'].forEach(s=>setText(s,name));['#side-email','#menu-email'].forEach(s=>setText(s,email));['#side-avatar','#top-avatar','#menu-avatar'].forEach(s=>setText(s,av));setText('#nav-discovered',String(discoveredCount()))}
   function showApp(){ $('#auth-screen').classList.add('hidden');$('#app-shell').classList.remove('hidden');setProfileUI();navigate(currentView||'dashboard'); }
   function showAuth(){ $('#app-shell').classList.add('hidden');$('#auth-screen').classList.remove('hidden'); }
-
   async function bootAuth(){
     if(!sb && localStorage.getItem(DEMO_SESSION_KEY)==='1'){showApp();return}
     if(sb){try{const {data}=await sb.auth.getSession();if(data.session){user=data.session.user;await syncRemote();showApp();return}sb.auth.onAuthStateChange(async(_e,session)=>{user=session?.user||null;if(user){await syncRemote();showApp()}})}catch(e){console.warn(e)}}
     showAuth();
   }
-
   async function syncRemote(){if(!sb||!user)return;try{const [{data:pr},{data:pp},{data:qr},{data:fv}]=await Promise.all([sb.from('profiles').select('*').eq('id',user.id).maybeSingle(),sb.from('province_progress').select('*').eq('user_id',user.id),sb.from('quiz_results').select('*').eq('user_id',user.id).order('created_at',{ascending:false}),sb.from('favorites').select('*').eq('user_id',user.id)]);if(pr){state.profile.displayName=pr.display_name||state.profile.displayName;state.profile.email=pr.email||user.email||''}if(pp)state.discovered=pp.filter(x=>x.visited).map(x=>x.province_name);if(qr)state.results=qr.map(x=>({correct:x.correct,total:x.total,score:x.score,created_at:x.created_at,topic_id:x.topic_id}));if(fv)state.favorites=fv.map(x=>x.item_id+'|'+x.item_type);saveState();setProfileUI()}catch(e){console.warn('remote sync',e)}}
   async function remoteInsert(table,payload){if(!sb||!user)return;try{await sb.from(table).upsert(payload)}catch(e){console.warn(e)}}
-
   function setupAuth(){
     const requested=new URLSearchParams(location.search).get('auth');
     if(requested==='register'){const b=$('[data-auth-tab=register]');if(b)b.click()}
@@ -60,9 +56,8 @@
     $('#google-btn').onclick=async()=>{if(!sb)return toast('Google girişi için Supabase bağlantısı gerekir.','error');try{const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error)throw error}catch(e){toast(authError(e),'error')}};
   }
   function authError(e){const m=String(e?.message||e||'');if(/invalid login credentials/i.test(m))return'E-posta veya şifre hatalı.';if(/already registered/i.test(m))return'Bu e-posta zaten kayıtlı.';return m||'İşlem sırasında bir hata oluştu.'}
-
   function setupNavigation(){
-    document.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b&&!e.target.closest('#modal-root')){e.preventDefault();navigate(b.dataset.view);closeProfile();closeDrawer()} });
+    document.addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b){e.preventDefault();navigate(b.dataset.view);closeProfile();closeDrawer()} });
     $('#logout-btn').onclick=logout;$('#menu-logout').onclick=logout;$('#profile-btn').onclick=()=>$('#profile-menu').classList.toggle('hidden');$('#theme-btn').onclick=toggleTheme;$('#menu-btn').onclick=toggleDrawer;$('#drawer-backdrop').onclick=closeDrawer;
     document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#global-search')?.focus()}if(e.key==='Escape'){closeProfile();closeModal();closeDrawer()}});
     $('#global-search').addEventListener('input',e=>globalSearch(e.target.value));
@@ -72,518 +67,129 @@
   function closeDrawer(){$('#sidebar').classList.remove('open');$('#drawer-backdrop').classList.remove('open')}
   function toggleTheme(){state.theme=state.theme==='light'?'dark':'light';saveState();document.body.classList.toggle('light',state.theme==='light');toast(state.theme==='light'?'Açık tema hazır.':'Koyu tema hazır.')}
   async function logout(){closeProfile();if(sb&&user)await sb.auth.signOut();user=null;localStorage.removeItem(DEMO_SESSION_KEY);showAuth();toast('Oturum kapatıldı.')}
-
   function navigate(view){currentView=view;$$('.view').forEach(v=>v.classList.remove('active'));const el=$('#view-'+view);if(!el)return;el.classList.add('active');$$('.nav-item[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));$$('.mobile-nav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));const labels={dashboard:'Genel Bakış',map:'Türkiye Haritası',topics:'Konu Kütüphanesi',library:'Çalışma Kütüphanesi',quiz:'Mini Test',stats:'İstatistikler',favorites:'Favoriler',settings:'Ayarlar & Profil'};setText('#page-title',labels[view]||'Genel Bakış');renderView(view)}
   function renderView(view){if(view==='dashboard')renderDashboard();if(view==='map')renderMapView();if(view==='topics')renderTopics();if(view==='library')renderLibrary();if(view==='quiz')renderQuiz();if(view==='stats')renderStats();if(view==='favorites')renderFavorites();if(view==='settings')renderSettings();setProfileUI()}
-
-  /* ── DASHBOARD ── */
   function renderDashboard(){
     const el=$('#view-dashboard');
     const fact=pickFact();
-    const mapModes=[
-      {key:'default',label:'Standart'},
-      {key:'agriculture',label:'Tarım'},
-      {key:'climate',label:'İklim'},
-      {key:'terrain',label:'Arazi'},
-      {key:'mountains',label:'Dağlar'},
-      {key:'plains',label:'Ovalar'},
-      {key:'mining',label:'Maden'}
-    ];
-    el.innerHTML=`<div class="hero-title"><span class="kicker">ÇALIŞMA PANELİ</span><h1>Merhaba, ${esc(state.profile.displayName||'Öğrenci')}! 👋</h1><p>Bugün Türkiye'yi keşfet, konuları çalış, mini test çöz ve hedeflerine bir adım daha yaklaş.</p></div>
-<div class="stat-row">
-  <div class="stat"><div class="stat-icon">🗺️</div><div><b>${discoveredCount()}</b><span>Keşfedilen İl / 81</span></div></div>
-  <div class="stat"><div class="stat-icon">📚</div><div><b>${TOPICS.filter(t=>pctFor(t.id)>=100).length}</b><span>Konu Tamamlandı / ${TOPICS.length}</span></div></div>
-  <div class="stat"><div class="stat-icon">🏆</div><div><b>${solved()}</b><span>Çözülen Soru</span></div></div>
-  <div class="stat"><div class="stat-icon">🎯</div><div><b>${score()}</b><span>Genel Başarı %</span></div></div>
-</div>
-<div class="dashboard-grid">
-  <section class="surface map-card">
-    <div class="map-head">
-      <div><span class="kicker">İNTERAKTİF ATLAS</span><h2>Türkiye Haritası <span class="badge">3D</span></h2><p>81 ili keşfet, KPSS notlarını ve il detaylarını aç.</p></div>
-      <div class="map-tabs">${mapModes.map((m,i)=>`<button class="map-tab ${i===0?'active':''}" data-map-mode="${m.key}">${m.label}</button>`).join('')}</div>
-    </div>
-    <div class="atlas-wrap" id="dashboard-atlas">
-      <div class="atlas-grid"></div>
-      <div class="atlas-stars"></div>
-      <div class="map-search"><span>⌕</span><input id="map-search-dashboard" placeholder="İl ara..."></div>
-      <div class="map-legend" id="dash-legend">
-        <b>HARİTA LEJANTI</b>
-        <div class="legend-row"><i class="legend-dot green"></i>Keşfedilen il</div>
-        <div class="legend-row"><i class="legend-dot"></i>Keşfedilmemiş il</div>
-        <div class="legend-row"><i class="legend-dot cyan"></i>Seçili il</div>
+    const selected=selectedProvince;
+    const regionStats={};
+    DATA.forEach(p=>{regionStats[p.region]=(regionStats[p.region]||0)+1});
+    const regionCount=Object.keys(regionStats).length;
+    el.innerHTML=`
+      <div class="dashboard-hero">
+        <div class="hero-title"><span class="kicker">ÇALIŞMA PANELİ • 21.6</span><h1>Merhaba, ${esc(state.profile.displayName||'Öğrenci')}! 👋</h1><p>Türkiye'yi haritada keşfet, yüksek getirili bilgileri öğren ve her gün birkaç soru daha çöz.</p></div>
+        <div class="hero-actions"><button class="btn btn-secondary" data-view="topics">📚 Konuları keşfet</button><button class="btn btn-primary" id="hero-test">⚡ 5 Soruluk Test</button></div>
       </div>
-      <div class="atlas-hint">💡 Bir ile tıkla → KPSS özeti, dağlar, ovalar ve daha fazlası.</div>
-      <div class="atlas-status">81 İL • SAF SVG ATLAS • v22</div>
-      <svg class="atlas-svg" id="dashboard-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet"></svg>
-    </div>
-  </section>
-  <aside class="side-stack">
-    <div class="side-widget challenge"><h3>⚡ Günün Challenge'ı</h3><p>5 soruluk hızlı coğrafya. Bugününü tek dakikada test et.</p><button class="btn btn-primary full" id="challenge-btn">Hemen Başla →</button></div>
-    <div id="dashboard-province-card" class="side-widget selected-province-widget ${selectedProvince?'has-province':''}">${selectedProvince?dashboardProvinceHtml(selectedProvince):dashboardProvinceEmptyHtml()}</div>
-    <div class="side-widget"><h3>◷ Çalışma İstasyonu</h3><div class="focus-clock"><div><b id="dash-timer">25:00</b><span>ODAK</span></div></div><div class="widget-actions"><button class="btn btn-secondary" id="timer-start">▶ Başlat</button><button class="btn btn-secondary" id="timer-reset">↺ Sıfırla</button></div></div>
-    <div class="side-widget"><h3>🎯 Bugünkü Hedef <span class="muted" style="float:right">${Math.min(4,Math.floor(solved()/5))}/4</span></h3><div class="progress-line"><i style="width:${Math.min(100,solved()/20*100)}%"></i></div><p>Bugün en az 20 soru çözerek ritmini koru.</p></div>
-    <div class="side-widget"><h3>⚡ Hızlı Erişim</h3><div class="quick-links"><button class="quick-link" data-view="topics"><b>📚 Konular</b><span>Notları aç</span></button><button class="quick-link" data-view="quiz"><b>✓ Mini Test</b><span>Soru çöz</span></button><button class="quick-link" data-view="favorites"><b>💛 Favoriler</b><span>Kayıtlılar</span></button><button class="quick-link" data-view="stats"><b>▥ İstatistik</b><span>İlerlemen</span></button></div></div>
-  </aside>
-</div>
-<section class="surface facts">
-  <div class="facts-head"><div><span class="kicker">CANLI HAP BİLGİ</span><h2>🧠 Bugünün Coğrafya Hap Bilgileri</h2><p>KPSS için kısa, net ve ezberlenebilir bilgiler.</p></div><button class="link-btn" id="new-fact">Yeni bilgi ↻</button></div>
-  <div class="card-grid" id="fact-grid">${factCards(fact)}</div>
-</section>
-<section class="surface library-banner"><div><b>Çalışma Kütüphanesi</b><p>Konuları daha düzenli çalışmak için tüm yüksek getirili notlara geç.</p></div><button class="btn btn-secondary" data-view="library">Kütüphaneyi aç →</button></section>`;
-    renderAtlas($('#dashboard-svg'));
-    bindDashboard();
+      <div class="stat-row dashboard-stats">
+        <div class="stat stat-featured"><div class="stat-icon">🗺️</div><div><b>${discoveredCount()}</b><span>Keşfedilen İl <em>/ 81</em></span></div><i>${Math.round(discoveredCount()/81*100)}%</i></div>
+        <div class="stat"><div class="stat-icon">📚</div><div><b>${TOPICS.filter(t=>pctFor(t.id)>=100).length}</b><span>Tamamlanan Konu <em>/ ${TOPICS.length}</em></span></div></div>
+        <div class="stat"><div class="stat-icon">🏆</div><div><b>${solved()}</b><span>Çözülen Soru</span></div></div>
+        <div class="stat"><div class="stat-icon">🎯</div><div><b>%${score()}</b><span>Genel Başarı</span></div></div>
+      </div>
+      <div class="dashboard-bento">
+        <section class="surface map-card dashboard-map-card">
+          <div class="map-head"><div><span class="kicker">İNTERAKTİF ATLAS</span><h2>Türkiye Haritası <span class="badge">3D</span></h2><p>Bir ile tıkla. İl yükselsin, detayları yanında açılsın.</p></div><div class="map-tabs">${['default','agriculture','climate','terrain','mining'].map((m,i)=>`<button class="map-tab ${i===0?'active':''}" data-map-mode="${m}">${['Standart','Tarım','İklim','Arazi','Maden'][i]}</button>`).join('')}</div></div>
+          <div class="atlas-wrap dashboard-atlas" id="dashboard-atlas"><div class="atlas-grid"></div><div class="atlas-stars"></div><div class="map-search"><span>⌕</span><input id="map-search-dashboard" placeholder="İl ara..." aria-label="İl ara"></div><div class="map-legend"><b>ATLAS LEJANTI</b><div class="legend-row"><i class="legend-dot green"></i>Keşfedilen</div><div class="legend-row"><i class="legend-dot"></i>Diğer iller</div><div class="legend-row"><i class="legend-dot cyan"></i>Seçili il</div></div><div class="atlas-hint">💡 İl seçtiğinde kartı burada sağ tarafta görürsün.</div><div class="atlas-status">81 İL • GEOJSON • 3D SVG</div><svg class="atlas-svg" id="dashboard-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet"></svg></div>
+          <div class="map-footer-strip"><div><span>🧭</span><b>${regionCount} coğrafi bölge</b><small>Türkiye genelini keşfet</small></div><div><span>⚡</span><b>${discoveredCount()} il keşfedildi</b><small>Haritada işaretli</small></div><button class="btn btn-ghost" data-view="map">Büyük atlası aç →</button></div>
+        </section>
+        <aside class="dashboard-rail">
+          <section id="dashboard-province-card" class="surface selected-province-card ${selected?'has-selection':'no-selection'}">${selected?dashboardProvinceCard(selected):dashboardProvinceEmpty()}</section>
+          <div class="rail-grid">
+            <section class="side-widget challenge"><div class="widget-kicker">⚡ GÜNÜN CHALLENGE'I</div><h3>5 soruda kendini yokla.</h3><p>Hızlı bir tur çöz, bugünkü ritmini koru.</p><button class="btn btn-primary full" id="challenge-btn">Hemen Başla →</button></section>
+            <section class="side-widget compact-target"><div class="widget-kicker">🎯 BUGÜNKÜ HEDEF</div><div class="target-value"><b>${Math.min(20,solved()%21)}</b><span>/ 20 soru</span></div><div class="progress-line"><i style="width:${Math.min(100,solved()/20*100)}%"></i></div><small>Bugün 20 soruya ulaş.</small></section>
+          </div>
+          <section class="side-widget focus-widget"><div class="widget-title"><h3>◷ Çalışma İstasyonu</h3><span>ODAK</span></div><div class="focus-inline"><strong id="dash-timer">25:00</strong><div><button class="btn btn-secondary" id="timer-start">▶ Başlat</button><button class="btn btn-ghost" id="timer-reset">↺</button></div></div></section>
+          <section class="side-widget quick-widget"><div class="widget-title"><h3>⚡ Hızlı Erişim</h3><button class="link-btn" data-view="topics">Tümü →</button></div><div class="quick-links quick-links-compact"><button class="quick-link" data-view="topics"><b>📚 Konular</b><span>8 başlık</span></button><button class="quick-link" data-view="quiz"><b>✓ Mini Test</b><span>120 soru</span></button><button class="quick-link" data-view="favorites"><b>💛 Favoriler</b><span>${state.favorites.length} kayıt</span></button><button class="quick-link" data-view="stats"><b>▥ İstatistik</b><span>İlerlemen</span></button></div></section>
+        </aside>
+      </div>
+      <section class="surface facts dashboard-facts"><div class="facts-head"><div><span class="kicker">CANLI HAP BİLGİ</span><h2>🧠 Bugünün Coğrafya Hap Bilgileri</h2><p>KPSS için kısa, net ve ezberlenebilir bilgiler.</p></div><button class="link-btn" id="new-fact">Yeni bilgi ↻</button></div><div class="card-grid" id="fact-grid">${factCards(fact)}</div></section>
+      <section class="dashboard-bottom-grid"><section class="surface library-banner"><div><span class="kicker">ÇALIŞMA KÜTÜPHANESİ</span><b>Yüksek getirili notlara geç.</b><p>Konuları düzenli çalış, tamamladıkça ilerleme çubuğun dolsun.</p></div><button class="btn btn-secondary" data-view="library">Kütüphaneyi aç →</button></section><section class="surface exam-widget"><div><span class="kicker">2026 KPSS</span><b>Sınava kalan süre</b></div><strong id="dashboard-countdown">—</strong><button class="btn btn-ghost" data-view="settings">Sayacı görüntüle →</button></section></section>`;
+    renderAtlas($('#dashboard-svg')); bindDashboard(); updateDashboardCountdown();
   }
-
-  const facts=[
-    ['🌲','Bitki Örtüsü',"Türkiye'de ormanların en geniş yer kapladığı bölge hangisidir?",'Karadeniz Bölgesi'],
-    ['🏭','Sanayi',"Türkiye'de sanayinin en fazla geliştiği bölge hangisidir?",'Marmara Bölgesi'],
-    ['🫒','Tarım',"Zeytin üretiminde Türkiye'de öne çıkan bölge hangisidir?",'Ege Bölgesi'],
-    ['💧','Akarsular',"Türkiye'nin en uzun akarsuyu hangisidir?",'Kızılırmak (1.355 km)'],
-    ['🍵','Tarım','Çay tarımının temel merkezi neresidir?','Doğu Karadeniz (Rize-Artvin)'],
-    ['⛏️','Maden','Bor yatakları hangi alanlarda yoğundur?','Eskişehir, Kütahya, Balıkesir, Bursa'],
-    ['🏔️','Dağlar','Türkiye\'nin en yüksek dağı hangisidir?','Ağrı Dağı — 5.137 m'],
-    ['🌻','Tarım','Ayçiçeği üretiminde öne çıkan alan neresidir?','Trakya (Edirne, Tekirdağ)'],
-    ['🏞️','Ovalar','Türkiye\'nin en büyük kapalı ovası neresidir?','Konya Ovası'],
-    ['🌊','Akarsular','Dicle ve Fırat nehirleri hangi bölgeden doğar?','Doğu Anadolu Bölgesi'],
-    ['⛰️','Dağlar','Kaçkar Dağı\'nın yüksekliği ne kadardır?','3.937 m (Doğu Karadeniz)'],
-    ['🏜️','Ovalar','Harran Ovası hangi ilde bulunur?','Şanlıurfa (GAP tarım merkezi)']
-  ];
-  function pickFact(){return facts.slice().sort(()=>Math.random()-.5).slice(0,4)}
+  function dashboardProvinceEmpty(){return `<div class="province-empty"><div class="empty-map-icon">⌖</div><span class="kicker">İL DETAYI</span><h3>Haritadan bir il seç</h3><p>Seçtiğin il haritada yükselir; iklim, dağ, ova, göl, akarsu, tarım ve maden bilgileri burada açılır.</p><div class="empty-hint">↖ Bir il seçerek başla</div></div>`}
+  function dashboardProvinceCard(p){const fav=isFav(p.name,'province');return `<div class="dashboard-province-head"><div class="province-emblem large">${String(p.plate).padStart(2,'0')}</div><div><span class="kicker">SEÇİLEN İL • ${esc(p.region)} BÖLGESİ</span><h3>${esc(p.name)}</h3><p>${esc(p.fact||'KPSS odaklı il özeti')}</p></div><button class="icon-btn province-clear" id="dashboard-clear-province" title="Seçimi temizle">×</button></div><div class="province-mini-summary"><span>🧠 KPSS HIZLI ÖZET</span><b>${esc(p.kpss||p.fact||'Kısa KPSS özeti')}</b></div><div class="province-mini-grid"><div><span>🌦️ İklim</span><b>${esc(p.climate||'—')}</b></div><div><span>⛰️ Dağlar</span><b>${esc(p.mountains||p.terrain||'—')}</b></div><div><span>🌾 Ovalar</span><b>${esc(p.plains||'—')}</b></div><div><span>💧 Göller</span><b>${esc(p.lakes||'—')}</b></div><div><span>🌊 Akarsular</span><b>${esc(p.rivers||'—')}</b></div><div><span>⛏️ Maden</span><b>${esc(p.mining||'—')}</b></div></div><div class="province-card-foot"><div><span>👥 Nüfus</span><b>${esc(p.population||'—')}</b></div><div class="province-actions-inline"><button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button><button class="btn btn-secondary" data-study-province="${esc(p.name)}">İli çalış →</button></div></div>`}
+  const facts=[['🌲','Bitki Örtüsü',"Türkiye'de ormanların en geniş yer kapladığı bölge hangisidir?",'Karadeniz Bölgesi'],['🏭','Sanayi',"Türkiye'de sanayinin en fazla geliştiği bölge hangisidir?",'Marmara Bölgesi'],['🫒','Tarım',"Zeytin üretiminde Türkiye'de öne çıkan bölge hangisidir?",'Ege Bölgesi'],['💧','Akarsular',"Türkiye'nin en uzun akarsuyu hangisidir?",'Kızılırmak'],['🍵','Tarım','Çay tarımının temel merkezi neresidir?','Doğu Karadeniz'],['⛏️','Maden','Bor yatakları hangi alanlarda yoğundur?','Eskişehir, Kütahya, Balıkesir, Bursa'],['🏔️','Türkiye’nin Enleri','Türkiye’nin en yüksek dağı hangisidir?','Ağrı Dağı — 5.137 m'],['🌻','Tarım','Ayçiçeği üretiminde öne çıkan alan neresidir?','Trakya']];
+  function pickFact(){const shuffled=facts.slice().sort(()=>Math.random()-.5);return shuffled.slice(0,4)}
   function factCards(list){return list.map(f=>`<article class="info-card"><div class="fact-icon">${f[0]}</div><span class="badge">${esc(f[1])}</span><h3>${esc(f[2])}</h3><span class="fact-answer">→ ${esc(f[3])}</span></article>`).join('')}
-
-  function bindDashboard(){
-    $$('.map-tab').forEach(b=>b.onclick=()=>{
-      $$('.map-tab').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      atlas.mode=b.dataset.mapMode;
-      updateMapLegend($('#dash-legend'),atlas.mode);
-      renderAtlas($('#dashboard-svg'));
-    });
-    $('#map-search-dashboard').oninput=e=>highlightSearch(e.target.value);
-    $('#new-fact').onclick=()=>{$('#fact-grid').innerHTML=factCards(pickFact())};
-    $('#challenge-btn').onclick=()=>startChallenge();
-    $('#timer-start').onclick=toggleTimer;
-    $('#timer-reset').onclick=resetTimer;
-  }
-
-  function updateMapLegend(legendEl, mode){
-    if(!legendEl)return;
-    const legends={
-      default:`<b>BÖLGE RENKLERI</b><div class="legend-row"><i class="legend-dot green"></i>Keşfedilen il</div><div class="legend-row"><i class="legend-dot"></i>Keşfedilmemiş</div><div class="legend-row"><i class="legend-dot cyan"></i>Seçili il</div>`,
-      agriculture:`<b>TARIM</b><div class="legend-row"><i class="legend-dot" style="background:#35c7a4"></i>Özel ürün yetişir</div><div class="legend-row"><i class="legend-dot" style="background:#276eaa"></i>Genel tarım</div>`,
-      climate:`<b>İKLİM</b><div class="legend-row"><i class="legend-dot" style="background:#e07b58"></i>Akdeniz iklimi</div><div class="legend-row"><i class="legend-dot" style="background:#2eb39c"></i>Karadeniz iklimi</div><div class="legend-row"><i class="legend-dot" style="background:#5176c8"></i>Karasal iklim</div>`,
-      terrain:`<b>ARAZİ</b><div class="legend-row"><i class="legend-dot" style="background:#7b7ee2"></i>Dağlık/engebeli</div><div class="legend-row"><i class="legend-dot" style="background:#5eaa6e"></i>Ova/düzlük</div>`,
-      mountains:`<b>DAĞLAR</b><div class="legend-row"><i class="legend-dot" style="background:#8b6db5"></i>Yüksek dağlar (&gt;2000m)</div><div class="legend-row"><i class="legend-dot" style="background:#6a52a0"></i>Orta dağlar</div><div class="legend-row"><i class="legend-dot" style="background:#4e7dc7"></i>Düzlük/ova ağırlıklı</div>`,
-      plains:`<b>OVALAR</b><div class="legend-row"><i class="legend-dot" style="background:#4eb87a"></i>Büyük ova var</div><div class="legend-row"><i class="legend-dot" style="background:#3a7a5c"></i>Orta ova</div><div class="legend-row"><i class="legend-dot" style="background:#2a5a7a"></i>Ova az/yok</div>`,
-      mining:`<b>MADEN</b><div class="legend-row"><i class="legend-dot" style="background:#c08a48"></i>Önemli maden kaynağı</div><div class="legend-row"><i class="legend-dot" style="background:#326b9f"></i>Maden sınırlı</div>`
-    };
-    legendEl.innerHTML=legends[mode]||legends.default;
-  }
-
+  function bindDashboard(){$$('.map-tab').forEach(b=>b.onclick=()=>{$$('.map-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');atlas.mode=b.dataset.mapMode;renderAtlas($('#dashboard-svg'))});$('#map-search-dashboard').oninput=e=>highlightSearch(e.target.value);$('#new-fact').onclick=()=>{$('#fact-grid').innerHTML=factCards(pickFact())};$('#challenge-btn').onclick=()=>startChallenge();$('#hero-test').onclick=()=>startChallenge();$('#timer-start').onclick=toggleTimer;$('#timer-reset').onclick=resetTimer;$('#dashboard-clear-province')?.addEventListener('click',()=>{selectedProvince=null;renderDashboard()})}
   function regionClass(region){const n=norm(region);if(n.includes('marmara'))return'region-marmara';if(n.includes('ege'))return'region-ege';if(n.includes('akdeniz'))return'region-akdeniz';if(n.includes('karadeniz'))return'region-karadeniz';if(n.includes('dogu'))return'region-dogu';if(n.includes('guney'))return'region-guney';return'region-ic'}
-
-  function loadGeo(){
-    if(geojson)return Promise.resolve(geojson);
-    return fetch('data/provinces.geojson',{cache:'force-cache'})
-      .then(r=>{if(!r.ok)throw Error('GeoJSON yüklenemedi');return r.json()})
-      .then(j=>{geojson=j;atlas.paths=makePaths(j);return j});
-  }
-
+  function loadGeo(){if(geojson)return Promise.resolve(geojson);return fetch('data/provinces.geojson',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('GeoJSON yüklenemedi');return r.json()}).then(j=>{geojson=j;atlas.paths=makePaths(j);return j})}
   function coordsOfGeometry(g){const arr=[];if(!g)return arr;const pushRing=r=>r.forEach(pt=>arr.push(pt));if(g.type==='Polygon')g.coordinates.forEach(pushRing);if(g.type==='MultiPolygon')g.coordinates.forEach(poly=>poly.forEach(pushRing));return arr}
-
-  function makePaths(j){
-    const pts=j.features.flatMap(f=>coordsOfGeometry(f.geometry));
-    const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
-    const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
-    const pad=42;
-    const sx=(1000-pad*2)/(maxX-minX),sy=(520-pad*2)/(maxY-minY),s=Math.min(sx,sy);
-    const ox=(1000-(maxX-minX)*s)/2,oy=(520-(maxY-minY)*s)/2;
-    const project=p=>[(p[0]-minX)*s+ox,520-((p[1]-minY)*s+oy)];
-    const ringPath=r=>r.map((p,i)=>{const q=project(p);return(i?'L':'M')+q[0].toFixed(2)+' '+q[1].toFixed(2)}).join(' ')+' Z';
-    const dOf=g=>g.type==='Polygon'?g.coordinates.map(ringPath).join(' '):g.coordinates.map(poly=>poly.map(ringPath).join(' ')).join(' ');
-    return j.features.map((f,i)=>{
-      const name=f.properties?.name||f.properties?.NAME||`İl ${i+1}`;
-      const raw=coordsOfGeometry(f.geometry);
-      const center=raw.length?[raw.reduce((a,p)=>a+p[0],0)/raw.length,raw.reduce((a,p)=>a+p[1],0)/raw.length]:[35,39];
-      const c=project(center);
-      return{name,d:dOf(f.geometry),cls:regionClass(province(name)?.region||''),feature:f,cx:c[0],cy:c[1]};
-    });
-  }
-
-  function modeFill(p){
-    const pr=province(p.name);
-    if(atlas.mode==='agriculture'){
-      const s=norm(pr?.agriculture||'');
-      if(/çay|findik|fındık|zeytin|pamuk|üzüm|kayisi|kayısı|narenciye|mısır|misir|antep|gül|incir|tütün/.test(s))return'#35c7a4';
-      return'#276eaa';
-    }
-    if(atlas.mode==='climate'){
-      const s=norm(pr?.climate||'');
-      if(s.includes('akdeniz'))return'#e07b58';
-      if(s.includes('karadeniz'))return'#2eb39c';
-      if(s.includes('marmara'))return'#4a9ad4';
-      if(s.includes('sert'))return'#4560c8';
-      return'#5176c8';
-    }
-    if(atlas.mode==='terrain'){
-      const s=norm(pr?.terrain||'');
-      if(/ova|delta|havza|platol/.test(s))return'#5eaa6e';
-      return'#7b7ee2';
-    }
-    if(atlas.mode==='mountains'){
-      const s=norm(pr?.mountains||'');
-      // Yüksek dağ (>2000m belirtilmiş ya da ünlü dağlar)
-      if(/5\d{3}|4\d{3}|3[5-9]\d{2}|3[0-4]\d{2}|2[5-9]\d{2}|2[0-4]\d{2}/.test(s))return'#8b6db5';
-      if(/dağ|sıra|silsilesi|tepe|zirve/.test(s))return'#6a52a0';
-      return'#4e7dc7';
-    }
-    if(atlas.mode==='plains'){
-      const s=norm(pr?.plains||'');
-      if(/en buyuk|genis|buyuk|delta|harran|konya|cukurova|bafra|carsamba|ergene|malatya|erzurum|mus|iğdır|igdir/.test(s))return'#4eb87a';
-      if(/ova|duzluk|havza|plato/.test(s))return'#3a7a5c';
-      return'#2a5a7a';
-    }
-    if(atlas.mode==='mining'){
-      return pr?.mining&&pr.mining!=='—'?'#c08a48':'#326b9f';
-    }
-    return null;
-  }
-
+  function makePaths(j){const pts=j.features.flatMap(f=>coordsOfGeometry(f.geometry));const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);const pad=42;const sx=(1000-pad*2)/(maxX-minX),sy=(520-pad*2)/(maxY-minY),s=Math.min(sx,sy);const ox=(1000-(maxX-minX)*s)/2,oy=(520-(maxY-minY)*s)/2;const project=p=>[(p[0]-minX)*s+ox,520-((p[1]-minY)*s+oy)];const ringPath=r=>r.map((p,i)=>{const q=project(p);return(i?'L':'M')+q[0].toFixed(2)+' '+q[1].toFixed(2)}).join(' ')+' Z';const dOf=g=>g.type==='Polygon'?g.coordinates.map(ringPath).join(' '):g.coordinates.map(poly=>poly.map(ringPath).join(' ')).join(' ');return j.features.map((f,i)=>{const name=f.properties?.name||f.properties?.NAME||`İl ${i+1}`;const raw=coordsOfGeometry(f.geometry);const center=raw.length?[raw.reduce((a,p)=>a+p[0],0)/raw.length,raw.reduce((a,p)=>a+p[1],0)/raw.length]:[35,39];const c=project(center);return{name,d:dOf(f.geometry),cls:regionClass(province(name)?.region||''),feature:f,cx:c[0],cy:c[1]}})}
+  function modeFill(p){const pr=province(p.name);if(atlas.mode==='agriculture'){const s=norm(pr?.agriculture);if(/çay|findik|fındık|zeytin|pamuk|üzüm|kayisi|kayısı|narenciye|mısır|misir/.test(s))return '#35c7a4';return '#276eaa'}if(atlas.mode==='climate'){const s=norm(pr?.climate);if(s.includes('akdeniz'))return '#e07b58';if(s.includes('karadeniz'))return '#2eb39c';return '#5176c8'}if(atlas.mode==='terrain')return '#7b7ee2';if(atlas.mode==='mining'){return pr?.mining&&pr.mining!=='—'?'#c08a48':'#326b9f'}return null}
   function addLocal(NS,tag,attrs,parent){const x=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>x.setAttribute(k,v));if(parent)parent.appendChild(x);return x}
-
   function renderAtlas(svg){
     if(!svg)return;
     loadGeo().then(()=>{
       svg.innerHTML='';
       const NS='http://www.w3.org/2000/svg';
-
-      // Defs: glow filter
-      const defs=addLocal(NS,'defs',{},svg);
-      const filter=addLocal(NS,'filter',{id:'province-glow',x:'-20%',y:'-20%',width:'140%',height:'140%'},defs);
-      addLocal(NS,'feGaussianBlur',{stdDeviation:'3',result:'blur'},filter);
-      addLocal(NS,'feComposite',{in:'SourceGraphic',in2:'blur',operator:'over'},filter);
-
-      // Shadow layer
-      atlas.paths.forEach(p=>addLocal(NS,'path',{d:p.d,class:'province-shadow',transform:'translate(-3 13)'},svg));
-      // Side layer (3D effect)
-      atlas.paths.forEach(p=>addLocal(NS,'path',{d:p.d,class:'province-side '+p.cls,transform:'translate(0 8)'},svg));
-      // Main shape layer
+      atlas.paths.forEach(p=>addLocal(NS,'path',{d:p.d,class:'province-shadow',transform:'translate(-4 15)'},svg));
+      atlas.paths.forEach(p=>addLocal(NS,'path',{d:p.d,class:'province-side '+p.cls,transform:'translate(0 9)'},svg));
       atlas.paths.forEach(p=>{
         const isSelected=!!(selectedProvince&&norm(selectedProvince.name)===norm(p.name));
         const isDiscovered=state.discovered.some(n=>norm(n)===norm(p.name));
-        const x=addLocal(NS,'path',{
-          d:p.d,
-          class:'province-shape '+p.cls+(isDiscovered?' discovered':'')+(isSelected?' selected':''),
-        },svg);
+        const x=addLocal(NS,'path',{d:p.d,class:'province-shape '+p.cls+(isDiscovered?' discovered':'')+(isSelected?' selected':'')},svg);
         x.dataset.province=p.name;
         x.setAttribute('tabindex','0');
         x.setAttribute('role','button');
-        x.setAttribute('aria-label',p.name+' iline git');
-        const fill=modeFill(p);
-        if(fill)x.style.fill=fill;
-        x.addEventListener('pointerdown',e=>{if(e.pointerType!=='keyboard')e.preventDefault()});
-        x.addEventListener('click',e=>{e.preventDefault();selectProvince(p.name)});
+        x.setAttribute('aria-label',p.name);
+        const fill=modeFill(p); if(fill)x.style.fill=fill;
+        x.addEventListener('click',()=>selectProvince(p.name));
         x.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectProvince(p.name)}});
       });
-
-      // Lifted / selected province
       if(selectedProvince){
         const p=atlas.paths.find(x=>norm(x.name)===norm(selectedProvince.name));
         if(p){
-          const lift=16;
+          const lift=14;
           const lifted=addLocal(NS,'path',{d:p.d,class:'province-lifted',transform:`translate(0 -${lift})`},svg);
           lifted.dataset.province=p.name;
           lifted.setAttribute('aria-hidden','true');
-          lifted.addEventListener('pointerdown',e=>e.preventDefault());
-          lifted.addEventListener('click',e=>{e.preventDefault();selectProvince(p.name)});
-          const group=addLocal(NS,'g',{class:'province-label-group',transform:`translate(${p.cx} ${p.cy-lift-20})`},svg);
-          const w=Math.max(100,selectedProvince.name.length*9+50);
-          addLocal(NS,'rect',{x:-w/2,y:-18,width:w,height:32,rx:11,class:'province-label-bg'},group);
-          const text=addLocal(NS,'text',{x:0,y:5,class:'province-label','text-anchor':'middle'},group);
+          lifted.addEventListener('click',()=>selectProvince(p.name));
+          const group=addLocal(NS,'g',{class:'province-label-group',transform:`translate(${p.cx} ${p.cy-lift-18})`},svg);
+          const w=Math.max(96,selectedProvince.name.length*8+46);
+          addLocal(NS,'rect',{x:-w/2,y:-17,width:w,height:30,rx:10,class:'province-label-bg'},group);
+          const text=addLocal(NS,'text',{x:0,y:4,class:'province-label','text-anchor':'middle'},group);
           text.textContent=`${selectedProvince.name} • ${String(selectedProvince.plate||'').padStart(2,'0')}`;
         }
       }
     }).catch(e=>{
-      svg.innerHTML=`<text x="500" y="260" text-anchor="middle" fill="#a8bbcf" font-size="18">Harita verisi yüklenemedi. (${e.message})</text>`;
+      svg.innerHTML='<text x="500" y="260" text-anchor="middle" fill="#a8bbcf" font-size="20">Harita verisi yüklenemedi.</text>';
       console.warn(e);
     });
   }
-
-  function highlightSearch(q){const n=norm(q);$$('.province-shape').forEach(x=>{x.style.opacity=!n||norm(x.dataset.province||'').includes(n)?'1':'.18'})}
-
-  function selectProvince(name){
-    const p=province(name);
-    if(!p)return;
-    selectedProvince=p;
-    state.discovered=[...new Set([...state.discovered,p.name])];
-    saveState();
-    setProfileUI();
-    closeModal();
-    if(currentView==='map'){
-      renderMapView();
-    } else if(currentView==='dashboard'){
-      renderAtlas($('#dashboard-svg'));
-      renderDashboardProvinceCard(p);
-    } else {
-      renderAtlas($('#dashboard-svg'));
-      renderProvinceModal(p);
-    }
-    toast(`${p.name} keşfedildi! 🗺️`);
-    remoteInsert('province_progress',{user_id:user?.id,province_name:p.name,visited:true,updated_at:new Date().toISOString()});
-  }
-
-  function dashboardProvinceEmptyHtml(){
-    return`<div class="province-side-empty"><div class="province-side-icon">⌖</div><div><span class="kicker">İL DETAYI</span><h3>Haritadan bir il seç</h3><p>Seçtiğin il burada sabit kalır; haritanın kendisini görmeye devam edersin.</p></div></div>`;
-  }
-
-  function dashboardProvinceHtml(p){
-    const fav=isFav(p.name,'province');
-    return`<div class="province-side-head">
-  <div class="province-side-emblem">${String(p.plate).padStart(2,'0')}</div>
-  <div class="province-side-title">
-    <span class="kicker">SEÇİLİ İL • ${esc(p.region)}</span>
-    <h3>${esc(p.name)}</h3>
-    <p>${esc(p.fact||'KPSS için hızlı il özeti.')}</p>
-  </div>
-  <span class="province-selected-dot" title="Haritada seçili"></span>
-</div>
-<div class="province-side-kpss"><span>🧠 KPSS HIZLI ÖZET</span><strong>${esc(p.kpss||p.fact||'Bu il için kısa KPSS özeti hazır.')}</strong></div>
-<div class="province-side-facts">
-  <div><span>🌦️ İklim</span><b>${esc(p.climate||'—')}</b></div>
-  <div><span>⛰️ Arazi</span><b>${esc(p.terrain||'—')}</b></div>
-  <div><span>🏔️ Dağlar</span><b>${esc(p.mountains||'—')}</b></div>
-  <div><span>🏞️ Ovalar</span><b>${esc(p.plains||'—')}</b></div>
-  <div><span>🌾 Tarım</span><b>${esc(p.agriculture||'—')}</b></div>
-  <div><span>⛏️ Maden</span><b>${esc(p.mining||'—')}</b></div>
-  <div><span>💧 Akarsular</span><b>${esc(p.rivers||'—')}</b></div>
-  <div><span>👥 Nüfus</span><b>${esc(p.population||'—')}</b></div>
-</div>
-<div class="province-side-memory"><span>⚡ HAFIZA KODU</span><p>${esc(p.kpss||p.fact||'Bu ili haritadaki konumuyla eşleştir.')}</p></div>
-<div class="province-side-actions">
-  <button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button>
-  <button class="btn btn-secondary" data-study-province="${esc(p.name)}">İli çalış →</button>
-</div>`;
-  }
-
-  function renderDashboardProvinceCard(p){
-    const el=$('#dashboard-province-card');
-    if(!el)return;
-    el.classList.add('has-province');
-    el.innerHTML=dashboardProvinceHtml(p);
-    el.querySelector('[data-fav-province]')?.addEventListener('click',e=>toggleFav(e.currentTarget.dataset.favProvince,'province'));
-  }
-
-  function provinceFactsHtml(p){
-    return`<div class="province-facts province-facts-premium">
-  <div class="province-fact"><span>🌦️ İklim</span><b>${esc(p.climate||'—')}</b></div>
-  <div class="province-fact"><span>⛰️ Arazi</span><b>${esc(p.terrain||'—')}</b></div>
-  <div class="province-fact"><span>🏔️ Dağlar</span><b>${esc(p.mountains||'—')}</b></div>
-  <div class="province-fact"><span>🏞️ Ovalar</span><b>${esc(p.plains||'—')}</b></div>
-  <div class="province-fact"><span>🌾 Tarım</span><b>${esc(p.agriculture||'—')}</b></div>
-  <div class="province-fact"><span>⛏️ Maden</span><b>${esc(p.mining||'—')}</b></div>
-  <div class="province-fact"><span>💧 Akarsular</span><b>${esc(p.rivers||'—')}</b></div>
-  <div class="province-fact"><span>👥 Nüfus</span><b>${esc(p.population||'—')}</b></div>
-</div>`;
-  }
-
-  function renderProvinceModal(p){
-    const fav=isFav(p.name,'province');
-    openModal(`<div class="province-modal">
-  <div class="province-modal-head">
-    <div class="province-emblem">${String(p.plate).padStart(2,'0')}</div>
-    <div class="province-title">
-      <span class="kicker">${esc(p.region)} BÖLGESİ • İL ${String(p.plate).padStart(2,'0')}</span>
-      <h2>${esc(p.name)}</h2>
-      <p>${esc(p.fact||'Türkiye haritasındaki konumunu ve KPSS notlarını hızlıca öğren.')}</p>
-    </div>
-    <button class="modal-close" data-close-modal aria-label="Kapat">×</button>
-  </div>
-  <div class="province-kpss"><span>🧠 KPSS HIZLI ÖZET</span><strong>${esc(p.kpss||p.fact||'Bu il için kısa KPSS özeti hazır.')}</strong></div>
-  ${provinceFactsHtml(p)}
-  <div class="province-memory"><span>⚡ HAFIZA KODU</span><p>${esc(p.kpss||p.fact||'İli haritada seçtiğinde bu bilgiler üzerinden tekrar yapabilirsin.')}</p></div>
-  <div class="province-actions">
-    <button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button>
-    <button class="btn btn-secondary" data-modal-quiz-province="${esc(p.name)}">Bu il hakkında test çöz →</button>
-  </div>
-</div>`);
-  }
-
-  /* ── MAP VIEW ── */
-  function renderMapView(){
-    const el=$('#view-map');
-    const mapModes=[
-      {key:'default',label:'Standart'},
-      {key:'agriculture',label:'Tarım'},
-      {key:'climate',label:'İklim'},
-      {key:'terrain',label:'Arazi'},
-      {key:'mountains',label:'Dağlar'},
-      {key:'plains',label:'Ovalar'},
-      {key:'mining',label:'Maden'}
-    ];
-    el.innerHTML=`<div class="section-head">
-  <div><span class="kicker">81 İL • 3D ETKİLEŞİMLİ ATLAS</span><h1>Türkiye Haritası</h1><p>Altlık harita yok. İl sınırları doğrudan GeoJSON'dan SVG olarak çiziliyor.</p></div>
-  <button class="btn btn-secondary" id="reset-selection">Seçimi temizle</button>
-</div>
-<div class="map-mode-bar">${mapModes.map((m,i)=>`<button class="map-tab ${atlas.mode===m.key?'active':''}" data-map-mode="${m.key}">${m.label}</button>`).join('')}</div>
-<div class="full-map-layout">
-  <section class="surface full-map-card">
-    <div class="atlas-wrap full-atlas" id="full-atlas">
-      <div class="atlas-grid"></div>
-      <div class="atlas-stars"></div>
-      <div class="map-search"><span>⌕</span><input id="map-search-full" placeholder="İl ara..."></div>
-      <div class="map-legend" id="full-legend">
-        <b>3D ATLAS</b>
-        <div class="legend-row"><i class="legend-dot green"></i>Keşfedilen</div>
-        <div class="legend-row"><i class="legend-dot"></i>Diğer iller</div>
-      </div>
-      <div class="atlas-hint">Bir ile tıkla → detay kartı açılır.</div>
-      <svg class="atlas-svg" id="full-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet"></svg>
-    </div>
-  </section>
-  <aside id="province-panel" class="surface province-panel ${selectedProvince?'':'empty-state'}">${selectedProvince?provincePanelHtml(selectedProvince):'<div><div style="font-size:42px;margin-bottom:12px">🗺️</div><h2>Bir il seç</h2><p>Haritadaki herhangi bir ile tıklayarak KPSS odaklı il özetini, dağlarını ve ovalarını burada görüntüleyebilirsin.</p></div>'}</aside>
-</div>`;
-    renderAtlas($('#full-svg'));
-    updateMapLegend($('#full-legend'),atlas.mode);
-    $('#map-search-full').oninput=e=>highlightSearch(e.target.value);
-    $('#reset-selection').onclick=()=>{selectedProvince=null;renderMapView()};
-    $$('.map-mode-bar .map-tab').forEach(b=>b.onclick=()=>{
-      $$('.map-mode-bar .map-tab').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      atlas.mode=b.dataset.mapMode;
-      updateMapLegend($('#full-legend'),atlas.mode);
-      renderAtlas($('#full-svg'));
-    });
-  }
-
-  function provincePanelHtml(p){
-    const fav=isFav(p.name,'province');
-    return`<div class="province-panel-inner">
-  <div class="province-panel-hero">
-    <div class="province-emblem large">${String(p.plate).padStart(2,'0')}</div>
-    <div>
-      <span class="kicker">SEÇİLEN İL • ${esc(p.region)} BÖLGESİ</span>
-      <h2>${esc(p.name)}</h2>
-      <p>${esc(p.fact||'KPSS için il özeti')}</p>
-    </div>
-  </div>
-  <div class="province-kpss"><span>🧠 KPSS HIZLI ÖZET</span><strong>${esc(p.kpss||p.fact||'Bu il için kısa KPSS özeti hazır.')}</strong></div>
-  ${provinceFactsHtml(p)}
-  <div class="province-memory"><span>⚡ HAFIZA KODU</span><p>${esc(p.kpss||p.fact||'Haritada seçtiğin ili bu kart üzerinden tekrar edebilirsin.')}</p></div>
-  <div class="province-actions">
-    <button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button>
-    <button class="btn btn-secondary" data-study-province="${esc(p.name)}">Bu ili çalış →</button>
-  </div>
-</div>`;
-  }
-
-  /* ── TOPICS ── */
-  function renderTopics(){const el=$('#view-topics');el.innerHTML=`<div class="section-head"><div><span class="kicker">KPSS COĞRAFYA</span><h1>Konu Kütüphanesi</h1><p>Önce öğren, sonra testte uygula. İlerlemen otomatik kaydedilir.</p></div><button class="btn btn-primary" data-view="quiz">Hızlı test →</button></div><div class="topics-grid">${TOPICS.map(t=>`<article class="topic-card" data-topic="${esc(t.id)}"><div class="topic-icon">${esc(t.icon||'🧭')}</div><h3>${esc(t.title)}</h3><p>${esc(t.desc||'')}</p><div class="topic-meta"><span class="badge">${esc(t.level||'KPSS')}</span><span class="muted">${pctFor(t.id)}%</span></div><div class="topic-progress"><i style="width:${pctFor(t.id)}%"></i></div></article>`).join('')}</div>`;$$('.topic-card').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic))}
-
-  function openTopic(id){const t=topic(id);if(!t)return;openModal(`<div class="modal-head"><div><span class="kicker">${esc(t.level||'KPSS')} • ${t.minutes||10} DK</span><h2>${esc(t.icon||'🧭')} ${esc(t.title)}</h2></div><button class="modal-close" data-close-modal aria-label="Kapat">×</button></div><p>${esc(t.desc||'')}</p><h3 class="modal-section-title">Bilmen gerekenler</h3><ul>${(t.bullets||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="province-hero"><b>🧠 HAFIZA KODU / KPSS İPUCU</b><p>${esc(t.tip||'')}</p></div><div class="widget-actions"><button class="btn btn-secondary" data-study-topic="${esc(id)}">✓ Bu konuyu çalıştım</button><button class="btn btn-primary" data-quiz-topic="${esc(id)}">Bu konudan test çöz →</button></div>`)}
-
+  function highlightSearch(q){const n=norm(q);$$('.province-shape').forEach(x=>{x.style.opacity=!n||norm(x.dataset.province).includes(n)?'1':'.2'})}
+  function selectProvince(name){const p=province(name);if(!p)return;selectedProvince=p;state.discovered=[...new Set([...state.discovered,p.name])];saveState();setProfileUI();if(currentView==='map')renderMapView();else if(currentView==='dashboard')renderDashboard();else renderProvinceModal(p);toast(`${p.name} keşfedildi.`);remoteInsert('province_progress',{user_id:user?.id,province_name:p.name,visited:true,updated_at:new Date().toISOString()})}
+  function renderProvinceModal(p){const fav=state.favorites.includes(p.name+'|province');openModal(`<div class="province-modal"><div class="province-modal-head"><div class="province-emblem">${String(p.plate).padStart(2,'0')}</div><div class="province-title"><span class="kicker">${esc(p.region)} BÖLGESİ • İL ${String(p.plate).padStart(2,'0')}</span><h2>${esc(p.name)}</h2><p>${esc(p.fact||'Türkiye haritasındaki konumunu ve KPSS notlarını hızlıca öğren.')}</p></div><button class="modal-close" data-close-modal>×</button></div><div class="province-kpss"><span>🧠 KPSS HIZLI ÖZET</span><strong>${esc(p.kpss||p.fact||'Bu il için kısa KPSS özeti hazır.')}</strong></div><div class="province-facts province-facts-premium province-facts-rich"><div class="province-fact"><span>🌦️ İklim</span><b>${esc(p.climate||'Belirtilmemiş')}</b></div><div class="province-fact"><span>⛰️ Dağlar</span><b>${esc(p.mountains||p.terrain||'Belirtilmemiş')}</b></div><div class="province-fact"><span>🌾 Ovalar</span><b>${esc(p.plains||'Belirtilmemiş')}</b></div><div class="province-fact"><span>💧 Göller / Sulak Alanlar</span><b>${esc(p.lakes||'Büyük doğal göl bulunmuyor; baraj/göletler mevcut.')}</b></div><div class="province-fact"><span>🌊 Akarsular</span><b>${esc(p.rivers||'Belirgin akarsu yok')}</b></div><div class="province-fact"><span>🌾 Tarım</span><b>${esc(p.agriculture||'Belirtilmemiş')}</b></div><div class="province-fact"><span>⛏️ Maden / Kaynak</span><b>${esc(p.mining||'Belirtilmemiş')}</b></div><div class="province-fact"><span>👥 2025 Nüfusu</span><b>${esc(p.population||'Belirtilmemiş')}</b></div></div><div class="province-geography-note"><span>🗺️ COĞRAFYA NOTU</span><p>${esc(p.geographyNote||p.fact||'Bu il için başlıca coğrafi unsurlar yukarıda listelenmiştir.')}</p></div><div class="province-memory"><span>⚡ HAFIZA KODU</span><p>${esc(p.kpss||p.fact||'İli haritada seçtiğinde bu bilgiler üzerinden tekrar yapabilirsin.')}</p></div><div class="province-actions"><button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button><button class="btn btn-secondary" data-view="quiz" data-province-topic="${esc(p.name)}">Bu il hakkında test çöz →</button></div></div>`)}
+  function renderMapView(){const el=$('#view-map');el.innerHTML=`<div class="section-head"><div><span class="kicker">81 İL • 3D ETKİLEŞİMLİ ATLAS</span><h1>Türkiye Haritası</h1><p>Altlık harita yok. İl sınırları doğrudan GeoJSON'dan SVG olarak çiziliyor.</p></div><button class="btn btn-secondary" id="reset-selection">Seçimi temizle</button></div><div class="full-map-layout"><section class="surface full-map-card"><div class="atlas-wrap full-atlas" id="full-atlas"><div class="atlas-grid"></div><div class="atlas-stars"></div><div class="map-search"><span>⌕</span><input id="map-search-full" placeholder="İl ara..."></div><div class="map-legend"><b>3D ATLAS</b><div class="legend-row"><i class="legend-dot green"></i>Keşfedilen</div><div class="legend-row"><i class="legend-dot"></i>Diğer iller</div></div><div class="atlas-hint">Bir ile tıkla → detay kartı açılır.</div><svg class="atlas-svg" id="full-svg" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid meet"></svg></div></section><aside id="province-panel" class="surface province-panel ${selectedProvince?'':'empty-state'}">${selectedProvince?provincePanelHtml(selectedProvince):'<div><div style="font-size:38px">⌖</div><h2>Bir il seç</h2><p>Haritadaki herhangi bir ile tıklayarak KPSS odaklı il özetini burada görüntüleyebilirsin.</p></div>'}</aside></div>`;renderAtlas($('#full-svg'));$('#map-search-full').oninput=e=>highlightSearch(e.target.value);$('#reset-selection').onclick=()=>{selectedProvince=null;renderMapView()}}
+  function provincePanelHtml(p){const fav=state.favorites.includes(p.name+'|province');return`<div class="province-panel-inner"><div class="province-panel-hero"><div class="province-emblem large">${String(p.plate).padStart(2,'0')}</div><div><span class="kicker">SEÇİLEN İL • ${esc(p.region)} BÖLGESİ</span><h2>${esc(p.name)}</h2><p>${esc(p.fact||'KPSS için il özeti')}</p></div></div><div class="province-kpss"><span>🧠 KPSS HIZLI ÖZET</span><strong>${esc(p.kpss||p.fact||'Bu il için kısa KPSS özeti hazır.')}</strong></div><div class="province-facts province-facts-premium"><div class="province-fact"><span>🌦️ İklim</span><b>${esc(p.climate||'Belirtilmemiş')}</b></div><div class="province-fact"><span>⛰️ Dağlar</span><b>${esc(p.mountains||p.terrain||'Belirtilmemiş')}</b></div><div class="province-fact"><span>🌾 Ovalar</span><b>${esc(p.plains||'Belirtilmemiş')}</b></div><div class="province-fact"><span>💧 Göller / Sulak Alanlar</span><b>${esc(p.lakes||'Büyük doğal göl bulunmuyor; baraj/göletler mevcut.')}</b></div><div class="province-fact"><span>🌊 Akarsular</span><b>${esc(p.rivers||'Belirgin akarsu yok')}</b></div><div class="province-fact"><span>🌾 Tarım</span><b>${esc(p.agriculture||'Belirtilmemiş')}</b></div><div class="province-fact"><span>⛏️ Maden / Kaynak</span><b>${esc(p.mining||'Belirtilmemiş')}</b></div><div class="province-fact"><span>👥 2025 Nüfusu</span><b>${esc(p.population||'Belirtilmemiş')}</b></div></div><div class="province-geography-note"><span>🗺️ COĞRAFYA NOTU</span><p>${esc(p.geographyNote||p.fact||'Bu il için başlıca coğrafi unsurlar yukarıda listelenmiştir.')}</p></div><div class="province-memory"><span>⚡ HAFIZA KODU</span><p>${esc(p.kpss||p.fact||'Haritada seçtiğin ili bu kart üzerinden tekrar edebilirsin.')}</p></div><div class="province-actions"><button class="btn ${fav?'btn-secondary':'btn-primary'}" data-fav-province="${esc(p.name)}">${fav?'★ Favoriden çıkar':'☆ Favoriye ekle'}</button><button class="btn btn-secondary" data-study-province="${esc(p.name)}">Bu ili çalış →</button></div></div>`}
+  function renderTopics(){const el=$('#view-topics');el.innerHTML=`<div class="section-head"><div><span class="kicker">KPSS COĞRAFYA</span><h1>Konu Kütüphanesi</h1><p>Önce öğren, sonra testte uygula. İlerlemen otomatik kaydedilir.</p></div><button class="btn btn-primary" data-view="quiz">Hızlı test →</button></div><div class="topics-grid">${TOPICS.map(t=>`<article class="topic-card" data-topic="${esc(t.id)}"><div class="topic-icon">${esc(t.icon||'🧭')}</div><h3>${esc(t.title)}</h3><p>${esc(t.desc||'')}</p><div class="topic-meta"><span class="badge">${esc(t.level||'KPSS')}</span><span class="muted" style="font-size:7px">${pctFor(t.id)}%</span></div><div class="topic-progress"><i style="width:${pctFor(t.id)}%"></i></div></article>`).join('')}</div>`;$$('.topic-card').forEach(c=>c.onclick=()=>openTopic(c.dataset.topic))}
+  function openTopic(id){const t=topic(id);if(!t)return;openModal(`<div class="modal-head"><div><span class="kicker">${esc(t.level||'KPSS')} • ${t.minutes||10} DK</span><h2>${esc(t.icon||'🧭')} ${esc(t.title)}</h2></div><button class="modal-close" data-close-modal>×</button></div><p>${esc(t.desc||'')}</p><h3 class="modal-section-title">Bilmen gerekenler</h3><ul>${(t.bullets||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="province-hero"><b>🧠 HAFIZA KODU / KPSS İPUCU</b><p>${esc(t.tip||'')}</p></div><div class="widget-actions"><button class="btn btn-secondary" data-study-topic="${esc(id)}">✓ Bu konuyu çalıştım</button><button class="btn btn-primary" data-quiz-topic="${esc(id)}">Bu konudan test çöz →</button></div>`)}
   function markTopic(id){state.topicPct[id]=Math.min(100,pctFor(id)+25);saveState();toast('Konu ilerlemesi kaydedildi.');closeModal();if(currentView==='topics')renderTopics();remoteInsert('profiles',{id:user?.id,display_name:state.profile.displayName,email:state.profile.email,updated_at:new Date().toISOString()})}
-
-  /* ── LIBRARY ── */
   function renderLibrary(){const el=$('#view-library');const q=el.dataset.q||'';const list=TOPICS.filter(t=>!q||norm(t.title).includes(norm(q))||norm(t.desc).includes(norm(q)));el.innerHTML=`<div class="section-head"><div><span class="kicker">ÇALIŞMA ALANI</span><h1>Çalışma Kütüphanesi</h1><p>Yüksek getirili konu kartlarını aç, çalıştım diye işaretle ve ilerle.</p></div><button class="btn btn-secondary" data-view="topics">Konu görünümü</button></div><div class="filter-row">${['Tümü','Yüksek Getiri','Orta','Başlangıç'].map((x,i)=>`<button class="filter-chip ${i===0?'active':''}" data-filter="${x}">${x}</button>`).join('')}</div><div class="topic-list">${list.map(t=>`<article class="study-row"><div class="row-icon">${esc(t.icon||'📚')}</div><div><h3>${esc(t.title)}</h3><p>${esc(t.desc||'')}</p></div><div class="row-actions"><button class="btn btn-secondary" data-open-topic="${esc(t.id)}">Oku</button><button class="btn btn-primary" data-quick-study="${esc(t.id)}">Çalıştım</button></div></article>`).join('')}</div>`;$$('[data-open-topic]').forEach(b=>b.onclick=()=>openTopic(b.dataset.openTopic));$$('[data-quick-study]').forEach(b=>b.onclick=()=>markTopic(b.dataset.quickStudy));$$('[data-filter]').forEach(b=>b.onclick=()=>{const f=b.dataset.filter;$$('[data-filter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.study-row').forEach(r=>{const id=r.querySelector('[data-open-topic]')?.dataset.openTopic;const t=topic(id);r.style.display=(f==='Tümü'||!t||t.level===f||f==='Yüksek Getiri'&&t.level?.includes('Yüksek'))?'grid':'none'})})}
-
-  /* ── QUIZ ── */
   function renderQuiz(){const el=$('#view-quiz');if(!quiz){el.innerHTML=`<div class="quiz-shell"><div class="quiz-card quiz-result"><span class="kicker">KPSS • KARIŞIK COĞRAFYA</span><div class="quiz-icon">🧠</div><h1 class="quiz-ready-title">Hazır mısın?</h1><p class="muted quiz-ready-note">5 soruluk kısa test ile bugün ne kadarını hatırladığını gör.</p><div class="widget-actions" style="max-width:420px;margin:20px auto"><button class="btn btn-primary" id="start-quiz">Teste Başla →</button><button class="btn btn-secondary" id="start-daily">Günün Challenge'ı</button></div></div></div>`;$('#start-quiz').onclick=()=>startQuiz();$('#start-daily').onclick=()=>startChallenge();return}renderQuizQuestion()}
   function startQuiz(topicId=null){let bank=QUESTIONS.filter(q=>!topicId||q.topic===topicId);if(bank.length<5)bank=QUESTIONS.slice();bank=bank.slice().sort(()=>Math.random()-.5).slice(0,5);quiz={topicId,questions:bank,index:0,correct:0,answered:false};renderQuiz()}
-  function startChallenge(){startQuiz();toast('Günün 5 soruluk challenge başladı. 🏆')}
-  function renderQuizQuestion(){const q=quiz.questions[quiz.index],el=$('#view-quiz');const progress=Math.round((quiz.index/quiz.questions.length)*100);el.innerHTML=`<div class="quiz-shell"><div class="quiz-card"><div class="quiz-top"><span>5 SORU • ${quiz.topicId?esc(topic(quiz.topicId)?.title||'KONU'):'KARIŞIK COĞRAFYA'}</span><b>${quiz.index+1} / ${quiz.questions.length}</b></div><div class="quiz-progress"><i style="width:${progress}%"></i></div><h2 class="question">${esc(q.q)}</h2><div class="answers">${q.options.map((a,i)=>`<button class="answer" data-answer="${i}">${esc(a)}</button>`).join('')}</div><div id="quiz-explain"></div><div class="quiz-actions"><button class="btn btn-secondary" data-view="dashboard">Çık</button></div></div></div>`;$$('.answer').forEach(b=>b.onclick=()=>answerQuestion(Number(b.dataset.answer)))}
-  function answerQuestion(i){if(!quiz||quiz.answered)return;quiz.answered=true;const q=quiz.questions[quiz.index],correctAnswer=Number(q.answer);$$('.answer').forEach((b,n)=>{if(n===correctAnswer)b.classList.add('correct');if(n===i&&i!==correctAnswer)b.classList.add('wrong')});if(i===correctAnswer)quiz.correct++;$('#quiz-explain').innerHTML=`<div class="quiz-explain"><b>${i===correctAnswer?'✓ Doğru!':'✗ Yanlış.'}</b> ${esc(q.explain||'Cevap açıklaması mevcut değil.')}</div><div class="quiz-actions"><button class="btn btn-primary" id="next-question">${quiz.index===quiz.questions.length-1?'Sonucu gör':'Sonraki soru →'}</button></div>`;$('#next-question').onclick=nextQuestion}
+  function startChallenge(){startQuiz();toast('Günün 5 soruluk challenge başladı.');}
+  function renderQuizQuestion(){const q=quiz.questions[quiz.index],el=$('#view-quiz');const progress=Math.round((quiz.index/quiz.questions.length)*100);el.innerHTML=`<div class="quiz-shell"><div class="quiz-card"><div class="quiz-top"><span>5 SORU • ${quiz.topicId?esc(topic(quiz.topicId)?.title||'KONU'): 'KARIŞIK COĞRAFYA'}</span><b>${quiz.index+1} / ${quiz.questions.length}</b></div><div class="quiz-progress"><i style="width:${progress}%"></i></div><h2 class="question">${esc(q.q)}</h2><div class="answers">${q.options.map((a,i)=>`<button class="answer" data-answer="${i}">${esc(a)}</button>`).join('')}</div><div id="quiz-explain"></div><div class="quiz-actions"><button class="btn btn-secondary" data-view="dashboard">Çık</button></div></div></div>`;$$('.answer').forEach(b=>b.onclick=()=>answerQuestion(Number(b.dataset.answer)));}
+  function answerQuestion(i){if(!quiz||quiz.answered)return;quiz.answered=true;const q=quiz.questions[quiz.index],correctAnswer=Number(q.answer);$$('.answer').forEach((b,n)=>{if(n===correctAnswer)b.classList.add('correct');if(n===i&&i!==correctAnswer)b.classList.add('wrong')});if(i===correctAnswer)quiz.correct++;$('#quiz-explain').innerHTML=`<div class="quiz-explain"><b>${i===correctAnswer?'Doğru!':'Yanlış.'}</b> ${esc(q.explain||'Cevap açıklaması mevcut değil.')}</div><div class="quiz-actions"><button class="btn btn-primary" id="next-question">${quiz.index===quiz.questions.length-1?'Sonucu gör':'Sonraki soru →'}</button></div>`;$('#next-question').onclick=nextQuestion}
   async function nextQuestion(){if(!quiz)return;if(quiz.index===quiz.questions.length-1){const result={topic_id:quiz.topicId||'mixed',correct:quiz.correct,total:quiz.questions.length,score:Math.round(quiz.correct/quiz.questions.length*100),created_at:new Date().toISOString()};state.results.unshift(result);state.results=state.results.slice(0,50);saveState();await remoteInsert('quiz_results',{user_id:user?.id,...result});const sc=result.score;quiz=null;renderQuizResult(sc,result.correct,result.total);return}quiz.index++;quiz.answered=false;renderQuizQuestion()}
   function renderQuizResult(sc,c,t){$('#view-quiz').innerHTML=`<div class="quiz-shell"><div class="quiz-card quiz-result"><span class="kicker">TEST TAMAMLANDI</span><div class="quiz-score">%${sc}</div><h2 class="result-title">${c} / ${t} doğru</h2><p class="muted result-note">Sonucun kaydedildi. Bir sonraki testte daha iyisini hedefle.</p><div class="widget-actions" style="max-width:420px;margin:20px auto"><button class="btn btn-primary" id="again">Tekrar çöz</button><button class="btn btn-secondary" data-view="stats">İstatistiklere git</button></div></div></div>`;$('#again').onclick=()=>startQuiz()}
-
-  /* ── STATS ── */
-  function renderStats(){const el=$('#view-stats');const bars=state.results.slice(0,10).reverse();el.innerHTML=`<div class="section-head"><div><span class="kicker">İLERLEME</span><h1>İstatistikler</h1><p>Çalışma ritmini ve test performansını burada takip et.</p></div></div><div class="stats-grid"><div class="stat-big"><span>Keşfedilen İl</span><b>${discoveredCount()} / 81</b></div><div class="stat-big"><span>Çözülen Soru</span><b>${solved()}</b></div><div class="stat-big"><span>Doğru</span><b>${correct()}</b></div><div class="stat-big"><span>Başarı</span><b>%${score()}</b></div></div><section class="surface chart-card"><h3 style="font-size:15px;margin:0 0 12px">Son test sonuçları</h3><div class="bar-chart">${bars.length?bars.map(r=>`<div class="bar" style="height:${Math.max(10,Number(r.score)||0)}%"><small>%${Number(r.score)||0}</small></div>`).join(''):'<div class="empty" style="width:100%"><b>Henüz test sonucu yok</b>Bir test çözünce performans grafiğin burada oluşacak.</div>'}</div></section><section class="surface chart-card"><h3 style="font-size:15px;margin:0 0 12px">Konu ilerlemesi</h3>${TOPICS.map(t=>`<div style="display:grid;grid-template-columns:170px 1fr 45px;gap:8px;align-items:center;margin:10px 0"><span style="font-size:11px">${esc(t.title)}</span><div class="progress-line" style="margin:0"><i style="width:${pctFor(t.id)}%"></i></div><b style="font-size:11px;text-align:right">${pctFor(t.id)}%</b></div>`).join('')}</section>`}
-
-  /* ── FAVORITES ── */
+  function renderStats(){const el=$('#view-stats');const bars=state.results.slice(0,10).reverse();el.innerHTML=`<div class="section-head"><div><span class="kicker">İLERLEME</span><h1>İstatistikler</h1><p>Çalışma ritmini ve test performansını burada takip et.</p></div></div><div class="stats-grid"><div class="stat-big"><span>Keşfedilen İl</span><b>${discoveredCount()} / 81</b></div><div class="stat-big"><span>Çözülen Soru</span><b>${solved()}</b></div><div class="stat-big"><span>Doğru</span><b>${correct()}</b></div><div class="stat-big"><span>Başarı</span><b>%${score()}</b></div></div><section class="surface chart-card"><h3 style="font-size:12px;margin:0">Son test sonuçları</h3><div class="bar-chart">${bars.length?bars.map((r,i)=>`<div class="bar" style="height:${Math.max(10,Number(r.score)||0)}%"><small>%${Number(r.score)||0}</small></div>`).join(''):'<div class="empty" style="width:100%"><b>Henüz test sonucu yok</b>Bir test çözünce performans grafiğin burada oluşacak.</div>'}</div></section><section class="surface chart-card"><h3 style="font-size:12px;margin:0 0 12px">Konu ilerlemesi</h3>${TOPICS.map(t=>`<div style="display:grid;grid-template-columns:150px 1fr 35px;gap:8px;align-items:center;margin:9px 0"><span style="font-size:8px">${esc(t.title)}</span><div class="progress-line" style="margin:0"><i style="width:${pctFor(t.id)}%"></i></div><b style="font-size:8px;text-align:right">${pctFor(t.id)}%</b></div>`).join('')}</section>`}
   function isFav(item,type='province'){return state.favorites.includes(item+'|'+type)}
-  async function toggleFav(item,type='province'){
-    const key=item+'|'+type;
-    const wasFav=isFav(item,type);
-    if(wasFav){
-      state.favorites=state.favorites.filter(x=>x!==key);
-    } else {
-      state.favorites.push(key);
-    }
-    saveState();
-    const nowFav=isFav(item,type);
-    if(user){
-      if(nowFav){
-        await remoteInsert('favorites',{user_id:user.id,item_id:item,item_type:type});
-      } else {
-        try{await sb.from('favorites').delete().eq('user_id',user.id).eq('item_id',item).eq('item_type',type)}catch(e){console.warn(e)}
-      }
-    }
-    toast(nowFav?'Favorilere eklendi. ⭐':'Favorilerden çıkarıldı.');
-    if(currentView==='favorites')renderFavorites();
-    if(currentView==='map')renderMapView();
-    if(currentView==='dashboard'&&selectedProvince)renderDashboardProvinceCard(selectedProvince);
-  }
-
+  async function toggleFav(item,type='province'){const key=item+'|'+type;if(isFav(item,type))state.favorites=state.favorites.filter(x=>x!==key);else state.favorites.push(key);saveState();if(user){if(isFav(item,type))await remoteInsert('favorites',{user_id:user.id,item_id:item,item_type:type});else try{await sb.from('favorites').delete().eq('user_id',user.id).eq('item_id',item).eq('item_type',type)}catch(e){console.warn(e)}}toast(isFav(item,type)?'Favorilere eklendi.':'Favorilerden çıkarıldı.');if(currentView==='favorites')renderFavorites();if(currentView==='map')renderMapView()}
   function renderFavorites(){const el=$('#view-favorites');const items=state.favorites.map(x=>{const [id,type]=x.split('|');return{item:id,type}});el.innerHTML=`<div class="section-head"><div><span class="kicker">KAYDEDİLENLER</span><h1>Favoriler</h1><p>Tekrar bakmak istediğin il ve konuları burada tut.</p></div></div>${items.length?`<div class="favorite-grid">${items.map(x=>x.type==='province'?favProvince(x.item):favTopic(x.item)).join('')}</div>`:'<div class="empty"><b>Henüz favorin yok.</b>Haritada bir il seçip yıldızla favorine ekleyebilirsin.<br><button class="btn btn-primary" data-view="map">Haritaya git →</button></div>'}`;$$('[data-remove-fav]').forEach(b=>b.onclick=()=>toggleFav(b.dataset.removeFav,b.dataset.type))}
-  function favProvince(n){const p=province(n);return`<article class="favorite-card"><span class="badge">İL • ${p?.region||''}</span><h3>📍 ${esc(n)}</h3><p>${esc(p?.fact||p?.kpss||'')}</p><div class="fav-geo-mini"><span>🏔️ ${esc(p?.mountains||'—')}</span><span>🏞️ ${esc(p?.plains||'—')}</span></div><button class="btn btn-secondary" style="margin-top:10px;width:100%" data-remove-fav="${esc(n)}" data-type="province">★ Favoriden çıkar</button></article>`}
+  function favProvince(n){const p=province(n);return`<article class="favorite-card"><span class="badge">İL • ${p?.region||''}</span><h3>📍 ${esc(n)}</h3><p>${esc(p?.fact||p?.kpss||'')}</p><button class="btn btn-secondary" style="margin-top:10px;width:100%" data-remove-fav="${esc(n)}" data-type="province">★ Favoriden çıkar</button></article>`}
   function favTopic(id){const t=topic(id);return`<article class="favorite-card"><span class="badge">KONU</span><h3>${esc(t?.icon||'📚')} ${esc(t?.title||id)}</h3><p>${esc(t?.desc||'')}</p><button class="btn btn-secondary" style="margin-top:10px;width:100%" data-remove-fav="${esc(id)}" data-type="topic">★ Favoriden çıkar</button></article>`}
-
-  /* ── SETTINGS ── */
-  function renderSettings(){const el=$('#view-settings');el.innerHTML=`<div class="section-head"><div><span class="kicker">HESAP</span><h1>Ayarlar & Profil</h1><p>Profilini, tema tercihini ve yerel çalışma verilerini yönet.</p></div></div><div class="settings-grid"><section class="surface settings-card"><h3>Profil</h3><div class="setting-row"><span>Ad Soyad</span><input id="settings-name" class="setting-input" value="${esc(state.profile.displayName||'')}" /></div><div class="setting-row"><span>E-posta</span><b>${esc(state.profile.email||user?.email||'Misafir')}</b></div><button class="btn btn-primary full" id="save-profile">Profili kaydet</button></section><section class="surface settings-card"><h3>Görünüm</h3><div class="setting-row"><span>Tema</span><button class="btn btn-secondary" id="settings-theme">${state.theme==='light'?'Açık':'Koyu'} tema</button></div><div class="setting-row"><span>Uygulama sürümü</span><b>v${esc(CFG.APP_VERSION||'22.0.0')}</b></div></section><section class="surface settings-card"><h3>Veri</h3><div class="setting-row"><span>Yerel ilerleme</span><b>${discoveredCount()} il • ${solved()} soru</b></div><button class="btn btn-secondary full" id="export-data">Verilerimi dışa aktar</button><button class="btn full" style="margin-top:7px;color:#ff9aa4;border-color:rgba(255,115,130,.25)" id="reset-data">Yerel verileri sıfırla</button></section><section class="surface settings-card"><h3>KPSS Sayacı</h3><div class="setting-row"><span>Sınav</span><b id="exam-countdown">Hesaplanıyor…</b></div><p class="muted" style="font-size:11px;line-height:1.6">Hedef tarihi config.js içindeki EXAM_DATE değerinden alınır.</p></section></div>`;$('#save-profile').onclick=()=>{const n=$('#settings-name').value.trim()||'Öğrenci';state.profile.displayName=n;saveState();setProfileUI();toast('Profil kaydedildi.');remoteInsert('profiles',{id:user?.id,display_name:n,email:state.profile.email||user?.email||'',updated_at:new Date().toISOString()})};$('#settings-theme').onclick=toggleTheme;$('#export-data').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yurdunu-bil-veriler.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};$('#reset-data').onclick=()=>{if(confirm('Bu cihazdaki yerel ilerleme, favoriler ve test sonuçları silinsin mi?')){state=clone(DEFAULT);saveState();selectedProvince=null;quiz=null;toast('Yerel veriler sıfırlandı.');renderSettings();setProfileUI()}};updateCountdown()}
+  function renderSettings(){const el=$('#view-settings');el.innerHTML=`<div class="section-head"><div><span class="kicker">HESAP</span><h1>Ayarlar & Profil</h1><p>Profilini, tema tercihini ve yerel çalışma verilerini yönet.</p></div></div><div class="settings-grid"><section class="surface settings-card"><h3>Profil</h3><div class="setting-row"><span>Ad Soyad</span><input id="settings-name" class="setting-input" value="${esc(state.profile.displayName||'')}" /></div><div class="setting-row"><span>E-posta</span><b>${esc(state.profile.email||user?.email||'Misafir')}</b></div><button class="btn btn-primary full" id="save-profile">Profili kaydet</button></section><section class="surface settings-card"><h3>Görünüm</h3><div class="setting-row"><span>Tema</span><button class="btn btn-secondary" id="settings-theme">${state.theme==='light'?'Açık':'Koyu'} tema</button></div><div class="setting-row"><span>Uygulama sürümü</span><b>v${esc(CFG.APP_VERSION||'21.3.0')}</b></div></section><section class="surface settings-card"><h3>Veri</h3><div class="setting-row"><span>Yerel ilerleme</span><b>${discoveredCount()} il • ${solved()} soru</b></div><button class="btn btn-secondary full" id="export-data">Verilerimi dışa aktar</button><button class="btn full" style="margin-top:7px;color:#ff9aa4;border-color:rgba(255,115,130,.25)" id="reset-data">Yerel verileri sıfırla</button></section><section class="surface settings-card"><h3>KPSS Sayacı</h3><div class="setting-row"><span>Sınav</span><b id="exam-countdown">Hesaplanıyor…</b></div><p class="muted" style="font-size:8px;line-height:1.6">Hedef tarihi config.js içindeki EXAM_DATE değerinden alınır.</p></section></div>`;$('#save-profile').onclick=()=>{const n=$('#settings-name').value.trim()||'Öğrenci';state.profile.displayName=n;saveState();setProfileUI();toast('Profil kaydedildi.');remoteInsert('profiles',{id:user?.id,display_name:n,email:state.profile.email||user?.email||'',updated_at:new Date().toISOString()})};$('#settings-theme').onclick=toggleTheme;$('#export-data').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='yurdunu-bil-veriler.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};$('#reset-data').onclick=()=>{if(confirm('Bu cihazdaki yerel ilerleme, favoriler ve test sonuçları silinsin mi?')){state=clone(DEFAULT);saveState();selectedProvince=null;quiz=null;toast('Yerel veriler sıfırlandı.');renderSettings();setProfileUI()}};updateCountdown()}
   function updateCountdown(){const el=$('#exam-countdown');if(!el)return;const d=new Date(CFG.EXAM_DATE||'2026-10-04T10:15:00+03:00');const diff=d-new Date();if(diff<=0){el.textContent='Sınav günü geldi';return}const days=Math.floor(diff/864e5),hours=Math.floor(diff/36e5)%24;el.textContent=`${days} gün ${hours} saat`}
-
-  /* ── SEARCH ── */
-  function globalSearch(q){const n=norm(q);if(!n)return;const p=DATA.find(x=>norm(x.name).includes(n));const t=TOPICS.find(x=>norm(x.title).includes(n));if(p){navigate('map');setTimeout(()=>selectProvince(p.name),60);return}if(t){navigate('topics');setTimeout(()=>openTopic(t.id),60);return}const qx=QUESTIONS.find(x=>norm(x.q).includes(n));if(qx){navigate('quiz');startQuiz(qx.topic);return}}
-
-  /* ── MODAL ── */
-  function openModal(html){
-    const root=$('#modal-root');
-    root.innerHTML=`<div class="modal-backdrop"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
-    // Close handlers
-    root.querySelector('[data-close-modal]')?.addEventListener('click',closeModal);
-    root.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});
-    // Fav button inside modal
-    root.querySelector('[data-fav-province]')?.addEventListener('click',e=>{
-      toggleFav(e.currentTarget.dataset.favProvince,'province');
-      // Re-render the button state
-      const btn=e.currentTarget;
-      const name=btn.dataset.favProvince;
-      const nowFav=isFav(name,'province');
-      btn.textContent=nowFav?'★ Favoriden çıkar':'☆ Favoriye ekle';
-      btn.className=`btn ${nowFav?'btn-secondary':'btn-primary'}`;
-    });
-    // Study topic
-    root.querySelector('[data-study-topic]')?.addEventListener('click',e=>markTopic(e.currentTarget.dataset.studyTopic));
-    // Quiz topic
-    root.querySelector('[data-quiz-topic]')?.addEventListener('click',e=>{const id=e.currentTarget.dataset.quizTopic;closeModal();navigate('quiz');startQuiz(id)});
-    // Province quiz from modal
-    root.querySelector('[data-modal-quiz-province]')?.addEventListener('click',()=>{closeModal();navigate('quiz');startQuiz()});
-  }
+  function updateDashboardCountdown(){const el=$('#dashboard-countdown');if(!el)return;const d=new Date(CFG.EXAM_DATE||'2026-10-04T10:15:00+03:00');const diff=d-new Date();if(diff<=0){el.textContent='Sınav günü';return}const days=Math.floor(diff/864e5),hours=Math.floor(diff/36e5)%24;el.textContent=`${days}g ${hours}s`}
+  function globalSearch(q){const n=norm(q);if(!n){return}const p=DATA.find(x=>norm(x.name).includes(n));const t=TOPICS.find(x=>norm(x.title).includes(n));if(p){navigate('map');setTimeout(()=>selectProvince(p.name),60);return}if(t){navigate('topics');setTimeout(()=>openTopic(t.id),60);return}const qx=QUESTIONS.find(x=>norm(x.q).includes(n));if(qx){navigate('quiz');startQuiz(qx.topic);return}}
+  function openModal(html){const root=$('#modal-root');root.innerHTML=`<div class="modal-backdrop"><div class="modal">${html}</div></div>`;root.querySelector('[data-close-modal]')?.addEventListener('click',closeModal);root.querySelector('.modal-backdrop').addEventListener('click',e=>{if(e.target.classList.contains('modal-backdrop'))closeModal()});root.querySelector('[data-fav-province]')?.addEventListener('click',e=>toggleFav(e.currentTarget.dataset.favProvince,'province'));root.querySelector('[data-study-topic]')?.addEventListener('click',e=>markTopic(e.currentTarget.dataset.studyTopic));root.querySelector('[data-quiz-topic]')?.addEventListener('click',e=>{const id=e.currentTarget.dataset.quizTopic;closeModal();navigate('quiz');startQuiz(id)});root.querySelector('[data-view]')?.addEventListener('click',e=>{const p=e.currentTarget.dataset.provinceTopic;closeModal();navigate('quiz');startQuiz()})}
   function closeModal(){$('#modal-root').innerHTML=''}
-
-  /* ── POMODORO ── */
-  function toggleTimer(){if(pomodoro.running){clearInterval(pomodoro.timer);pomodoro.running=false}else{pomodoro.running=true;pomodoro.timer=setInterval(()=>{pomodoro.seconds--;if(pomodoro.seconds<=0){clearInterval(pomodoro.timer);pomodoro.running=false;toast('⏰ Odak oturumu tamamlandı!');pomodoro.seconds=pomodoro.total}updateTimerUI()},1000)}updateTimerUI()}
+  function toggleTimer(){if(pomodoro.running){clearInterval(pomodoro.timer);pomodoro.running=false}else{pomodoro.running=true;pomodoro.timer=setInterval(()=>{pomodoro.seconds--;if(pomodoro.seconds<=0){clearInterval(pomodoro.timer);pomodoro.running=false;toast('Odak oturumu tamamlandı!');pomodoro.seconds=pomodoro.total}updateTimerUI()},1000)}updateTimerUI()}
   function resetTimer(){clearInterval(pomodoro.timer);pomodoro.running=false;pomodoro.seconds=pomodoro.total;updateTimerUI()}
   function updateTimerUI(){const s=pomodoro.seconds,m=Math.floor(s/60),sec=s%60;setText('#dash-timer',`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`);const b=$('#timer-start');if(b)b.textContent=pomodoro.running?'Ⅱ Duraklat':'▶ Başlat'}
-
-  /* ── GLOBAL DELEGATES ── */
-  function setupGlobalDelegates(){
-    document.addEventListener('click',e=>{
-      // Fav buttons outside modal
-      const fav=e.target.closest('[data-fav-province]');
-      if(fav&&!e.target.closest('#modal-root')){toggleFav(fav.dataset.favProvince,'province')}
-      // Study province button → go to map
-      const study=e.target.closest('[data-study-province]');
-      if(study){const p=province(study.dataset.studyProvince);if(p){closeModal();navigate('map');selectedProvince=p;renderMapView()}}
-    });
-  }
-
-  /* ── INIT ── */
-  function init(){
-    setupAuth();
-    setupNavigation();
-    setupGlobalDelegates();
-    document.body.classList.toggle('light',state.theme==='light');
-    bootAuth();
-  }
+  function setupGlobalDelegates(){document.addEventListener('click',e=>{const fav=e.target.closest('[data-fav-province]');if(fav&&!$('#modal-root .modal'))toggleFav(fav.dataset.favProvince,'province');const study=e.target.closest('[data-study-province]');if(study){const p=province(study.dataset.studyProvince);if(p){closeModal();navigate('map');selectedProvince=p;renderMapView()}}})}
+  function init(){setupAuth();setupNavigation();setupGlobalDelegates();document.body.classList.toggle('light',state.theme==='light');bootAuth();}
   init();
 })();
