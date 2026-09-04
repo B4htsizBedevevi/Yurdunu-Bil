@@ -1,12 +1,13 @@
 {
-  "version":"38.1.0",
-  "message":"Yurdunu Bil 38.1 — tek fiziksel Türkiye Atlası.",
+  "version":"39.0.0",
+  "message":"Yurdunu Bil 39 — gerçek harita altyapılı tek Türkiye Atlası.",
   "changes":[
-    "Tek atlas renderer korunup fiziksel altlık tek yerde toplandı.",
-    "Gerçek Türkiye kıyı çizgisi Natural Earth altlığına eklendi.",
-    "Gerçek göl ve akarsu geometrileri il sınırlarının üzerinde gösteriliyor.",
-    "Atlas sürükleme, tekerlek yakınlaştırma ve il seçimini destekliyor.",
-    "Yer şekilleri, maden, nüfus, tarım, iklim ve bölge katmanları aynı haritada çalışıyor.",
-    "Mobil atlas araçları ve bilgi paneli daha sıkı hale getirildi."
+    "Dashboard içindeki ikinci harita tamamen kaldırıldı; Genel Bakış artık tek atlas için giriş kartı gösteriyor.",
+    "Türkiye Haritası tek ve kanonik Leaflet atlası oldu.",
+    "OpenStreetMap gerçek harita altyapısı, sürükleme, tekerlek ve mobil pinch zoom kullanıyor.",
+    "81 il sınırı GeoJSON olarak doğrudan Leaflet üzerinde çalışıyor.",
+    "Natural Earth göl ve akarsu geometrileri haritanın üstünde gerçek coğrafi konumlarıyla gösteriliyor.",
+    "İl, bölge, iklim, tarım, yer şekilleri, sular, maden ve nüfus katmanları aynı haritada çalışıyor.",
+    "Mobil ve masaüstü atlas düzeni tek arayüzde birleştirildi."
   ]
 }
