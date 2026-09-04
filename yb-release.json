@@ -1,11 +1,11 @@
 {
-  "version":"37.0.0",
-  "message":"Yurdunu Bil 37 — gerçek coğrafi göl ve akarsu altlığı ile yeni atlas denemesi.",
+  "version":"37.0.2",
+  "message":"Yurdunu Bil 37.0.2 — gerçek atlas su katmanları ve mobil harita kararlılık düzeltmeleri.",
   "changes":[
-    "Gerçek göl poligonları atlasın altlığına eklendi.",
-    "Gerçek akarsu güzergâhları atlasın altlığına eklendi.",
-    "Önemli su yolları ve göller harita üzerinde daha doğal görünüyor.",
-    "Mevcut 81 il ve KPSS katmanları korunuyor.",
-    "Yeni altlık masaüstü, tablet ve telefonda aynı atlas üzerinde çalışıyor."
+    "Gerçek göl poligonları artık il dolgu katmanının üzerinde görünür.",
+    "Ana akarsu güzergâhları il sınırları üzerinde görünür.",
+    "Mobil kategori düğmelerindeki dokunma/focus flicker azaltıldı.",
+    "Harita Türkiye sınırlarına daha sıkı oturtularak boş alan azaltıldı.",
+    "Eski sürüm bildirim döngüsünü önlemek için sürüm kontrolü 37.0.2 ile eşitlendi."
   ]
 }
