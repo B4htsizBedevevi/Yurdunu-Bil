@@ -1,13 +1,16 @@
 {
-  "version":"39.0.0",
-  "message":"Yurdunu Bil 39 — gerçek harita altyapılı tek Türkiye Atlası.",
+  "version":"40.0.0",
+  "message":"Yurdunu Bil 40 — harita yükleme hatası giderildi; akarsu, göl, ova, dağ, plato ve maden katmanları zenginleştirildi.",
   "changes":[
-    "Dashboard içindeki ikinci harita tamamen kaldırıldı; Genel Bakış artık tek atlas için giriş kartı gösteriyor.",
-    "Türkiye Haritası tek ve kanonik Leaflet atlası oldu.",
-    "OpenStreetMap gerçek harita altyapısı, sürükleme, tekerlek ve mobil pinch zoom kullanıyor.",
-    "81 il sınırı GeoJSON olarak doğrudan Leaflet üzerinde çalışıyor.",
-    "Natural Earth göl ve akarsu geometrileri haritanın üstünde gerçek coğrafi konumlarıyla gösteriliyor.",
-    "İl, bölge, iklim, tarım, yer şekilleri, sular, maden ve nüfus katmanları aynı haritada çalışıyor.",
-    "Mobil ve masaüstü atlas düzeni tek arayüzde birleştirildi."
+    "Leaflet artık statik ve güvenilir şekilde yükleniyor; haritanın açılmasını bozan async render yarış durumu giderildi.",
+    "Dashboard ikinci haritayı üretmiyor; Türkiye Atlası tek kanonik harita olarak açılıyor.",
+    "81 il GeoJSON sınırı gerçek harita altyapısı üzerinde çalışıyor.",
+    "OSM tabanı yanında yerel KPSS coğrafya verileriyle akarsular, göller, ovalar, dağlar, platolar ve maden noktaları görselleştirildi.",
+    "Sular katmanında önemli akarsular ve göller etiketleniyor.",
+    "Yer Şekilleri katmanında ovalar, platolar ve dağlar harita üzerinde ayrı görsel katmanlar olarak gösteriliyor.",
+    "Maden katmanında maden/kaynak noktaları doğrudan harita üzerinde işaretleniyor.",
+    "Mobil kullanım için yatay katman şeridi ve dokunma odaklı kontroller iyileştirildi.",
+    "Güncelleme sistemi ayrı ve kalıcı bir updater ile yenilendi; güncelleme sırasında Cache Storage ve eski service worker kayıtları temizleniyor.",
+    "Sürüm bilgisi HTML meta alanından okunuyor; gelecekteki sürüm kontrolü tek kaynaktan yapılıyor."
   ]
 }
