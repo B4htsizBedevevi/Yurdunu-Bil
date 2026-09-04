@@ -1,4 +1,4 @@
-/* v30 navigation resilience: re-apply compact dashboard/settings after view rerenders */
+/* v30 navigation resilience + v31 province study loader */
 (()=>{
 'use strict';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -7,9 +7,14 @@ function settings(){const v=$('#view-settings');if(!v||v.querySelector('.v30-set
 $('[data-v30-theme]',v).onclick=()=>{const isLight=document.body.classList.toggle('light');let raw={};try{raw=JSON.parse(localStorage.getItem('yb_state_25')||'{}')}catch{}raw.theme=isLight?'light':'dark';localStorage.setItem('yb_state_25',JSON.stringify(raw));settings()};
 $('[data-v30-labels]',v).onchange=e=>{localStorage.setItem('yb30_labels',e.target.checked?'1':'0');document.body.classList.toggle('hide-map-labels',!e.target.checked)};
 $('[data-v30-compact]',v).onchange=e=>{localStorage.setItem('yb30_compact',e.target.checked?'1':'0');document.body.classList.toggle('v30-compact',e.target.checked)};
-$('[data-v30-reset]',v).onclick=()=>{if(confirm('Yerel test geçmişi ve favoriler silinsin mi?')){localStorage.removeItem('yb_state_25');localStorage.removeItem('yb30_labels');localStorage.removeItem('yb30_compact');location.reload()}};
+$('[data-v30-reset]',v).onclick=()=>{if(confirm('Yerel test geçmişi ve favoriler silinsin mi?')){localStorage.removeItem('yb_state_25');localStorage.removeItem('yb30_labels');localStorage.removeItem('yb30_compact');localStorage.removeItem('yb_province_study_v31');location.reload()}};
 }
 function refresh(){dashboard();settings();}
 new MutationObserver(()=>setTimeout(refresh,40)).observe(document.body,{subtree:true,childList:true});
 refresh();
+
+// v31 assets are loaded after the core app so the province panel remains compatible.
+function loadAsset(type,src,id){if(document.getElementById(id))return;const e=document.createElement(type==='css'?'link':'script');e.id=id;if(type==='css'){e.rel='stylesheet';e.href=src}else{e.src=src;e.defer=true}document.head.appendChild(e)}
+loadAsset('css','province-study-v31.css?v=31.0.0','province-study-v31-css');
+loadAsset('js','province-study-v31.js?v=31.0.0','province-study-v31-js');
 })();
