@@ -41,3 +41,54 @@ body{font-size:15px}
 .view [style*="font-size:6px"],.view [style*="font-size:7px"],.view [style*="font-size:8px"],.view [style*="font-size:9px"]{font-size:11px!important;line-height:1.45!important}
 .view .muted{font-size:12px!important;line-height:1.6}
 .view small{font-size:10px}
+
+/* YURDUNU BİL 21.4 — INLINE PROVINCE PANEL + NO SCROLL-JUMP */
+html{scroll-behavior:auto}
+.atlas-svg{touch-action:manipulation}
+.atlas-svg .province-shape,.atlas-svg .province-lifted{outline:none}
+.dashboard-grid{grid-template-columns:minmax(0,1fr) minmax(300px,340px)}
+.side-stack{min-width:0}
+.selected-province-widget{display:flex;flex-direction:column;gap:12px;min-height:250px;padding:14px!important;border-color:rgba(76,213,255,.24)!important;background:linear-gradient(145deg,rgba(20,47,70,.95),rgba(9,23,38,.97))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.16)}
+.selected-province-widget.has-province{border-color:rgba(84,220,255,.42)!important;box-shadow:inset 0 1px 0 rgba(130,235,255,.08),0 18px 40px rgba(0,0,0,.22),0 0 0 1px rgba(65,207,255,.05)}
+.province-side-empty{display:flex;align-items:center;gap:12px;min-height:220px}
+.province-side-icon{width:48px;height:48px;flex:none;border-radius:15px;display:grid;place-items:center;font-size:26px;color:#73ddff;background:rgba(73,190,255,.09);border:1px solid rgba(73,190,255,.2)}
+.province-side-empty .kicker{font-size:10px!important}
+.province-side-empty h3{font-size:15px;margin:5px 0 5px}
+.province-side-empty p{font-size:11px!important;line-height:1.6!important;margin:0;color:var(--muted)}
+.province-side-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:10px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.province-side-emblem{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#4bd0ff,#647dff);color:#06121d;font-size:18px;font-weight:950;box-shadow:0 9px 24px rgba(57,176,255,.2)}
+.province-side-title{min-width:0}
+.province-side-title .kicker{font-size:9px!important;letter-spacing:.7px}
+.province-side-title h3{font-size:22px!important;line-height:1.05;margin:4px 0 5px;letter-spacing:-.5px}
+.province-side-title p{font-size:11px!important;line-height:1.45!important;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.province-selected-dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 4px rgba(88,217,255,.1),0 0 16px rgba(88,217,255,.65);margin-top:5px}
+.province-side-kpss{padding:11px 12px;border-radius:13px;border:1px solid rgba(76,211,255,.19);background:linear-gradient(135deg,rgba(48,151,225,.12),rgba(63,214,185,.055))}
+.province-side-kpss span,.province-side-memory span{display:block;font-size:9px!important;font-weight:950;letter-spacing:.6px;color:#7ae2ff}
+.province-side-kpss strong{display:block;font-size:11px!important;line-height:1.5;color:#e1edf7;margin-top:5px}
+.province-side-facts{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.province-side-facts>div{min-width:0;padding:9px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025)}
+.province-side-facts span{display:block;font-size:9px!important;color:var(--muted2);margin-bottom:4px}
+.province-side-facts b{display:block;font-size:10px!important;line-height:1.35;color:#dce9f4;white-space:normal;overflow-wrap:anywhere}
+.province-side-memory{padding:10px 12px;border-radius:12px;border:1px dashed rgba(247,200,92,.25);background:rgba(247,200,92,.045)}
+.province-side-memory span{color:#f7cf73}
+.province-side-memory p{font-size:10px!important;line-height:1.5!important;margin:5px 0 0;color:var(--muted)}
+.province-side-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:auto}
+.province-side-actions .btn{min-height:38px!important;font-size:10px!important;padding:0 8px!important}
+@media(max-width:1200px) and (min-width:1051px){.dashboard-grid{grid-template-columns:minmax(0,1fr) 300px}}
+@media(max-width:1050px){
+  .dashboard-grid{grid-template-columns:1fr}
+  .selected-province-widget{min-height:0}
+  .province-side-empty{min-height:120px}
+}
+@media(max-width:760px){
+  .dashboard-grid{grid-template-columns:1fr}
+  .selected-province-widget{order:-1;padding:13px!important}
+  .province-side-title h3{font-size:20px!important}
+  .province-side-facts b{font-size:10px!important}
+  .province-side-actions .btn{min-height:42px!important;font-size:11px!important}
+}
+@media(max-width:390px){
+  .province-side-head{grid-template-columns:auto minmax(0,1fr)}
+  .province-selected-dot{display:none}
+  .province-side-facts{grid-template-columns:1fr 1fr}
+}

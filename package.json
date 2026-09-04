@@ -1,7 +1,7 @@
 {
   "name": "yurdunu-bil",
   "private": true,
-  "version": "21.3.0",
+  "version": "21.4.0",
   "scripts": {
     "test": "node scripts/validate-data.js"
   },
