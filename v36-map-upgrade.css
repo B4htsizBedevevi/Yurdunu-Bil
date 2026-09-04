@@ -1,0 +1,17 @@
+/* Yurdunu Bil v36 — atlas visibility upgrade */
+.v36-feature-layer{pointer-events:none!important}
+.v36-river{fill:none;stroke:#42cfff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:.96;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 2px rgba(40,180,240,.45))}
+.v36-river-major{stroke-width:4.2}
+.v36-lake{fill:#31c7f3;fill-opacity:.72;stroke:#c9f6ff;stroke-width:1.6;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.v36-feature-label{font-family:Inter,system-ui,sans-serif;font-size:8.5px;font-weight:900;paint-order:stroke fill;stroke:rgba(3,16,28,.95);stroke-width:3px;stroke-linejoin:round;letter-spacing:.01em}
+.v36-feature-label.water{fill:#d9f8ff}
+.v36-feature-label.river{fill:#b9f0ff}
+.v36-feature-label.land{fill:#ffe1ae}
+.v36-feature-title{font-family:Inter,system-ui,sans-serif;font-size:9px;font-weight:950;fill:#e8fbff;paint-order:stroke fill;stroke:rgba(2,15,27,.95);stroke-width:3px}
+.atlas-shell[data-v30-mode="lakes"] .province-shape,.atlas-shell[data-v30-mode="rivers"] .province-shape{filter:brightness(.72) saturate(.72)}
+.atlas-shell[data-v30-mode="lakes"] .v36-lake,.atlas-shell[data-v30-mode="rivers"] .v36-river{opacity:1}
+.v36-map-key{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.v36-map-key span{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid rgba(90,190,225,.2);border-radius:999px;background:rgba(8,27,42,.78);color:#a9c9d8;font-size:8px;font-weight:800}
+.v36-map-key i{width:16px;height:4px;border-radius:99px;background:#42cfff;display:inline-block}.v36-map-key i.lake{height:9px;border-radius:4px;background:#31c7f3}.v36-map-key i.mountain{height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid #ffd18f;background:transparent}
+body.light .v36-map-key span{background:rgba(255,255,255,.9);border-color:#c8dce5;color:#4d6878}
+@media(max-width:820px){.v36-feature-label{font-size:7px;stroke-width:2.5px}.v36-river{stroke-width:3}.v36-river-major{stroke-width:3.7}.v36-map-key{gap:4px}.v36-map-key span{font-size:7.5px;padding:4px 7px}}
