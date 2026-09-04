@@ -1,18 +1,22 @@
-# Yurdunu Bil — KPSS Coğrafya Atlası 23.0.0
+# Yurdunu Bil — KPSS Coğrafya Atlası 24.1
 
-Final unified static-site release. Tek UI çekirdeği, responsive desktop/tablet/mobile/landscape düzeni ve GeoJSON → SVG 3D atlas kullanır.
+Temizlenmiş, tek çekirdekli responsive KPSS Coğrafya Atlası. Masaüstü, tablet, telefon ve yatay/dikey ekranlara göre düzenlenir.
 
 ## İçerik
 - 81 il
 - 8 KPSS ana konu
 - 120 soru
-- İl kartlarında iklim, dağlar, ovalar, göller/sulak alanlar, akarsular, tarım, maden/kaynak, 2025 nüfusu, coğrafya notu ve KPSS hafıza kodu
+- İl kartlarında iklim, dağlar, ovalar, göller/sulak alanlar, akarsular, tarım, maden/kaynak, nüfus ve KPSS notları
 - Harita katmanları: Standart, Bölgeler, İklim, Tarım, Dağlar, Ovalar, Su, Maden
-- Seçili il sağ panelde açılır; tam ekran il modalı ve odak kaynaklı sayfa kayması yoktur.
-- Supabase auth/progress/favorites/quiz sync korunur.
+- Su katmanında akarsular + göller; Dağlar katmanında önemli dağlar; Ovalar katmanında başlıca ovalar; Maden katmanında kaynak işaretleri gösterilir.
+- Keşfedilme sistemi ve eski UX/hotfix/update scriptleri kaldırıldı.
+- Supabase auth, favoriler ve quiz senkronizasyonu korunur.
+- 2025 il nüfusları ayrı veri dosyasında tutulur.
 
 ## Çalıştırma
 `start.cmd` veya `python -m http.server 5500`
 
 ## Doğrulama
-`npm test` ve `npm run check`
+`npm test`
+`npm run check`
+`npm run check:enhancer`
