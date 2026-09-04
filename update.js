@@ -24,10 +24,12 @@ function loadStudyFirst(){
  const addJs=(src,key)=>{if(document.querySelector('script['+key+']'))return;const s=document.createElement('script');s.src=src;s.setAttribute(key,'1');document.body.appendChild(s)};
  addCss('v45-study.css?v=45.0.0','data-yb45-css');
  addCss('v45-activity-pack.css?v=45.0.0','data-yb45-activity-css');
+ addCss('v45-map-maintenance.css?v=45.0.0','data-yb45-map-maintenance-css');
  addJs('v45-study-fixed.js?v=45.0.0','data-yb45-js');
  addJs('v45-study-ui-hotfix.js?v=45.0.0','data-yb45-ui-hotfix');
  addJs('v45-activity-pack.js?v=45.0.0','data-yb45-activity-js');
  addJs('v45-activity-bridge.js?v=45.0.0','data-yb45-activity-bridge');
+ addJs('v45-map-maintenance.js?v=45.0.0','data-yb45-map-maintenance-js');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{start();loadStudyFirst()},{once:true});else{start();loadStudyFirst()}
 })();
