@@ -24,7 +24,8 @@ jobs:
           tags = [
               '<script src="advanced.js"></script>',
               '<script src="quickfacts.js"></script>',
-              '<script src="news.js"></script>'
+              '<script src="news.js"></script>',
+              '<script src="innovation.js"></script>'
           ]
           for tag in tags:
               if tag not in s:
@@ -40,5 +41,5 @@ jobs:
             echo 'Script tags already up to date.'
             exit 0
           fi
-          git commit -m 'feat: add live current information feed'
+          git commit -m 'feat: add daily challenge mode'
           git push
