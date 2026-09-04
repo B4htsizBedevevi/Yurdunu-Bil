@@ -8,5 +8,5 @@
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.115.0"
   },
-  "version": "20.1.0"
+  "version": "21.1.0"
 }

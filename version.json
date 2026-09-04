@@ -1,4 +1,4 @@
 {
-  "version": "21.0.0",
-  "message": "Yurdunu Bil 21.0.0: 3D harita efektleri, CARTO dark tiles, unified responsive CSS, emoji düzeltmeleri, performans iyileştirmeleri."
+  "version": "21.1.0",
+  "message": "Yurdunu Bil 21.1.0: harita etkileşimi, kart/buton geometrisi ve responsive çakışmalar stabilize edildi."
 }

@@ -2170,15 +2170,17 @@
     primary.addTo(map);
 
     // Hata olursa OSM'ye düş
+    let fallbackStarted = false;
     primary.on("tileerror", () => {
-      map.eachLayer(layer => {
-        if (layer !== primary) return;
-        map.removeLayer(layer);
-      });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      if (fallbackStarted || !map.hasLayer(primary)) return;
+      fallbackStarted = true;
+      map.removeLayer(primary);
+      const fallback = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors",
-        maxZoom: 19
-      }).addTo(map);
+        maxZoom: 19,
+        crossOrigin: true
+      });
+      fallback.addTo(map);
     });
 
     return primary;
@@ -2411,87 +2413,31 @@
                 provinceStyle,
 
               onEachFeature:
-                (
-                  feature,
-                  layer
-                ) => {
-                  layer.on(
-                    "click",
-                    () => {
-                      const name =
-                        getProvinceName(
-                          feature
-                        );
-
-                      markDiscovered(
-                        norm(name)
-                      );
-
-                      navigate(
-                        "map"
-                      );
-
-                      setTimeout(
-                        () => {
-                          if (
-                            !geoLayer
-                          ) {
-                            return;
+                (feature, layer) => {
+                  layer.on({
+                    mouseover(event) {
+                      if (window.innerWidth <= 768) return;
+                      event.target.setStyle({ fillOpacity: 0.88, weight: 1.5 });
+                      event.target.bringToFront();
+                    },
+                    mouseout(event) {
+                      if (dashLayer) dashLayer.resetStyle(event.target);
+                    },
+                    click() {
+                      const name = getProvinceName(feature);
+                      markDiscovered(norm(name));
+                      navigate("map");
+                      setTimeout(() => {
+                        if (!geoLayer) return;
+                        geoLayer.eachLayer(fullLayer => {
+                          if (norm(getProvinceName(fullLayer.feature)) === norm(name)) {
+                            fullMap?.flyToBounds(fullLayer.getBounds(), { maxZoom: 8, duration: 0.8 });
+                            renderProvinceDetail(name);
                           }
-
-                          geoLayer.eachLayer(
-                            fullLayer => {
-                              if (
-                                norm(
-                                  getProvinceName(
-                                    fullLayer.feature
-                                  )
-                                ) ===
-                                norm(
-                                  name
-                                )
-                              ) {
-                                fullMap?.flyToBounds(
-                                  fullLayer.getBounds(),
-                                  {
-                                    maxZoom: 8,
-                                    duration: 0.8
-                                  }
-                                );
-
-                                renderProvinceDetail(
-                                  name
-                                );
-                              }
-                            }
-                          );
-                        },
-                        300
-                      );
+                        });
+                      }, 180);
                     }
-                  );
-
-                  layer.on(
-                    "mouseover",
-                    event => {
-                      event.target.setStyle(
-                        {
-                          fillOpacity:
-                            0.88,
-                          weight: 1.5
-                        }
-                      );
-                    }
-                  );
-
-                  layer.on(
-                    "mouseout",
-                    event => {
-                      dashLayer.resetStyle(
-                        event.target
-                      );
-                    }
-                  );
+                  });
                 }
             }
           ).addTo(

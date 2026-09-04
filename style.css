@@ -1094,3 +1094,125 @@ h1, h2, h3, h4, p, span, li, td, th, label, button {
 html, body { overflow-x: hidden !important; }
 .app-shell, .main-content, .view-container { min-width: 0 !important; }
 img, svg, canvas, video, iframe { max-width: 100%; }
+
+
+/* ============================================================
+   YURDUNU BİL v21.1 — FINAL STABILITY PATCH
+   Amaç: mevcut özellikleri koruyarak component geometry ve
+   Leaflet stacking/interaction davranışını deterministik yapmak.
+   ============================================================ */
+
+/* Component sınırları */
+.card, .topic-card, .library-card, .stat-card, .big-stat,
+.favorite-card, .settings-card, .settings-profile-card, .panel,
+.map-control-panel, .province-detail, .quiz-card, .quiz-start,
+.topic-memory-card, .study-panel, .map-preview-panel {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* İçerik hiçbir kartı grid dışına itemez */
+.card > *, .topic-card > *, .library-card > *, .stat-card > *,
+.big-stat > *, .favorite-card > *, .settings-card > *,
+.settings-profile-card > *, .panel > *, .province-detail > *,
+.quiz-card > *, .quiz-start > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Button geometry: metin uzunluğu kart boyutunu belirlemesin */
+.primary-btn, .ghost-btn, .danger-btn, .new-study-btn,
+.map-mode-btn, .map-utility-btn, .library-open, .library-filter,
+.filter-btn, .province-action-btn, .quiz-check-btn, .quiz-next-btn,
+.topic-learning-actions button {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+/* Link/action butonları dar gridlerde ezilmesin */
+.panel-head > .link-btn,
+.panel-head > button,
+.card-head > .link-btn,
+.card-head > button {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* Grid children kesin olarak shrink edebilir */
+.content-grid > *, .topics-grid > *, .library-grid > *,
+.stats-grid > *, .stats-big-grid > *, .favorites-grid > *,
+.settings-grid > *, .map-workspace > * {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Leaflet: haritanın kendisi transform almamalı; transform edilmiş
+   parent Leaflet canvas/tile koordinatlarını bazı cihazlarda bozabiliyor. */
+#full-map, #dashboard-map,
+#full-map .leaflet-container, #dashboard-map .leaflet-container {
+  transform: none !important;
+  transform-style: flat !important;
+  perspective: none !important;
+  filter: none !important;
+}
+
+#full-map, #dashboard-map {
+  isolation: isolate;
+  contain: layout paint;
+  background: #091827;
+}
+
+#full-map .leaflet-container, #dashboard-map .leaflet-container {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  z-index: 1;
+}
+
+#full-map .leaflet-control-container,
+#dashboard-map .leaflet-control-container {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+}
+#full-map .leaflet-control,
+#dashboard-map .leaflet-control { pointer-events: auto; }
+
+/* Map overlays above Leaflet controls */
+.full-map-wrap::before { z-index: 1001; }
+.map-search-floating, .map-legend-panel, .map-help-chip { z-index: 1100 !important; }
+
+/* Dashboard map should remain visually stable */
+#dashboard-map:hover {
+  transform: none !important;
+}
+
+/* Mobile: no forced 2-column stats if content is genuinely too narrow */
+@media (max-width: 380px) {
+  .topics-grid, .library-grid, .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .topic-card h3, .library-card h3 { font-size: 15px !important; }
+  .topic-card p, .library-card p { font-size: 11px !important; }
+}
+
+/* Safe bottom spacing for fixed navigation */
+@media (max-width: 760px), (pointer: coarse) and (max-width: 1100px) {
+  .main-content {
+    padding-bottom: calc(108px + env(safe-area-inset-bottom)) !important;
+  }
+  .mobile-bottom-nav {
+    margin: 0 !important;
+  }
+  .map-mode-bar {
+    scrollbar-width: none;
+  }
+  .map-mode-bar::-webkit-scrollbar { display: none; }
+}

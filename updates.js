@@ -1,12 +1,12 @@
 /*
  * Yurdunu Bil — sürüm / güncelleme sistemi
- * v11.1.0
+ * v21.1.0
  */
 (() => {
   "use strict";
 
   const CFG = window.YURDUNUBIL_CONFIG || {};
-  const CURRENT = String(CFG.APP_VERSION || "11.1.0");
+  const CURRENT = String(CFG.APP_VERSION || "21.1.0");
   const VERSION_URL = "version.json?ts=" + Date.now();
   const SEEN_KEY = "yb_seen_update_version";
   const RELEASE = {
