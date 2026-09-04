@@ -22,10 +22,21 @@ jobs:
           if marker not in s:
               raise SystemExit('index.html içinde </body> bulunamadı')
 
-          s = s.replace('<script src="news.js"></script>\n', '')
-          s = s.replace('<script src="news.js"></script>', '')
+          # Remove obsolete runtime layers before adding the current one.
+          for tag in [
+              '<script src="news.js"></script>',
+              '<script src="ux-v13.js"></script>',
+              '<script src="ux-v13.js?v=13.0.1"></script>',
+              '<script src="ux-v14.js"></script>',
+              '<script src="ux-v15.js"></script>',
+              '<script src="ux-v16.js"></script>',
+              '<script src="ux-v16.js?v=16.0.0"></script>',
+              '<script src="ux-v17.js"></script>',
+              '<script src="ux-v17.js?v=17.0.0"></script>'
+          ]:
+              s = s.replace(tag + '\n', '').replace(tag, '')
+
           s = s.replace('<script src="pomodoro.js?v=1.0.0"></script>', '<script src="pomodoro.js?v=1.0.1"></script>')
-          s = s.replace('<script src="province-study.js?v=1.0.0"></script>', '<script src="province-study.js?v=1.0.0"></script>')
 
           tags = [
               '<script src="advanced.js"></script>',
@@ -33,7 +44,7 @@ jobs:
               '<script src="innovation.js"></script>',
               '<script src="pomodoro.js?v=1.0.1"></script>',
               '<script src="province-study.js?v=1.0.0"></script>',
-              '<script src="ux-v16.js?v=16.0.0"></script>'
+              '<script src="ux-v17.js?v=17.0.0"></script>'
           ]
           for tag in tags:
               if tag not in s:
@@ -49,5 +60,5 @@ jobs:
             echo 'Dashboard scripts already up to date.'
             exit 0
           fi
-          git commit -m 'feat: load v16 mobile stability layer'
+          git commit -m 'feat: load v17 mobile atlas layer'
           git push
