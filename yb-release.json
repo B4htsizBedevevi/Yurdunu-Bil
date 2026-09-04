@@ -1,11 +1,11 @@
 {
-  "version":"37.0.2",
-  "message":"Yurdunu Bil 37.0.2 — gerçek atlas su katmanları ve mobil harita kararlılık düzeltmeleri.",
+  "version":"38.0.0",
+  "message":"Yurdunu Bil 38 — tek ve kanonik Türkiye Atlası.",
   "changes":[
-    "Gerçek göl poligonları artık il dolgu katmanının üzerinde görünür.",
-    "Ana akarsu güzergâhları il sınırları üzerinde görünür.",
-    "Mobil kategori düğmelerindeki dokunma/focus flicker azaltıldı.",
-    "Harita Türkiye sınırlarına daha sıkı oturtularak boş alan azaltıldı.",
-    "Eski sürüm bildirim döngüsünü önlemek için sürüm kontrolü 37.0.2 ile eşitlendi."
+    "Dashboard içindeki ikinci harita kaldırıldı.",
+    "Tek atlas motoru 81 gerçek il geometrisini kullanıyor.",
+    "Natural Earth v5.1.2 gerçek göl ve akarsu altlığı kullanılıyor.",
+    "Bölgeler, iklim, tarım, yer şekilleri, sular, maden ve nüfus aynı haritada katman olarak çalışıyor.",
+    "Mobil atlas arayüzü yatay katman seçimi ve sıkı harita yerleşimi için yeniden tasarlandı."
   ]
 }
