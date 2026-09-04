@@ -1,4 +1,4 @@
-# Yurdunu Bil — KPSS Coğrafya Atlası v21.2.0
+# Yurdunu Bil — KPSS Coğrafya Atlası v21.3.0
 
 Bu sürüm arayüzü baştan stabilize eder: tek CSS sistemi, responsive desktop/tablet/mobile düzeni ve Leaflet/tile altyapısı olmadan GeoJSON → SVG 3D Türkiye atlası.
 
