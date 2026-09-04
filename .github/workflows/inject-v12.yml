@@ -22,15 +22,15 @@ jobs:
           if marker not in s:
               raise SystemExit('index.html içinde </body> bulunamadı')
 
-          # Remove the old live-news module completely from the page.
           s = s.replace('<script src="news.js"></script>\n', '')
           s = s.replace('<script src="news.js"></script>', '')
+          s = s.replace('<script src="pomodoro.js?v=1.0.0"></script>', '<script src="pomodoro.js?v=1.0.1"></script>')
 
           tags = [
               '<script src="advanced.js"></script>',
               '<script src="quickfacts.js"></script>',
               '<script src="innovation.js"></script>',
-              '<script src="pomodoro.js?v=1.0.0"></script>'
+              '<script src="pomodoro.js?v=1.0.1"></script>'
           ]
           for tag in tags:
               if tag not in s:
