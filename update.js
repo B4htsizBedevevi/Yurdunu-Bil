@@ -21,8 +21,8 @@ async function check(manual=false){try{const remote=await remoteVersion();if(!ne
 function start(){check(false);setInterval(()=>check(false),10*60*1000);window.YBCheckUpdate=()=>check(true)}
 function loadStudyFirst(){
  const addCss=()=>{if(document.querySelector('link[data-yb45-css]'))return;const l=document.createElement('link');l.rel='stylesheet';l.href='v45-study.css?v=45.0.0';l.dataset.yb45Css='1';document.head.appendChild(l)};
- const addJs=()=>{if(document.querySelector('script[data-yb45-js]'))return;const s=document.createElement('script');s.src='v45-study-fixed.js?v=45.0.0';s.dataset.yb45Js='1';document.body.appendChild(s)};
- addCss();addJs();
+ const addJs=(src,key)=>{if(document.querySelector('script['+key+']'))return;const s=document.createElement('script');s.src=src;s.setAttribute(key,'1');document.body.appendChild(s)};
+ addCss();addJs('v45-study-fixed.js?v=45.0.0','data-yb45-js');addJs('v45-study-ui-hotfix.js?v=45.0.0','data-yb45-ui-hotfix');
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{start();loadStudyFirst()},{once:true});else{start();loadStudyFirst()}
 })();
