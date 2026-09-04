@@ -1,7 +1,7 @@
-/* Yurdunu Bil v35.1 — sürüm bildirimi + 2026 KPSS Ön Lisans geri sayımı */
+/* Yurdunu Bil v36 — sürüm bildirimi + 2026 KPSS Ön Lisans geri sayımı */
 (()=>{
 'use strict';
-const VERSION='35.1.0';
+const VERSION='36.0.0';
 const EXAM_DATE=new Date('2026-10-04T10:15:00+03:00');
 const $=(s,r=document)=>r.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -14,6 +14,6 @@ function patchSettings(){const v=$('#view-settings');if(!v)return;const title=v.
 function showNotice(version,message,title='Yurdunu Bil güncellendi'){if(document.querySelector('.yb32-update'))return;const n=document.createElement('aside');n.className='yb32-update';n.setAttribute('role','status');n.innerHTML='<h3>🎉 '+esc(title)+'</h3><p>'+esc(message)+' Güncel sürümü kullanmak için lütfen siteyi yenileyin.</p><div class="yb32-update-actions"><button class="primary" data-yb32-reload>Siteyi yenile</button><button class="ghost" data-yb32-dismiss>Daha sonra</button></div>';document.body.appendChild(n);const key='yb_last_seen_version';n.querySelector('[data-yb32-reload]').onclick=()=>{localStorage.setItem(key,version);location.reload()};n.querySelector('[data-yb32-dismiss]').onclick=()=>{localStorage.setItem(key,version);n.remove()}}
 function checkRemoteVersion(){fetch('yb-release.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(!data)return;const remote=String(data.version||VERSION),key='yb_last_seen_version',seen=localStorage.getItem(key);if(!seen){if(localStorage.getItem('yb_state_25'))showNotice(VERSION,'Yeni özellikler ve düzeltmeler yayında.');localStorage.setItem(key,VERSION);return}if(remote!==VERSION&&remote!==seen)showNotice(remote,data.message||'Yeni özellikler ve düzeltmeler yayında.','Yeni sürüm hazır')}).catch(()=>{})}
 function loop(){renderCountdown();setTimeout(loop,1000)}
-function start(){installTopbar();installDashboard();patchSettings();const key='yb_last_seen_version',seen=localStorage.getItem(key);if(seen&&seen!==VERSION)showNotice(VERSION,'Harita beta bildirimi ve doğrudan geri bildirim bağlantısı yayında.');else if(!seen&&!localStorage.getItem('yb_state_25'))localStorage.setItem(key,VERSION);checkRemoteVersion();setInterval(checkRemoteVersion,1800000);loop();new MutationObserver(()=>{installTopbar();installDashboard();patchSettings()}).observe(document.body,{subtree:true,childList:true})}
+function start(){installTopbar();installDashboard();patchSettings();const key='yb_last_seen_version',seen=localStorage.getItem(key);if(seen&&seen!==VERSION)showNotice(VERSION,'Atlas katmanlarının görünürlüğü ve harita okunabilirliği geliştirildi.');else if(!seen&&!localStorage.getItem('yb_state_25'))localStorage.setItem(key,VERSION);checkRemoteVersion();setInterval(checkRemoteVersion,1800000);loop();new MutationObserver(()=>{installTopbar();installDashboard();patchSettings()}).observe(document.body,{subtree:true,childList:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
