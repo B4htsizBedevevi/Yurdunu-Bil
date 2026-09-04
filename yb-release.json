@@ -1,17 +1,1 @@
-{
-  "version":"41.0.0",
-  "message":"Yurdunu Bil 41 — tek kanonik harita, daha zengin coğrafya katmanları ve dağıtıma dayanıklı güncelleme sistemi.",
-  "changes":[
-    "Leaflet bağımlılığı kaldırıldı; harita artık yerel GeoJSON + SVG altyapısıyla çalışıyor.",
-    "Harita yüklenemezse ikinci kaynak olarak GitHub ham GeoJSON deneniyor.",
-    "81 il sınırı ve il isimleri tek harita üzerinde etkileşimli hale getirildi.",
-    "Akarsular, göller, ovalar, dağlar, platolar ve madenler aynı atlas içinde görselleştirildi.",
-    "Harita katmanları Standart, Bölgeler, İklim, Tarım, Yer Şekilleri, Sular, Maden ve Nüfus olarak düzenlendi.",
-    "Bir ile dokununca il çalışma kartı; yer şekilleri, sular, tarım ve temel KPSS bilgileriyle açılıyor.",
-    "Mobilde harita alt menüde tek kanonik hedef olarak bırakıldı; ikinci harita üretimi kaldırıldı.",
-    "Genel Bakış ekranındaki ikinci harita yerine tek haritaya yönlendiren atlas köprüsü kullanılıyor.",
-    "Güncelleme sistemi artık aynı dosyayı kendi kendine yeni sürüm gibi göstermiyor; GitHub kaynak sürümünü ve canlı Render sürümünü ayrı kontrol ediyor.",
-    "Yeni sürüm kaynakta çıktığında updater Render dağıtımını bekliyor ve canlı sürüm geldiğinde otomatik yeniliyor.",
-    "Tüm statik varlık sürümleri 41.0.0 ile cache-bust edildi."
-  ]
-}
+{"version":"42.0.0","message":"Yurdunu Bil 42 — harita geometrisi düzeltildi; coğrafi katmanlar artık Türkiye siluetinin dışına taşmıyor.","changes":["Tek kanonik Türkiye haritası korunuyor; ikinci Harita kaldırıldı.","81 il sınırı ve il isimleri korunarak tematik katmanlar gerçek il geometrisine kırpıldı.","Akarsular, göller, ovalar, dağlar, platolar ve madenler harita üzerinde görselleştiriliyor.","Harita dışına taşan bozuk/uzun çizgiler SVG clipPath ile Türkiye siluetinin dışında gösterilmiyor.","Mobil harita görünümü için 42.0.0 cache-busting etkinleştirildi.","Güncelleme sistemi kaynak sürümü ile canlı deployment sürümünü ayrı kontrol ediyor.","Render build aşamasında site validation çalıştırılıyor."]}
