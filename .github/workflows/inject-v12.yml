@@ -21,39 +21,22 @@ jobs:
           marker = '</body>'
           if marker not in s:
               raise SystemExit('index.html içinde </body> bulunamadı')
-
-          # UX geçmişindeki v13-v20 tekrarlarını temizle.
-          legacy = [
-              'news.js',
-              'ux-v13.js', 'ux-v14.js', 'ux-v15.js', 'ux-v16.js',
-              'ux-v17.js', 'ux-v18.js', 'ux-v19.js', 'ux-v20.js'
-          ]
-          for name in legacy:
-              s = s.replace(f'<script src="{name}"></script>\n', '')
-              s = s.replace(f'<script src="{name}"></script>', '')
-              for version in range(13, 21):
-                  s = s.replace(f'<script src="{name}?v={version}.0.0"></script>\n', '')
-                  s = s.replace(f'<script src="{name}?v={version}.0.0"></script>', '')
-              s = s.replace(f'<script src="{name}?v=13.0.1"></script>\n', '')
-              s = s.replace(f'<script src="{name}?v=13.0.1"></script>', '')
-              s = s.replace(f'<script src="{name}?v=16.0.0"></script>\n', '')
-              s = s.replace(f'<script src="{name}?v=16.0.0"></script>', '')
-
+          # Eski UX katmanlarını ve tekrarlarını tamamen temizle.
+          import re
+          s = re.sub(r'\s*<script src="(?:news\.js|ux-v(?:13|14|15|16|17|18|19|20)\.js)(?:\?v=[^"]+)?"></script>', '', s)
           s = s.replace('<script src="pomodoro.js?v=1.0.0"></script>', '<script src="pomodoro.js?v=1.0.1"></script>')
-
           tags = [
               '<script src="advanced.js"></script>',
               '<script src="quickfacts.js"></script>',
               '<script src="innovation.js"></script>',
               '<script src="pomodoro.js?v=1.0.1"></script>',
               '<script src="province-study.js?v=1.0.0"></script>',
-              '<script src="ux-v19.js?v=19.0.0"></script>',
-              '<script src="ux-v20.js?v=20.0.0"></script>'
+              '<script src="ux-v19.js?v=19.0.1"></script>',
+              '<script src="ux-v20.js?v=20.0.1"></script>'
           ]
           for tag in tags:
               if tag not in s:
                   s = s.replace(marker, tag + '\n' + marker, 1)
-
           p.write_text(s, encoding='utf-8')
           PY
       - name: Commit
@@ -65,5 +48,5 @@ jobs:
             echo 'Dashboard scripts already up to date.'
             exit 0
           fi
-          git commit -m 'chore: keep one atlas and one layout kernel'
+          git commit -m 'chore: normalize dashboard script stack'
           git push
