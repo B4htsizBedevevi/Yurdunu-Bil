@@ -24,7 +24,25 @@
     if(m==='mining')(f.mines||[]).forEach(x=>{const[a,b1]=p(x.lon,x.lat),c=document.createElementNS(NS,'circle');c.setAttribute('cx',a);c.setAttribute('cy',b1);c.setAttribute('r',6);c.setAttribute('class','feature-mine');g.appendChild(c);addText(g,a+8,b1+3,x.name,'mine-label')});
     svg.appendChild(g)
   }
-  function labels(svg,fs,b){const p=projectFactory(b),g=document.createElementNS(NS,'g'),sel=selected(svg);g.setAttribute('class','province-label-layer');fs.forEach(f=>{const n=name(f),c=centroid(f.geometry,p);if(!n||!c)return;const t=document.createElementNS(NS,'text');t.setAttribute('x',c.x.toFixed(2));t.setAttribute('y',c.y.toFixed(2));t.setAttribute('class','province-label'+(norm(n)===sel?' selected':''));t.setAttribute('data-province-label',n);t.textContent=displayName(n);g.appendChild(t)});svg.appendChild(g)}
+  const LABEL_TUNE={
+    'istanbul':[0,3],'kocaeli':[3,1],'yalova':[0,4],'bilecik':[0,-2],'sakarya':[1,-2],'duzce':[0,2],'bolu':[-2,0],
+    'izmir':[-2,1],'manisa':[1,-1],'balikesir':[0,-2],'canakkale':[0,1],'bursa':[0,1],
+    'kirklareli':[0,-1],'tekirdag':[0,1],'edirne':[0,1], 'osmaniye':[2,0],'kilis':[0,2],
+    'hatay':[0,1],'adiyaman':[0,-1],'gaziantep':[1,1],'sanliurfa':[0,-1],'diyarbakir':[0,1],
+    'rize':[1,2],'trabzon':[0,1],'giresun':[0,1],'ordu':[0,-1],'sinop':[0,1],'bartin':[0,1],'artvin':[0,-1],
+    'agri':[0,-1],'igdir':[1,1],'bitlis':[0,1],'mus':[0,-1],'hakkari':[0,1],'sirnak':[0,1]
+  };
+  function labels(svg,fs,b){
+    const p=projectFactory(b),g=document.createElementNS(NS,'g'),sel=selected(svg);g.setAttribute('class','province-label-layer');
+    fs.forEach(f=>{
+      const n=name(f),c=centroid(f.geometry,p);if(!n||!c)return;
+      const tune=LABEL_TUNE[norm(n)]||[0,0];
+      const area=c.area||0;
+      const cls='province-label'+(norm(n)===sel?' selected':'')+(area<350?' tiny':area<850?' small':'');
+      const t=document.createElementNS(NS,'text');t.setAttribute('x',(c.x+tune[0]).toFixed(2));t.setAttribute('y',(c.y+tune[1]).toFixed(2));t.setAttribute('class',cls);t.setAttribute('data-province-label',n);t.textContent=displayName(n);g.appendChild(t);
+    });
+    svg.appendChild(g)
+  }
   async function enhance(svg){try{if(svg.querySelector('.province-label-layer'))return;const fs=(await loadGeo()).features||[];if(!fs.length)return;const b=bounds(fs);svg.querySelectorAll('.feature-layer').forEach(x=>x.remove());features(svg,mode(svg),b);labels(svg,fs,b)}catch(e){console.warn('Atlas v26:',e)}}
   async function enhanceAll(){for(const id of ROOTS){const s=document.getElementById(id);if(s)await enhance(s)}}
   const observer=new MutationObserver(schedule);
