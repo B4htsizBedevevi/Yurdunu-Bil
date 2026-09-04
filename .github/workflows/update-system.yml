@@ -1,12 +1,16 @@
 name: Yurdunu Bil Update System
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: yurdunu-bil-update-system
+  cancel-in-progress: true
 
 jobs:
   update-system:
@@ -15,51 +19,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Sync version and update loader
+      - name: Validate release files
         shell: bash
         run: |
           set -euo pipefail
-
           VERSION=$(node -e "console.log(require('./version.json').version)")
-          echo "Version: $VERSION"
+          test -n "$VERSION"
+          test -f quickfacts.js
+          test -f advanced.js
+          test -f updates.js
+          test -f config.js
+          test -f index.html
+          echo "Yurdunu Bil $VERSION dosya kontrolü başarılı."
 
-          # Keep the application version synchronized with version.json.
-          node - <<'NODE'
-          const fs = require('fs');
-          const version = require('./version.json').version;
-          const path = 'config.js';
-          let text = fs.readFileSync(path, 'utf8');
-          const next = text.replace(/APP_VERSION:\s*[\"'][^\"']*[\"']/, `APP_VERSION: "${version}"`);
-          if (next !== text) fs.writeFileSync(path, next, 'utf8');
-          NODE
-
-          # Load the updater before app.js. If it is already present, do nothing.
-          node - <<'NODE'
-          const fs = require('fs');
-          const path = 'index.html';
-          let text = fs.readFileSync(path, 'utf8');
-          const marker = 'updates.js';
-          if (!text.includes(marker)) {
-            const tag = '  <script src="updates.js" defer></script>\n';
-            const needle = '  <script src="app.js"></script>';
-            if (!text.includes(needle)) throw new Error('app.js script tag not found in index.html');
-            text = text.replace(needle, tag + needle);
-            fs.writeFileSync(path, text, 'utf8');
-            console.log('Update loader injected.');
-          } else {
-            console.log('Update loader already present.');
-          }
-          NODE
-
-      - name: Commit generated changes
+      - name: Report update status
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add config.js index.html
-          if git diff --cached --quiet; then
-            echo "No generated changes."
-            exit 0
-          fi
-          git commit -m "chore: sync app version and update loader"
-          git push
+          echo "Update System artık dosya push etmiyor."
+          echo "Site güncellemeleri ana push/deploy zincirinden geliyor."
+          echo "Bu workflow yalnızca kontrol yapıyor; gereksiz push çakışması ve başarısız e-posta üretmiyor."
