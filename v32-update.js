@@ -1,7 +1,7 @@
-/* Yurdunu Bil v37 — gerçek sürüm kontrolü + cache kırmalı güncelleme + manuel kontrol */
+/* Yurdunu Bil v37.0.2 — gerçek sürüm kontrolü + cache kırmalı güncelleme */
 (()=>{
 'use strict';
-const VERSION='37.0.0';
+const VERSION='37.0.2';
 const EXAM_DATE=new Date('2026-10-04T10:15:00+03:00');
 const $=(s,r=document)=>r.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
