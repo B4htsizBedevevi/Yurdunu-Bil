@@ -12,6 +12,14 @@ state.modules=state.modules||{};
 state.register=state.register||((name,api={})=>{state.modules[name]={...api,version:VERSION};return state.modules[name]});
 state.ready=state.ready||((name)=>Boolean(state.modules[name]));
 state.diagnostics=()=>({version:VERSION,modules:Object.keys(state.modules),provinceCount:qa('.yb41-province').length,featureLayers:qa('.yb41-feature-layer').length,activeView:q('.view.active')?.id||null});
+const CORE=['app','atlas','province','quiz','library','stats'];
+function loadCore(){
+ CORE.forEach(name=>{
+  if(state.ready(name))return;
+  const s=document.createElement('script');s.src=`core/${name}.js?v=${VERSION}`;s.async=false;s.dataset.ybCore=name;
+  document.head.appendChild(s);
+ });
+}
 function dedupeNav(){
  const nav=q('.mobile-nav'); if(!nav)return;
  const seen=new Set();
@@ -22,15 +30,11 @@ function cleanLegacyDuplicates(){
  qa('#view-dashboard .atlas-shell > .map-v31-panel,#view-dashboard .atlas-shell > .map-v31-tooltip').forEach(el=>el.remove());
  qa('#view-map #yb42-turkey-silhouette').forEach(el=>el.remove());
 }
-function markRuntime(){
- document.documentElement.dataset.ybArchitecture=VERSION;
- document.body.dataset.ybArchitecture=VERSION;
-}
-function run(){markRuntime();dedupeNav();cleanLegacyDuplicates();state.diagnostics();}
+function markRuntime(){document.documentElement.dataset.ybArchitecture=VERSION;document.body.dataset.ybArchitecture=VERSION}
+function run(){markRuntime();loadCore();dedupeNav();cleanLegacyDuplicates();state.diagnostics()}
 state.register('shell',{navigate:v=>window.navigate?.(v)});
 state.register('atlas',{mapEngine:'v44-map-engine',data:'data/geo-features-v44.js'});
 state.register('runtime',{boot:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
-let timer=0;
-new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(run,180)}).observe(document.body,{childList:true,subtree:true});
+let timer=0;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(()=>{dedupeNav();cleanLegacyDuplicates()},180)}).observe(document.body,{childList:true,subtree:true});
 })();
