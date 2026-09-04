@@ -1,7 +1,7 @@
-/* Yurdunu Bil v36 — sürüm bildirimi + 2026 KPSS Ön Lisans geri sayımı */
+/* Yurdunu Bil v36.3 — gerçek sürüm kontrolü + cache kırmalı güncelleme */
 (()=>{
 'use strict';
-const VERSION='36.0.0';
+const VERSION='36.3.0';
 const EXAM_DATE=new Date('2026-10-04T10:15:00+03:00');
 const $=(s,r=document)=>r.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,9 +11,37 @@ function installTopbar(){const top=$('.top-actions');if(!top||top.querySelector(
 function installDashboard(){const v=$('#view-dashboard');if(!v||v.querySelector('.yb32-exam-card'))return;const target=v.querySelector('.dashboard-intro');if(!target)return;const card=document.createElement('section');card.className='surface yb32-exam-card';card.innerHTML='<span class="eyebrow">2026 KPSS ÖN LİSANS</span><h2>Sınava kalan süre</h2><div data-yb32-countdown></div>';target.insertAdjacentElement('afterend',card);renderCountdown()}
 function renderCountdown(){document.querySelectorAll('[data-yb32-countdown]').forEach(e=>e.innerHTML=countdownHTML())}
 function patchSettings(){const v=$('#view-settings');if(!v)return;const title=v.querySelector('.v30-settings-card');if(!title||v.querySelector('.yb32-settings-version'))return;const box=document.createElement('div');box.className='yb32-settings-version';box.innerHTML='<div><b>Yurdunu Bil sürümü</b><small>Son sürüm: '+VERSION+' • Güncellemeler otomatik kontrol edilir.</small></div><b>v'+VERSION+'</b>';title.appendChild(box);const about=v.querySelector('.v30-about');if(about&&!about.querySelector('.yb32-settings-exam')){const x=document.createElement('div');x.className='yb32-settings-exam';x.innerHTML='<span class="eyebrow">SINAV SAYACI</span><div data-yb32-countdown></div>';about.appendChild(x);renderCountdown()}}
-function showNotice(version,message,title='Yurdunu Bil güncellendi'){if(document.querySelector('.yb32-update'))return;const n=document.createElement('aside');n.className='yb32-update';n.setAttribute('role','status');n.innerHTML='<h3>🎉 '+esc(title)+'</h3><p>'+esc(message)+' Güncel sürümü kullanmak için lütfen siteyi yenileyin.</p><div class="yb32-update-actions"><button class="primary" data-yb32-reload>Siteyi yenile</button><button class="ghost" data-yb32-dismiss>Daha sonra</button></div>';document.body.appendChild(n);const key='yb_last_seen_version';n.querySelector('[data-yb32-reload]').onclick=()=>{localStorage.setItem(key,version);location.reload()};n.querySelector('[data-yb32-dismiss]').onclick=()=>{localStorage.setItem(key,version);n.remove()}}
-function checkRemoteVersion(){fetch('yb-release.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(data=>{if(!data)return;const remote=String(data.version||VERSION),key='yb_last_seen_version',seen=localStorage.getItem(key);if(!seen){if(localStorage.getItem('yb_state_25'))showNotice(VERSION,'Yeni özellikler ve düzeltmeler yayında.');localStorage.setItem(key,VERSION);return}if(remote!==VERSION&&remote!==seen)showNotice(remote,data.message||'Yeni özellikler ve düzeltmeler yayında.','Yeni sürüm hazır')}).catch(()=>{})}
+function hardReload(remote){
+ const u=new URL(location.href);
+ u.searchParams.set('yb_update',String(remote||VERSION));
+ u.searchParams.set('t',String(Date.now()));
+ try{sessionStorage.setItem('yb_force_update','1')}catch{}
+ location.replace(u.toString());
+}
+function showNotice(version,message,title='Yeni sürüm hazır'){
+ if(document.querySelector('.yb32-update'))return;
+ const n=document.createElement('aside');n.className='yb32-update';n.setAttribute('role','status');
+ n.innerHTML='<h3>🚀 '+esc(title)+'</h3><p>'+esc(message)+'</p><div class="yb32-update-actions"><button class="primary" data-yb32-reload>Güncellemeyi yükle</button><button class="ghost" data-yb32-dismiss>Daha sonra</button></div>';
+ document.body.appendChild(n);
+ n.querySelector('[data-yb32-reload]').onclick=()=>hardReload(version);
+ n.querySelector('[data-yb32-dismiss]').onclick=()=>{try{localStorage.setItem('yb_update_dismissed',version)}catch{}n.remove()};
+}
+async function checkRemoteVersion(){
+ try{
+  const r=await fetch('yb-release.json?v='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+  if(!r.ok)return;
+  const data=await r.json(),remote=String(data.version||VERSION);
+  if(remote!==VERSION){
+   const dismissed=localStorage.getItem('yb_update_dismissed');
+   if(dismissed!==remote)showNotice(remote,data.message||'Yeni özellikler ve düzeltmeler yayında.');
+   return;
+  }
+  localStorage.setItem('yb_last_seen_version',VERSION);
+  localStorage.removeItem('yb_update_dismissed');
+  document.querySelector('.yb32-update')?.remove();
+ }catch{}
+}
 function loop(){renderCountdown();setTimeout(loop,1000)}
-function start(){installTopbar();installDashboard();patchSettings();const key='yb_last_seen_version',seen=localStorage.getItem(key);if(seen&&seen!==VERSION)showNotice(VERSION,'Atlas katmanlarının görünürlüğü ve harita okunabilirliği geliştirildi.');else if(!seen&&!localStorage.getItem('yb_state_25'))localStorage.setItem(key,VERSION);checkRemoteVersion();setInterval(checkRemoteVersion,1800000);loop();new MutationObserver(()=>{installTopbar();installDashboard();patchSettings()}).observe(document.body,{subtree:true,childList:true})}
+function start(){installTopbar();installDashboard();patchSettings();checkRemoteVersion();setInterval(checkRemoteVersion,1800000);loop();new MutationObserver(()=>{installTopbar();installDashboard();patchSettings()}).observe(document.body,{subtree:true,childList:true})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();
