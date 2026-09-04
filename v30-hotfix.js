@@ -17,4 +17,5 @@ loadAsset('css','province-study-v31.css?v=31.0.0','province-study-v31-css');
 loadAsset('js','province-study-v31.js?v=31.0.0','province-study-v31-js');
 loadAsset('css','v31-map-ui.css?v=31.0.0','v31-map-ui-css');
 loadAsset('js','v31-map-ui.js?v=31.0.0','v31-map-ui-js');
+loadAsset('js','v31-map-colors.js?v=31.0.0','v31-map-colors-js');
 })();
