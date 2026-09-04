@@ -92,3 +92,182 @@ html{scroll-behavior:auto}
   .province-selected-dot{display:none}
   .province-side-facts{grid-template-columns:1fr 1fr}
 }
+
+
+/* ═══════════════════════════════════════════════════════
+   YURDUNU BİL 22.0 — HARITA GÜZELLEŞTİRME & YENİ MODLAR
+   ═══════════════════════════════════════════════════════ */
+
+/* — Atlas arka plan iyileştirmesi — */
+.atlas-wrap {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(56,152,255,.13) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(78,224,173,.07) 0%, transparent 40%),
+    linear-gradient(180deg, rgba(6,17,28,.97), rgba(4,12,22,1)) !important;
+  border: 1px solid rgba(72,160,240,.22) !important;
+}
+
+/* Daha canlı yıldız katmanı */
+.atlas-stars {
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(120,200,255,.4) 1px, transparent 1px);
+  background-size: 97px 89px, 53px 61px;
+  background-position: 0 0, 27px 31px;
+  opacity: .28;
+}
+
+/* Grid perspektif iyileştirmesi */
+.atlas-grid {
+  background-image:
+    linear-gradient(rgba(73,167,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(73,167,255,.07) 1px, transparent 1px);
+  background-size: 38px 38px;
+  transform: perspective(550px) rotateX(62deg) scale(1.6);
+  transform-origin: center bottom;
+  opacity: .45;
+}
+
+/* — Province şekil geliştirmeleri — */
+.province-shape {
+  stroke: rgba(160,220,255,.38) !important;
+  stroke-width: 1.0 !important;
+  transition: fill .18s ease, filter .18s ease, stroke .18s ease !important;
+}
+.province-shape:hover {
+  fill: #62d8ff !important;
+  filter: drop-shadow(0 0 9px rgba(72,212,255,.85)) !important;
+  stroke: rgba(180,240,255,.9) !important;
+  stroke-width: 1.6 !important;
+}
+.province-shape.discovered {
+  fill: #2ecfa6 !important;
+  stroke: rgba(80,240,190,.55) !important;
+}
+.province-shape.selected {
+  fill: #58dcff !important;
+  stroke: #c6f8ff !important;
+  stroke-width: 2.4 !important;
+  filter: drop-shadow(0 0 10px rgba(72,211,255,.8)) drop-shadow(0 8px 6px rgba(0,0,0,.5)) !important;
+}
+
+/* Bölge renkleri — daha belirgin tonlar */
+.province-shape.region-marmara  { fill: #3680e8 }
+.province-shape.region-ege      { fill: #3282d8 }
+.province-shape.region-akdeniz  { fill: #3194ce }
+.province-shape.region-karadeniz{ fill: #2497a8 }
+.province-shape.region-ic       { fill: #3a7ed4 }
+.province-shape.region-dogu     { fill: #4e78d0 }
+.province-shape.region-guney    { fill: #4c7cc8 }
+
+/* Province lifted (seçili il kalkma) */
+.province-lifted {
+  fill: #4cc0f5 !important;
+  stroke: #e8fcff !important;
+  stroke-width: 2.6 !important;
+  filter: drop-shadow(0 6px 0 rgba(16,74,112,.98)) drop-shadow(0 0 18px rgba(60,215,255,.82)) !important;
+  animation: provinceLift .24s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes provinceLift { from { opacity:.1; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+
+/* Province side 3D layer */
+.province-side { fill: #0f3f60 !important; stroke: rgba(70,140,195,.22) !important; stroke-width: .9 }
+.province-shadow { fill: rgba(0,0,0,.55) !important; stroke: none !important }
+
+/* Province label */
+.province-label-bg { fill: rgba(3,14,26,.95); stroke: rgba(90,220,255,.8); stroke-width: 1.3 }
+.province-label { fill: #f0fbff; font-size: 13px; font-weight: 900; font-family: Inter, system-ui, sans-serif }
+
+/* — Map mode bar (harita sayfasındaki tab bar) — */
+.map-mode-bar {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  padding: 4px 0;
+}
+.map-mode-bar .map-tab { font-size: 11px !important; padding: 9px 14px }
+
+/* — Legend dinamik içerik — */
+.map-legend { min-width: 160px !important; font-size: 11px !important }
+.map-legend b { font-size: 10px !important; letter-spacing: .5px; color: #8fcfea; display: block; margin-bottom: 9px }
+.legend-row { font-size: 10px !important; margin: 5px 0 !important; gap: 8px !important }
+.legend-dot { width: 10px !important; height: 10px !important; border-radius: 4px !important }
+
+/* — Province panel: 8 alan grid — */
+.province-side-facts {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 7px !important;
+}
+.province-side-facts > div {
+  min-width: 0;
+  padding: 8px 10px !important;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+}
+.province-side-facts span { font-size: 9px !important; color: var(--muted2); display: block; margin-bottom: 3px }
+.province-side-facts b    { font-size: 10px !important; line-height: 1.35; color: #dce9f4; word-break: break-word }
+
+/* Province facts premium: 8 alan grid */
+.province-facts-premium {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+  gap: 8px !important;
+}
+.province-facts-premium .province-fact { min-height: 72px !important }
+
+/* — Favori kartı coğrafi mini bilgi — */
+.fav-geo-mini {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fav-geo-mini span {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* — Dağ/ova modu renk geçişleri için yumuşak animasyon — */
+.province-shape { transition: fill .25s ease, filter .18s ease, stroke .18s ease, opacity .18s ease !important }
+
+/* — Atlas SVG hover perspektif — */
+.atlas-svg { transition: transform .38s cubic-bezier(.2,.8,.2,1) !important }
+.atlas-svg:hover { transform: perspective(1100px) rotateX(17deg) rotateZ(-1deg) scale(1.038) !important }
+
+/* — Harita tam sayfa: minimum yükseklik artışı — */
+.full-atlas { min-height: 640px !important }
+.map-card .atlas-wrap { min-height: 480px !important }
+
+/* Atlas status güncelleme */
+.atlas-status { font-size: 10px !important; color: #4d6a80 }
+
+/* — Responsive: tablet — */
+@media (max-width: 1050px) {
+  .map-mode-bar { gap: 5px }
+  .map-mode-bar .map-tab { font-size: 10px !important; padding: 8px 10px }
+  .province-side-facts { grid-template-columns: 1fr 1fr !important }
+  .province-facts-premium { grid-template-columns: 1fr 1fr !important }
+}
+
+/* — Responsive: mobil — */
+@media (max-width: 760px) {
+  .map-mode-bar { gap: 4px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px }
+  .map-mode-bar .map-tab { white-space: nowrap; flex-shrink: 0 }
+  .province-side-facts { grid-template-columns: 1fr 1fr !important }
+  .province-facts-premium { grid-template-columns: 1fr !important }
+  .full-atlas { min-height: 480px !important; height: calc(100vh - 160px) !important }
+  .fav-geo-mini span { font-size: 9px }
+}
+
+@media (max-width: 390px) {
+  .province-side-facts { grid-template-columns: 1fr 1fr !important }
+  .map-mode-bar .map-tab { font-size: 9px !important; padding: 7px 8px }
+}
