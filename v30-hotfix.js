@@ -23,4 +23,5 @@ loadAsset('js','v32-update.js?v=32.0.0','v32-update-js');
 loadAsset('css','v33-map-sync.css?v=33.0.0','v33-map-sync-css');
 loadAsset('js','v33-map-sync.js?v=33.0.0','v33-map-sync-js');
 loadAsset('css','v34-mobile-ux.css?v=34.0.0','v34-mobile-ux-css');
+loadAsset('js','v34-hotfix.js?v=34.1.0','v34-hotfix-js');
 })();
