@@ -1,11 +1,12 @@
 {
-  "version":"38.0.0",
-  "message":"Yurdunu Bil 38 — tek ve kanonik Türkiye Atlası.",
+  "version":"38.1.0",
+  "message":"Yurdunu Bil 38.1 — tek fiziksel Türkiye Atlası.",
   "changes":[
-    "Dashboard içindeki ikinci harita kaldırıldı.",
-    "Tek atlas motoru 81 gerçek il geometrisini kullanıyor.",
-    "Natural Earth v5.1.2 gerçek göl ve akarsu altlığı kullanılıyor.",
-    "Bölgeler, iklim, tarım, yer şekilleri, sular, maden ve nüfus aynı haritada katman olarak çalışıyor.",
-    "Mobil atlas arayüzü yatay katman seçimi ve sıkı harita yerleşimi için yeniden tasarlandı."
+    "Tek atlas renderer korunup fiziksel altlık tek yerde toplandı.",
+    "Gerçek Türkiye kıyı çizgisi Natural Earth altlığına eklendi.",
+    "Gerçek göl ve akarsu geometrileri il sınırlarının üzerinde gösteriliyor.",
+    "Atlas sürükleme, tekerlek yakınlaştırma ve il seçimini destekliyor.",
+    "Yer şekilleri, maden, nüfus, tarım, iklim ve bölge katmanları aynı haritada çalışıyor.",
+    "Mobil atlas araçları ve bilgi paneli daha sıkı hale getirildi."
   ]
 }
