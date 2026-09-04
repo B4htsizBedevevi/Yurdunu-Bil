@@ -32,6 +32,6 @@ jobs:
             echo "No encoding changes needed."
             exit 0
           fi
-          git add -- '*.html' '*.js' '*.css' '*.json' '*.md' '*.txt'
+          git add -u
           git commit -m "fix: repair Turkish UTF-8 text"
           git push
