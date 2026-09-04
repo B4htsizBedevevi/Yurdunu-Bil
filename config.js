@@ -1,7 +1,7 @@
 window.YURDUNUBIL_CONFIG={
   SUPABASE_URL:"https://rdgefzwvfqvzmpfoiprj.supabase.co",
   SUPABASE_PUBLISHABLE_KEY:"sb_publishable_LjA0E5FY6t6ID0YMwjJpxA_vCRNCuY7",
-  APP_VERSION:"27.0.0",
+  APP_VERSION:"27.0.1",
   APP_NAME:"Yurdunu Bil",
   EXAM_DATE:"2026-10-04T10:15:00+03:00"
 };
