@@ -1,79 +1,94 @@
-/* Yurdunu Bil v33 — one atlas state for every map view
- * Dashboard atlas and dedicated Türkiye Haritası keep mode + selected province aligned.
+/* Yurdunu Bil v36.1 — reliable atlas selection sync
+ * Tek seçim kaynağı: iki atlas aynı ili, modu ve seçili görseli kullanır.
  */
 (()=>{
 'use strict';
 const MODE_KEY='yb_map_mode_v33';
 const PROVINCE_KEY='yb_map_province_v33';
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-let syncing=false;
-
+const DATA=Array.isArray(window.PROVINCE_DATA)?window.PROVINCE_DATA:[];
+const POP=window.POPULATION_2025||{};
+const AREAS=window.PROVINCE_AREAS||{};
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const norm=v=>String(v||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c').trim();
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clean=v=>String(v??'').replace(/\s+/g,' ').trim()||'Veri yok';
+const find=name=>DATA.find(p=>norm(p.name)===norm(name))||null;
 function shells(){return $$('.atlas-shell')}
 function activeMode(shell){return $('.mode-tabs [data-v30-mode].active',shell)?.dataset.v30Mode||shell?.dataset.v30Mode||'default'}
-function setMode(shell,id){
-  const b=$(`.mode-tabs [data-v30-mode="${id}"]`,shell);
-  if(!b)return;
-  if(activeMode(shell)!==id)b.click();
-  shell.classList.add('yb33-synced');
-}
-function saveMode(id){try{localStorage.setItem(MODE_KEY,id)}catch{}}
-function saveProvince(name){try{if(name)localStorage.setItem(PROVINCE_KEY,name)}catch{}}
-function getProvince(){try{return localStorage.getItem(PROVINCE_KEY)||''}catch{return ''}}
 function getMode(){try{return localStorage.getItem(MODE_KEY)||'default'}catch{return 'default'}}
-
-function syncModeFrom(source,id){
-  if(syncing)return;
-  syncing=true;
-  saveMode(id);
-  shells().forEach(s=>{if(s!==source)setMode(s,id)});
-  syncing=false;
+function getProvince(){try{return localStorage.getItem(PROVINCE_KEY)||''}catch{return ''}}
+function saveMode(id){try{localStorage.setItem(MODE_KEY,id)}catch{}}
+function saveProvince(name){try{name?localStorage.setItem(PROVINCE_KEY,name):localStorage.removeItem(PROVINCE_KEY)}catch{}}
+function shapeName(shape){return shape?.dataset.province||shape?.getAttribute('data-province')||shape?.dataset.mapProvince||''}
+function findShape(shell,name){const n=norm(name);const svg=$('.atlas-svg',shell);if(!svg||!n)return null;return $$('.province-shape,[data-province]',svg).find(s=>norm(shapeName(s))===n)||null}
+function paintSelection(name){
+ const n=norm(name);
+ shells().forEach(shell=>{
+  const svg=$('.atlas-svg',shell);if(!svg)return;
+  $$('.province-shape',svg).forEach(s=>s.classList.toggle('selected',!!n&&norm(shapeName(s))===n));
+  $$('.province-shape',svg).forEach(s=>s.classList.toggle('map-v31-selected',!!n&&norm(shapeName(s))===n));
+  $$('.province-label',svg).forEach(t=>t.classList.toggle('selected',!!n&&norm(t.dataset.provinceLabel||'')===n));
+ });
 }
-function syncProvinceFrom(source,name){
-  if(syncing||!name)return;
-  syncing=true;
-  saveProvince(name);
-  shells().forEach(s=>{
-    if(s===source)return;
-    const svg=$('.atlas-svg',s);if(!svg)return;
-    const target=$$('.province-shape,[data-province]',svg).find(x=>String(x.dataset.province||x.getAttribute('data-province')||'').trim()===name);
-    if(target){
-      target.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));
-    }
-  });
-  syncing=false;
+function panelHtml(p){
+ if(!p)return `<div class="empty-province"><div class="empty-icon">⌖</div><h2>Bir il seç</h2><p>Haritadaki bir ile tıklayarak o ilin KPSS için önemli coğrafya bilgilerini aç.</p><div class="empty-pills"><span>⛰️ Dağlar</span><span>🌾 Ovalar</span><span>💧 Göller</span><span>🌊 Akarsular</span><span>🌱 Tarım</span><span>⛏️ Maden</span></div></div>`;
+ const val=k=>esc(clean(p[k]));
+ const pop=POP[p.name]||p.population||'Veri yok';
+ const area=AREAS[p.name];
+ return `<div class="province-panel-inner"><div class="province-top"><div class="plate">${esc(p.plate)}</div><div><span class="eyebrow">SEÇİLEN İL • ${esc(p.region)} BÖLGESİ</span><h2>${esc(p.name)}</h2><p>${val('fact')}</p></div><button class="icon-btn close-province" type="button" data-yb-clear-province>×</button></div><div class="quick-note"><span>🧠 KPSS HIZLI ÖZET</span><b>${val('kpss')}</b></div><div class="geo-grid"><div><small>🌦️ İKLİM</small><b>${val('climate')}</b></div><div><small>⛰️ DAĞLAR / ARAZİ</small><b>${val('terrain')}</b></div><div><small>🌾 OVALAR</small><b>${val('plains')}</b></div><div><small>💧 GÖLLER / SULAK</small><b>${val('lakes')}</b></div><div><small>🌊 AKARSULAR</small><b>${val('rivers')}</b></div><div><small>🌱 TARIM</small><b>${val('agriculture')}</b></div><div><small>⛏️ MADEN / KAYNAK</small><b>${val('mining')}</b></div><div><small>👥 2025 NÜFUSU</small><b>${esc(pop)}</b></div>${area?`<div><small>📐 YÜZ ÖLÇÜMÜ</small><b>${area.toLocaleString('tr-TR')} km²</b></div>`:''}</div><div class="geography-note"><span>▦ COĞRAFYA NOTU</span><p>${val('fact')}</p></div><div class="memory"><span>⚡ HAFIZA KODU</span><p>${val('kpss')}</p></div></div>`;
 }
-function restore(shell){
-  if(!shell)return;
-  const id=getMode();
-  setMode(shell,id);
-  const name=getProvince();
-  if(name){
-    const svg=$('.atlas-svg',shell);if(svg){
-      const target=$$('.province-shape,[data-province]',svg).find(x=>String(x.dataset.province||x.getAttribute('data-province')||'').trim()===name);
-      if(target){setTimeout(()=>target.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window})),0)}
-    }
+function syncPanels(name){const p=find(name);const html=panelHtml(p);$$('.province-panel').forEach(panel=>panel.innerHTML=html);$$('[data-yb-clear-province]').forEach(b=>b.onclick=()=>{saveProvince('');paintSelection('');syncPanels('')})}
+function selectProvince(name,source){
+ const p=find(name);if(!p)return;
+ const canonical=p.name;
+ saveProvince(canonical);
+ paintSelection(canonical);
+ syncPanels(canonical);
+ shells().forEach(shell=>{
+  if(shell===source)return;
+  const target=findShape(shell,canonical);
+  if(target&&!target.classList.contains('selected')){
+   target.click();
   }
+ });
+ paintSelection(canonical);
+ syncPanels(canonical);
+}
+function setModeEverywhere(id){
+ saveMode(id);
+ shells().forEach(shell=>{
+  const b=$(`.mode-tabs [data-v30-mode="${id}"]`,shell);
+  if(b&&!b.classList.contains('active'))b.click();
+ });
 }
 function bindShell(shell){
-  if(!shell||shell.dataset.yb33==='1')return;
-  shell.dataset.yb33='1';
-  shell.addEventListener('click',e=>{
-    const mode=e.target.closest?.('.mode-tabs [data-v30-mode]');
-    if(mode){syncModeFrom(shell,mode.dataset.v30Mode);return}
-    const shape=e.target.closest?.('.province-shape,[data-province]');
-    if(shape&&shell.querySelector('.atlas-svg')?.contains(shape)){
-      const name=shape.dataset.province||shape.getAttribute('data-province')||'';
-      syncProvinceFrom(shell,name);
-    }
-  },true);
-  restore(shell);
+ if(!shell||shell.dataset.yb361==='1')return;
+ shell.dataset.yb361='1';
+ shell.addEventListener('click',e=>{
+  const modeBtn=e.target.closest?.('.mode-tabs [data-v30-mode]');
+  if(modeBtn){e.stopPropagation();setModeEverywhere(modeBtn.dataset.v30Mode);return}
+  const shape=e.target.closest?.('.province-shape,[data-province]');
+  if(shape&&$('.atlas-svg',shell)?.contains(shape)){
+   e.stopPropagation();
+   selectProvince(shapeName(shape),shell);
+  }
+ },true);
 }
-function refresh(){shells().forEach(bindShell)}
+function restore(){
+ shells().forEach(bindShell);
+ const mode=getMode();
+ if(mode) shells().forEach(shell=>{
+  const b=$(`.mode-tabs [data-v30-mode="${mode}"]`,shell);
+  if(b&&!b.classList.contains('active'))b.click();
+ });
+ const name=getProvince();
+ if(name){
+  const p=find(name);
+  if(p){paintSelection(p.name);syncPanels(p.name)}
+ }else{paintSelection('')}
+}
 let timer=0;
-new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(refresh,90)}).observe(document.body,{subtree:true,childList:true});
-window.addEventListener('storage',e=>{
-  if(e.key===MODE_KEY||e.key===PROVINCE_KEY)setTimeout(refresh,20);
-});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh,{once:true});else refresh();
+new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(restore,80)}).observe(document.body,{subtree:true,childList:true});
+window.addEventListener('storage',e=>{if(e.key===MODE_KEY||e.key===PROVINCE_KEY)setTimeout(restore,30)});
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',restore,{once:true});else restore();
 })();
