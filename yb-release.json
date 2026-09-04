@@ -1,11 +1,10 @@
 {
-  "version":"35.0.0",
-  "message":"Yurdunu Bil 35 — tüm site bilgi mimarisi sadeleştirildi.",
+  "version":"35.1.0",
+  "message":"Yurdunu Bil 35.1 — harita beta durumu ve doğrudan geri bildirim bağlantısı eklendi.",
   "changes":[
-    "Konu anlatımlarında ana bilgi öne alındı, ikincil detaylar açılır bölümlere taşındı.",
-    "Kütüphane ve kart tabanlı sayfalar daha kompakt ızgaraya alındı.",
-    "Mobilde gereksiz dikey uzama ve yatay taşma azaltıldı.",
-    "İl, istatistik ve favori sayfalarında tutarlı kart düzeni uygulandı.",
-    "Ayarlar ve sürüm bilgisi 35.0.0 ile eşitlendi."
+    "Harita bölümüne beta aşaması ve devam eden geliştirmeler için açık bilgilendirme eklendi.",
+    "Göller, akarsular ve bazı coğrafi katmanların henüz geliştirilmekte olduğu belirtildi.",
+    "Sorun, öneri ve şikayetler için doğrudan Instagram iletişim bağlantısı eklendi.",
+    "@omer_calkaya profiline tek tıkla ulaşılabilir hale getirildi."
   ]
 }
