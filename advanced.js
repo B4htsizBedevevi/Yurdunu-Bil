@@ -23,16 +23,15 @@
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
 
-/* v13 loader — keeps the existing dashboard script stable while adding the mobile/map layer */
+/* v13 loader — register the Leaflet hardening hook immediately, before authentication boot */
 (() => {
   const load = () => {
     if (document.querySelector('script[data-yb-v13]')) return;
     const s = document.createElement('script');
-    s.src = 'ux-v13.js?v=13.0.0';
+    s.src = 'ux-v13.js?v=13.0.1';
     s.dataset.ybV13 = '1';
     s.async = false;
-    document.body.appendChild(s);
+    document.head.appendChild(s);
   };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load, { once: true });
-  else load();
+  load();
 })();
