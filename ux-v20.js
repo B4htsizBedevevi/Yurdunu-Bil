@@ -1,19 +1,25 @@
-/* Yurdunu Bil — UX v20.0.1
- * Single responsive layout kernel. Keeps atlas rendering in ux-v19.
+/* Yurdunu Bil — UX v20.0.2
+ * Single responsive layout kernel. No stacked mobile patch system.
  */
 (() => {
   'use strict';
   const STYLE_ID='yb-v20-style';
   const $=(s,r=document)=>r.querySelector(s);
+  const REPAIRS={
+    'ğŸ—ºï¸':'🗺️','ğŸ—º':'🗺️','ğŸ“š':'📚','ğŸ”¥':'🔥','ğŸ’¡':'💡','ğŸ§ ':'🧠','ğŸŽ¯':'🎯','ğŸ“Š':'📊','ğŸ“':'📍','ğŸ“':'📝','ğŸŒ':'🌍','ğŸ”„':'🔄','ğŸŒ¾':'🌾','ğŸ”ï¸':'🏔️','ğŸŒŠ':'🌊','ğŸš¢':'🚢','ğŸ­':'🏭','ğŸ”¨':'🔨','ğŸŒ§ï¸':'🌧️','âœ“':'✓','âœ”ï¸':'✔️','âœ•':'✕','âœï¸':'✏️','â†’':'→','â†':'←','âš¡':'⚡','âš ï¸':'⚠️','âœ¨':'✨'
+  };
+  function repairText(){
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];
+    while(w.nextNode())nodes.push(w.currentNode);
+    nodes.forEach(n=>{let v=n.nodeValue||'';for(const [bad,good] of Object.entries(REPAIRS))v=v.split(bad).join(good);if(v!==n.nodeValue)n.nodeValue=v;});
+  }
   function css(){
     if($('#'+STYLE_ID))return;
     const style=document.createElement('style');style.id=STYLE_ID;style.textContent=`
-      *,*::before,*::after{box-sizing:border-box;min-width:0}
-      html,body{width:100%;max-width:100%;overflow-x:hidden!important}
-      img,svg,canvas,video{max-width:100%}button,input,select,textarea{max-width:100%;font:inherit}
+      *,*::before,*::after{box-sizing:border-box;min-width:0}html,body{width:100%;max-width:100%;overflow-x:hidden!important}img,svg,canvas,video{max-width:100%}button,input,select,textarea{max-width:100%;font:inherit}
       #yb-atlas-v17{display:none!important}
       #full-map .leaflet-tile-pane,#full-map .leaflet-overlay-pane,#full-map .leaflet-shadow-pane,#full-map .leaflet-marker-pane,#full-map .leaflet-tooltip-pane,#full-map .leaflet-control-container,#dashboard-map .leaflet-tile-pane,#dashboard-map .leaflet-overlay-pane,#dashboard-map .leaflet-shadow-pane,#dashboard-map .leaflet-marker-pane,#dashboard-map .leaflet-tooltip-pane,#dashboard-map .leaflet-control-container{display:none!important;visibility:hidden!important}
-      /* Phones sometimes expose a wider CSS viewport; coarse-pointer catches those too. */
+      /* Some mobile browsers expose a tablet-width CSS viewport; coarse pointer catches phones too. */
       @media(max-width:760px),(pointer:coarse) and (max-width:1100px){
         html,body{min-width:0!important;max-width:100%!important;overflow-x:hidden!important;overflow-y:auto!important}body{min-height:100dvh!important;padding:0!important}
         .app-screen,.app-shell,.main-content,.view,.view.active,.view-container{width:100%!important;max-width:100%!important;min-width:0!important}.app-shell{display:block!important;min-height:100dvh!important}
@@ -26,7 +32,7 @@
         .panel,.hero-banner,.stat-card,.big-stat,.topic-card,.library-card,.settings-card,.settings-profile-card,.quiz-card,.quiz-start,.province-detail,.province-empty,.map-selection-card,.kpss-box,.topic-progress-panel,.map-control-panel,.map-preview-card{width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.panel,.hero-banner,.topic-card,.library-card,.settings-card,.quiz-card,.quiz-start,.province-detail,.province-empty,.map-selection-card,.kpss-box,.topic-progress-panel{overflow:hidden!important}
         .topics-grid,.library-grid,.stats-grid{width:100%!important;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.topic-card,.library-card{padding:10px!important;border-radius:14px!important}.topic-card h3,.library-card h3{line-height:1.18!important;overflow-wrap:anywhere!important}.topic-card p,.library-card p{min-height:0!important;overflow-wrap:anywhere!important}.topic-card>*,.library-card>*{max-width:100%!important}
         button,.nav-item,.map-mode-btn,.library-open,.primary-btn,.ghost-btn{min-height:40px!important;max-width:100%!important;touch-action:manipulation!important}.nav-item{width:100%!important}input,select,textarea{font-size:16px!important;max-width:100%!important}
-        #view-map{width:100%!important;max-width:100%!important;min-width:0!important}#view-map .full-map-wrap{width:100%!important;max-width:100%!important;min-width:0!important;display:flex!important;flex-direction:column!important;gap:9px!important}#view-map #full-map{width:100%!important;max-width:100%!important;height:clamp(365px,55dvh,500px)!important;min-height:365px!important;max-height:500px!important;margin:0!important;border-radius:20px!important;overflow:hidden!important;position:relative!important;isolation:isolate!important;touch-action:none!important}#view-map #full-map .leaflet-container{width:100%!important;height:100%!important;background:transparent!important;touch-action:none!important}#view-map .map-search-floating{display:none!important}#view-map .map-legend-panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;max-height:none!important;margin:0!important;order:3!important}#view-map .map-legend-items{max-height:130px!important;overflow:auto!important}#view-map #map-status{pointer-events:none!important}
+        #view-map{width:100%!important;max-width:100%!important;min-width:0!important}#view-map .full-map-wrap{width:100%!important;max-width:100%!important;min-width:0!important;display:flex!important;flex-direction:column!important;gap:9px!important}#view-map #full-map{width:100%!important;max-width:100%!important;height:clamp(365px,55dvh,500px)!important;min-height:365px!important;max-height:500px!important;margin:0!important;border-radius:20px!important;overflow:hidden!important;position:relative!important;isolation:isolate!important;touch-action:none!important}#view-map #full-map .leaflet-container{width:100%!important;height:100%!important;background:transparent!important;touch-action:none!important}#view-map .map-search-floating{display:none!important}#view-map #province-select{display:none!important}#view-map .map-legend-panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;max-height:none!important;margin:0!important;order:3!important}#view-map .map-legend-items{max-height:130px!important;overflow:auto!important}#view-map #map-status{pointer-events:none!important}
         #view-map .province-empty,#view-map .map-selection-card{min-height:0!important;height:auto!important;margin:9px 0 0!important;padding:12px 14px!important;border-radius:15px!important}#view-map .province-empty:empty,#view-map .map-selection-card:empty{display:none!important}#view-map .province-detail *{max-width:100%!important;overflow-wrap:anywhere!important}
         .library-card .library-card-art,.library-card .library-card-image,.library-card .library-visual,.library-card .card-art,.library-card .visual,.library-card .decor,.library-card .illustration{display:none!important}
       }
@@ -36,6 +42,6 @@
   function syncDrawer(){const open=!!$('.sidebar.yb-mobile-open');document.body.classList.toggle('yb-drawer-open',open);const nav=$('.mobile-bottom-nav');if(nav)nav.setAttribute('aria-hidden',open?'true':'false');}
   function watchDrawer(){const sidebar=$('.sidebar');if(!sidebar)return;syncDrawer();new MutationObserver(syncDrawer).observe(sidebar,{attributes:true,attributeFilter:['class']});document.addEventListener('click',()=>setTimeout(syncDrawer,0),{passive:true});window.addEventListener('resize',syncDrawer,{passive:true});}
   function cleanLegacyMapLayers(){['#full-map','#dashboard-map'].forEach(sel=>{const host=$(sel);if(!host)return;host.querySelectorAll('#yb-atlas-v17').forEach(n=>n.remove());host.querySelectorAll('.leaflet-tile-pane,.leaflet-overlay-pane,.leaflet-shadow-pane,.leaflet-marker-pane,.leaflet-tooltip-pane,.leaflet-control-container').forEach(n=>{n.style.display='none';n.style.visibility='hidden';});});}
-  function boot(){css();syncDrawer();watchDrawer();cleanLegacyMapLayers();setTimeout(cleanLegacyMapLayers,700);setTimeout(cleanLegacyMapLayers,1800);}
+  function boot(){css();repairText();syncDrawer();watchDrawer();cleanLegacyMapLayers();setTimeout(repairText,250);setTimeout(cleanLegacyMapLayers,700);setTimeout(repairText,900);setTimeout(cleanLegacyMapLayers,1800);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
