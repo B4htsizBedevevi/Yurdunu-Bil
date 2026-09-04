@@ -1,106 +1,18 @@
 /* Yurdunu Bil 26 — atlas presentation layer */
+.atlas-shell{min-height:610px}
 .atlas-svg{overflow:visible}
-
-/* 3D depth is now one controlled shadow, not 81 independent black offsets. */
 .atlas-svg .province-shadow{display:none!important}
-.atlas-svg .province-shape{
-  fill:var(--fill)!important;
-  stroke:#9bc9e4!important;
-  stroke-width:1.05!important;
-  vector-effect:non-scaling-stroke;
-  transform:none!important;
-  filter:drop-shadow(0 5px 3px rgba(0,0,0,.34));
-  transition:filter .18s ease,stroke .18s ease,stroke-width .18s ease,opacity .18s ease;
-}
-.atlas-svg .province-shape:hover{
-  fill:var(--fill)!important;
-  transform:none!important;
-  filter:brightness(1.1) drop-shadow(0 7px 5px rgba(0,0,0,.42))!important;
-}
-.atlas-svg .province-shape.selected{
-  fill:var(--fill)!important;
-  stroke:#f7ffff!important;
-  stroke-width:2.7!important;
-  transform:none!important;
-  filter:brightness(1.08) drop-shadow(0 6px 4px rgba(0,0,0,.42)) drop-shadow(0 0 11px rgba(77,213,255,.82))!important;
-}
-.atlas-svg .province-shape.search-hit{
-  stroke:#ffffff!important;
-  stroke-width:2.4!important;
-}
-
-/* Province names sit in a dedicated top layer. */
+.atlas-svg .province-shape{fill:var(--fill)!important;stroke:#9bc9e4!important;stroke-width:1.05!important;vector-effect:non-scaling-stroke;transform:none!important;filter:drop-shadow(0 5px 3px rgba(0,0,0,.34));transition:filter .18s ease,stroke .18s ease,stroke-width .18s ease,opacity .18s ease}
+.atlas-svg .province-shape:hover{fill:var(--fill)!important;transform:none!important;filter:brightness(1.1) drop-shadow(0 7px 5px rgba(0,0,0,.42))!important}
+.atlas-svg .province-shape.selected{fill:var(--fill)!important;stroke:#f7ffff!important;stroke-width:2.7!important;transform:none!important;filter:brightness(1.08) drop-shadow(0 6px 4px rgba(0,0,0,.42)) drop-shadow(0 0 11px rgba(77,213,255,.82))!important}
+.atlas-svg .province-shape.search-hit{stroke:#ffffff!important;stroke-width:2.4!important}
 .province-label-layer{pointer-events:none}
-.province-label{
-  pointer-events:none;
-  paint-order:stroke fill;
-  stroke:rgba(4,15,25,.92);
-  stroke-width:3.1px;
-  stroke-linejoin:round;
-  fill:#f6fbff;
-  font-family:Inter,system-ui,sans-serif;
-  font-size:8px;
-  font-weight:850;
-  letter-spacing:-.08px;
-  text-anchor:middle;
-  dominant-baseline:middle;
-  opacity:.94;
-}
-.province-label.selected{
-  font-size:9.5px;
-  font-weight:950;
-  fill:#ffffff;
-  stroke:rgba(5,18,30,.96);
-  stroke-width:3.6px;
-}
-.province-label tspan{pointer-events:none}
-
-/* Feature layers are always painted above province fills and below province names. */
-.atlas-svg .feature-layer{pointer-events:none}
-.atlas-svg .feature-label{
-  pointer-events:none;
-  paint-order:stroke fill;
-  stroke:rgba(5,17,28,.95);
-  stroke-width:3px;
-  stroke-linejoin:round;
-  font-family:Inter,system-ui,sans-serif;
-  font-size:8.2px;
-  font-weight:900;
-}
-.atlas-svg .feature-river{fill:none;stroke:#48cfff;stroke-width:1.7;opacity:.82;vector-effect:non-scaling-stroke}
-.atlas-svg .feature-lake{fill:#43c9ff;stroke:#e4fbff;stroke-width:1;opacity:.9;vector-effect:non-scaling-stroke}
-.atlas-svg .feature-plain{fill:rgba(245,197,93,.2);stroke:#f5c55d;stroke-width:1;opacity:.8;vector-effect:non-scaling-stroke}
-.atlas-svg .feature-mine{fill:#e18b5d;stroke:#fff0e6;stroke-width:1;opacity:.92;vector-effect:non-scaling-stroke}
-.atlas-svg .water-label{fill:#b9f2ff}
-.atlas-svg .mountain-label{fill:#f1d3a4}
-.atlas-svg .plain-label{fill:#ffe39a}
-.atlas-svg .mine-label{fill:#ffc3a4}
-
-/* Slightly more breathing room/readability in the selected province card. */
-.province-panel-inner{padding:18px!important}
-.province-top{grid-template-columns:58px 1fr 40px!important;gap:12px!important}
-.province-top h2{font-size:31px!important;margin:3px 0 6px!important}
-.province-top p{font-size:12px!important;line-height:1.58!important}
-.plate{width:58px!important;height:58px!important;font-size:23px!important}
-.quick-note,.geography-note,.memory{padding:12px 13px!important}
-.quick-note span,.geography-note span,.memory span{font-size:9.5px!important}
-.quick-note b,.geography-note p,.memory p{font-size:12px!important;line-height:1.62!important}
-.geo-grid{gap:8px!important;margin-top:12px!important}
-.geo-grid>div{min-height:76px!important;padding:10px 11px!important}
-.geo-grid small{font-size:8.8px!important;margin-bottom:6px!important}
-.geo-grid b{font-size:11.2px!important;line-height:1.48!important}
-.province-actions{gap:8px!important;margin-top:12px!important}
-.province-actions .btn{min-height:44px!important;font-size:10.8px!important}
-
-@media (max-width:1100px){
-  .province-label{font-size:7.2px}
-  .province-label.selected{font-size:8.8px}
-}
-@media (max-width:760px){
-  .province-label{font-size:6.7px;stroke-width:2.6px}
-  .province-label.selected{font-size:8px}
-  .province-panel-inner{padding:14px!important}
-  .province-top h2{font-size:27px!important}
-  .quick-note b,.geography-note p,.memory p{font-size:11.4px!important}
-  .geo-grid b{font-size:10.4px!important}
-}
+.province-label{pointer-events:none;paint-order:stroke fill;stroke:rgba(4,15,25,.94);stroke-width:3.1px;stroke-linejoin:round;fill:#f6fbff;font-family:Inter,system-ui,sans-serif;font-size:8px;font-weight:850;letter-spacing:-.08px;text-anchor:middle;dominant-baseline:middle;opacity:.96}
+.province-label.selected{font-size:9.6px;font-weight:950;fill:#fff;stroke:rgba(5,18,30,.98);stroke-width:3.6px}
+.province-label.small{font-size:6.6px;stroke-width:2.6px}.province-label.tiny{font-size:5.8px;stroke-width:2.3px}
+.atlas-svg .feature-layer{pointer-events:none}.atlas-svg .feature-label{pointer-events:none;paint-order:stroke fill;stroke:rgba(5,17,28,.95);stroke-width:3px;stroke-linejoin:round;font-family:Inter,system-ui,sans-serif;font-size:8.2px;font-weight:900}
+.atlas-svg .feature-river{fill:none;stroke:#48cfff;stroke-width:1.7;opacity:.82;vector-effect:non-scaling-stroke}.atlas-svg .feature-lake{fill:#43c9ff;stroke:#e4fbff;stroke-width:1;opacity:.9;vector-effect:non-scaling-stroke}.atlas-svg .feature-plain{fill:rgba(245,197,93,.2);stroke:#f5c55d;stroke-width:1;opacity:.8;vector-effect:non-scaling-stroke}.atlas-svg .feature-mine{fill:#e18b5d;stroke:#fff0e6;stroke-width:1;opacity:.92;vector-effect:non-scaling-stroke}
+.atlas-svg .water-label{fill:#b9f2ff}.atlas-svg .mountain-label{fill:#f1d3a4}.atlas-svg .plain-label{fill:#ffe39a}.atlas-svg .mine-label{fill:#ffc3a4}
+.province-panel-inner{padding:18px!important}.province-top{grid-template-columns:58px 1fr 40px!important;gap:12px!important}.province-top h2{font-size:31px!important;margin:3px 0 6px!important}.province-top p{font-size:12px!important;line-height:1.58!important}.plate{width:58px!important;height:58px!important;font-size:23px!important}.quick-note,.geography-note,.memory{padding:12px 13px!important}.quick-note span,.geography-note span,.memory span{font-size:9.5px!important}.quick-note b,.geography-note p,.memory p{font-size:12px!important;line-height:1.62!important}.geo-grid{gap:8px!important;margin-top:12px!important}.geo-grid>div{min-height:76px!important;padding:10px 11px!important}.geo-grid small{font-size:8.8px!important;margin-bottom:6px!important}.geo-grid b{font-size:11.2px!important;line-height:1.48!important}.province-actions{gap:8px!important;margin-top:12px!important}.province-actions .btn{min-height:44px!important;font-size:10.8px!important}
+@media (max-width:1100px){.atlas-shell{min-height:570px}.province-label{font-size:7.2px}.province-label.selected{font-size:8.8px}}
+@media (max-width:760px){.atlas-shell{min-height:500px}.province-label{font-size:6.7px;stroke-width:2.6px}.province-label.small{font-size:6px}.province-label.tiny{font-size:5.4px}.province-label.selected{font-size:8px}.province-panel-inner{padding:14px!important}.province-top h2{font-size:27px!important}.quick-note b,.geography-note p,.memory p{font-size:11.4px!important}.geo-grid b{font-size:10.4px!important}}
