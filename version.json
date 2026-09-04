@@ -1,4 +1,4 @@
 {
-  "version": "21.8.0",
-  "message": "Yurdunu Bil 21.8.0 — UI yeniden yazıldı; atlas ve il paneli tek responsive mimariye alındı."
+  "version": "21.9.0",
+  "message": "Yurdunu Bil 21.9.0 — tek UI sistemi, doğru responsive layout, atlas stretch/scroll düzeltmeleri."
 }
