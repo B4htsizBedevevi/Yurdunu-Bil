@@ -34,7 +34,9 @@ jobs:
               '<script src="ux-v18.js"></script>',
               '<script src="ux-v18.js?v=18.0.0"></script>',
               '<script src="ux-v19.js"></script>',
-              '<script src="ux-v19.js?v=19.0.0"></script>'
+              '<script src="ux-v19.js?v=19.0.0"></script>',
+              '<script src="ux-v20.js"></script>',
+              '<script src="ux-v20.js?v=20.0.0"></script>'
           ]:
               s = s.replace(tag + '\n', '').replace(tag, '')
           s = s.replace('<script src="pomodoro.js?v=1.0.0"></script>', '<script src="pomodoro.js?v=1.0.1"></script>')
@@ -46,7 +48,8 @@ jobs:
               '<script src="province-study.js?v=1.0.0"></script>',
               '<script src="ux-v17.js?v=17.0.0"></script>',
               '<script src="ux-v18.js?v=18.0.0"></script>',
-              '<script src="ux-v19.js?v=19.0.0"></script>'
+              '<script src="ux-v19.js?v=19.0.0"></script>',
+              '<script src="ux-v20.js?v=20.0.0"></script>'
           ]
           for tag in tags:
               if tag not in s:
@@ -62,5 +65,5 @@ jobs:
             echo 'Dashboard scripts already up to date.'
             exit 0
           fi
-          git commit -m 'feat: load v19 mobile layout and atlas'
+          git commit -m 'feat: load v20 mobile conflict resolver'
           git push
