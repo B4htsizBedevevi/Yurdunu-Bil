@@ -1,0 +1,5 @@
+Yurdunu Bil 21.7.1 Atlas Hotfix
+- Kategori lejantı
+- Bölgeler / İklim / Tarım / Dağlar / Ovalar / Su / Maden katmanları
+- Seçili il gradienti
+- Keşif sayacı 81 ile sınırlandırıldı
