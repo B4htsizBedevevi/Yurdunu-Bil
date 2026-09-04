@@ -1,0 +1,9 @@
+/* Yurdunu Bil 21.7.2 — full map category UI */
+.full-map-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;flex-wrap:wrap}
+.full-map-tabs{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.full-map-tabs .map-tab{min-height:38px}
+.full-map-mode-note{font-size:9px;color:var(--muted);white-space:nowrap}
+.full-map-card .atlas-wrap{height:520px!important;min-height:520px!important}
+.full-map-layout .province-panel{height:520px!important;min-height:520px!important;position:sticky!important;top:74px;overflow:auto}
+@media(max-width:1180px){.full-map-layout .province-panel{position:relative!important;top:auto;height:auto!important;min-height:0!important}.full-map-card .atlas-wrap{height:520px!important;min-height:520px!important}}
+@media(max-width:760px){.full-map-controls{align-items:flex-start}.full-map-tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;scrollbar-width:none}.full-map-tabs::-webkit-scrollbar{display:none}.full-map-tabs .map-tab{flex:0 0 auto}.full-map-mode-note{white-space:normal}.full-map-card .atlas-wrap{height:430px!important;min-height:430px!important}}
