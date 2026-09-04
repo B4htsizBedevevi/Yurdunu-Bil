@@ -1,83 +1,42 @@
 /* Yurdunu Bil — UX v20
- * Final mobile conflict resolver: drawer layering, stable atlas, safe scrolling.
+ * Layout Kernel: mobile shell, layering, card sizing and legacy-layer cleanup.
+ * Atlas rendering stays in ux-v19.js; v13-v18 are no longer loaded.
  */
 (() => {
   'use strict';
   const STYLE_ID='yb-v20-style';
   const $=(s,r=document)=>r.querySelector(s);
-
   function css(){
     if($('#'+STYLE_ID))return;
-    const s=document.createElement('style');s.id=STYLE_ID;s.textContent=`
+    const style=document.createElement('style');style.id=STYLE_ID;style.textContent=`
+      *,*::before,*::after{box-sizing:border-box;min-width:0}
+      html,body{width:100%;max-width:100%;overflow-x:hidden!important}
+      img,svg,canvas,video{max-width:100%}button,input,select,textarea{max-width:100%;font:inherit}
+      #yb-atlas-v17{display:none!important}
+      #full-map .leaflet-tile-pane,#full-map .leaflet-overlay-pane,#full-map .leaflet-shadow-pane,#full-map .leaflet-marker-pane,#full-map .leaflet-tooltip-pane,#full-map .leaflet-control-container,
+      #dashboard-map .leaflet-tile-pane,#dashboard-map .leaflet-overlay-pane,#dashboard-map .leaflet-shadow-pane,#dashboard-map .leaflet-marker-pane,#dashboard-map .leaflet-tooltip-pane,#dashboard-map .leaflet-control-container{display:none!important;visibility:hidden!important}
       @media(max-width:760px){
-        html,body{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:hidden!important;overflow-y:auto!important}
-        .main-content{width:100%!important;max-width:100%!important;min-width:0!important;padding:8px 9px calc(132px + env(safe-area-inset-bottom))!important;overflow:visible!important}
-        .view,.view-container{width:100%!important;max-width:100%!important;min-width:0!important;overflow:visible!important}
-
-        /* Drawer wins over the bottom bar while open. */
-        .sidebar{z-index:2147483005!important;width:min(86vw,340px)!important;max-width:min(86vw,340px)!important}
-        .mobile-bottom-nav{z-index:2147482000!important;transition:opacity .18s ease,transform .18s ease!important}
-        body.yb-drawer-open .mobile-bottom-nav{opacity:0!important;pointer-events:none!important;transform:translateY(120%)!important}
-        body.yb-drawer-open .main-content{filter:brightness(.62)!important}
-        body.yb-drawer-open .topbar{filter:brightness(.62)!important}
-        body.yb-drawer-open{overflow:hidden!important}
-        .yb-sidebar-backdrop{z-index:2147482900!important}
-        .yb-mobile-menu{z-index:2147483010!important}
-
-        /* Never allow the legacy v17 atlas to sit above the current atlas. */
-        #yb-atlas-v17{display:none!important}
-        #full-map .leaflet-tile-pane,#full-map .leaflet-overlay-pane,#full-map .leaflet-shadow-pane,#full-map .leaflet-marker-pane,#full-map .leaflet-tooltip-pane,#full-map .leaflet-control-container{display:none!important;visibility:hidden!important}
-
-        /* Stable, responsive map sizing. */
-        #view-map #full-map{width:100%!important;max-width:100%!important;height:clamp(360px,54dvh,500px)!important;min-height:360px!important;max-height:500px!important;border-radius:20px!important;overflow:hidden!important;margin:0!important}
-        @media(max-width:390px){#view-map #full-map{height:365px!important;min-height:365px!important;max-height:365px!important}}
-
-        /* Details below the atlas must never be hidden behind navigation. */
-        #view-map .province-detail,#view-map .province-empty,#view-map .map-selection-card{width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;min-height:180px!important;margin:9px 0 0!important;padding:18px 14px 22px!important;border-radius:18px!important;overflow:hidden!important}
-        #view-map .province-detail *{max-width:100%!important;overflow-wrap:anywhere!important}
-
-        /* No fixed legacy heights on cards. */
-        .panel,.hero-banner,.stat-card,.big-stat,.topic-card,.library-card,.settings-card,.quiz-card,.quiz-start,.province-detail,.kpss-box,.topic-progress-panel{height:auto!important;min-height:0!important;max-height:none!important;width:100%!important;min-width:0!important;max-width:100%!important}
-        .topics-grid,.library-grid,.stats-grid{width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
-        .topic-card,.library-card{overflow:hidden!important}
+        html,body{min-width:0!important;max-width:100%!important;overflow-x:hidden!important;overflow-y:auto!important}body{min-height:100dvh!important;padding:0!important}
+        .app-screen,.app-shell,.main-content,.view,.view.active,.view-container{width:100%!important;max-width:100%!important;min-width:0!important}
+        .app-shell{display:block!important;min-height:100dvh!important}.main-content{display:block!important;margin:0!important;padding:8px 9px calc(94px + env(safe-area-inset-bottom))!important;overflow:visible!important}.view,.view-container{padding:0!important;margin:0!important;overflow:visible!important}
+        .topbar{position:sticky!important;top:0!important;z-index:900!important;width:100%!important;height:54px!important;min-height:54px!important;margin:0 0 8px!important;padding:6px!important;border-radius:14px!important}
+        .breadcrumb{min-width:0!important;flex:1 1 auto!important;overflow:hidden!important}.breadcrumb strong,#page-title{display:block!important;max-width:48vw!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13px!important}.topbar-right{gap:3px!important;flex:0 0 auto!important}.topbar-right>*{flex:0 0 36px!important}.mobile-menu-btn,.icon-btn,.profile-btn{width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important}
+        .mobile-bottom-nav{position:fixed!important;left:9px!important;right:9px!important;bottom:calc(7px + env(safe-area-inset-bottom))!important;width:auto!important;height:70px!important;min-height:70px!important;padding:5px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;z-index:2147482000!important;border-radius:20px!important;box-shadow:0 18px 55px rgba(0,0,0,.45)!important;transition:opacity .18s ease,transform .18s ease!important}.mobile-bottom-nav>*{width:100%!important;min-width:0!important;max-width:none!important;min-height:60px!important;border-radius:14px!important}.mobile-bottom-nav button,.mobile-bottom-nav a{touch-action:manipulation!important}
+        .sidebar{position:fixed!important;inset:0 auto 0 0!important;width:min(84vw,330px)!important;max-width:min(84vw,330px)!important;transform:translate3d(-110%,0,0)!important;visibility:hidden!important;z-index:2147483600!important;transition:transform .24s ease,visibility 0s linear .24s!important}.sidebar.yb-mobile-open{transform:translate3d(0,0,0)!important;visibility:visible!important;transition:transform .24s ease,visibility 0s!important}.yb-sidebar-backdrop{position:fixed!important;inset:0!important;z-index:2147483500!important;background:rgba(2,9,17,.66)!important;backdrop-filter:blur(3px)!important}.yb-mobile-menu{position:fixed!important;top:calc(10px + env(safe-area-inset-top))!important;left:10px!important;width:42px!important;height:42px!important;z-index:2147483700!important;touch-action:manipulation!important}
+        body.yb-drawer-open .mobile-bottom-nav{opacity:0!important;pointer-events:none!important;transform:translateY(120%)!important}body.yb-drawer-open{overflow:hidden!important}body.yb-drawer-open .main-content,body.yb-drawer-open .topbar{filter:brightness(.62)!important}
+        .panel,.hero-banner,.stat-card,.big-stat,.topic-card,.library-card,.settings-card,.settings-profile-card,.quiz-card,.quiz-start,.province-detail,.province-empty,.map-selection-card,.kpss-box,.topic-progress-panel,.map-control-panel,.map-preview-card{width:100%!important;min-width:0!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important}.panel,.hero-banner,.topic-card,.library-card,.settings-card,.quiz-card,.quiz-start,.province-detail,.province-empty,.map-selection-card,.kpss-box,.topic-progress-panel{overflow:hidden!important}
+        .topics-grid,.library-grid,.stats-grid{width:100%!important;max-width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}.topic-card,.library-card{padding:10px!important;border-radius:14px!important}.topic-card h3,.library-card h3{line-height:1.18!important;overflow-wrap:anywhere!important}.topic-card p,.library-card p{min-height:0!important;overflow-wrap:anywhere!important}.topic-card>*,.library-card>*{max-width:100%!important}
+        button,.nav-item,.map-mode-btn,.library-open,.primary-btn,.ghost-btn{min-height:40px!important;max-width:100%!important;touch-action:manipulation!important}.nav-item{width:100%!important}input,select,textarea{font-size:16px!important;max-width:100%!important}
+        #view-map{width:100%!important;max-width:100%!important;min-width:0!important}#view-map .full-map-wrap{width:100%!important;max-width:100%!important;min-width:0!important;display:flex!important;flex-direction:column!important;gap:9px!important}#view-map #full-map{width:100%!important;max-width:100%!important;height:clamp(365px,55dvh,500px)!important;min-height:365px!important;max-height:500px!important;margin:0!important;border-radius:20px!important;overflow:hidden!important;position:relative!important;isolation:isolate!important;touch-action:none!important}#view-map #full-map .leaflet-container{width:100%!important;height:100%!important;background:transparent!important;touch-action:none!important}#view-map .map-search-floating{display:none!important}#view-map .map-legend-panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;max-height:none!important;margin:0!important;order:3!important}#view-map .map-legend-items{max-height:130px!important;overflow:auto!important}#view-map #map-status{pointer-events:none!important}
+        #view-map .province-empty,#view-map .map-selection-card{min-height:0!important;height:auto!important;margin:9px 0 0!important;padding:12px 14px!important;border-radius:15px!important}#view-map .province-empty:empty,#view-map .map-selection-card:empty{display:none!important}#view-map .province-detail *{max-width:100%!important;overflow-wrap:anywhere!important}
+        .library-card .library-card-art,.library-card .library-card-image,.library-card .library-visual,.library-card .card-art,.library-card .visual,.library-card .decor,.library-card .illustration{display:none!important}
       }
-    `;document.head.appendChild(s);
+      @media(max-width:390px){.main-content{padding-left:7px!important;padding-right:7px!important;padding-bottom:92px!important}.topics-grid,.library-grid,.stats-grid{gap:6px!important}#view-map #full-map{height:370px!important;min-height:370px!important;max-height:370px!important}}
+    `;document.head.appendChild(style);
   }
-
-  function syncDrawer(){
-    const open=!!$('.sidebar.yb-mobile-open');
-    document.body.classList.toggle('yb-drawer-open',open);
-    const nav=$('.mobile-bottom-nav');
-    if(nav)nav.setAttribute('aria-hidden',open?'true':'false');
-  }
-
-  function observe(){
-    const sidebar=$('.sidebar');
-    if(!sidebar)return;
-    syncDrawer();
-    new MutationObserver(syncDrawer).observe(sidebar,{attributes:true,attributeFilter:['class']});
-    new MutationObserver(syncDrawer).observe(document.body,{childList:true,subtree:true});
-    document.addEventListener('click',()=>setTimeout(syncDrawer,0),{passive:true});
-    window.addEventListener('resize',syncDrawer,{passive:true});
-  }
-
-  function stabilizeAtlas(){
-    const host=$('#full-map');
-    if(!host)return;
-    const clean=()=>{
-      $('#yb-atlas-v17',host)?.remove();
-      host.querySelectorAll('.leaflet-tile-pane,.leaflet-overlay-pane,.leaflet-shadow-pane,.leaflet-marker-pane,.leaflet-tooltip-pane').forEach(n=>n.style.display='none');
-    };
-    clean();
-    new MutationObserver(clean).observe(host,{childList:true,subtree:true});
-  }
-
-  function boot(){
-    css();
-    observe();
-    stabilizeAtlas();
-    setTimeout(stabilizeAtlas,700);
-    setTimeout(stabilizeAtlas,1800);
-  }
+  function syncDrawer(){const open=!!$('.sidebar.yb-mobile-open');document.body.classList.toggle('yb-drawer-open',open);const nav=$('.mobile-bottom-nav');if(nav)nav.setAttribute('aria-hidden',open?'true':'false');}
+  function watchDrawer(){const sidebar=$('.sidebar');if(!sidebar)return;syncDrawer();new MutationObserver(syncDrawer).observe(sidebar,{attributes:true,attributeFilter:['class']});document.addEventListener('click',()=>setTimeout(syncDrawer,0),{passive:true});window.addEventListener('resize',syncDrawer,{passive:true});}
+  function cleanLegacyMapLayers(){['#full-map','#dashboard-map'].forEach(sel=>{const host=$(sel);if(!host)return;host.querySelectorAll('#yb-atlas-v17').forEach(n=>n.remove());host.querySelectorAll('.leaflet-tile-pane,.leaflet-overlay-pane,.leaflet-shadow-pane,.leaflet-marker-pane,.leaflet-tooltip-pane,.leaflet-control-container').forEach(n=>{n.style.display='none';n.style.visibility='hidden';});});}
+  function boot(){css();syncDrawer();watchDrawer();cleanLegacyMapLayers();setTimeout(cleanLegacyMapLayers,700);setTimeout(cleanLegacyMapLayers,1800);}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
