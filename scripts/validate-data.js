@@ -1,6 +1,6 @@
 "use strict";
 
-/* Yurdunu Bil v30 release check. No network or build tooling required. */
+/* Yurdunu Bil v31 release check. No network or build tooling required. */
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
@@ -22,6 +22,12 @@ if (provinces.length !== 81 || plates.size !== 81) failures.push("İl verisi 81 
 if ((geojson.features || []).length !== 81 || geoPlates.size !== 81) failures.push("GeoJSON 81 benzersiz il içermiyor.");
 if (topics.length !== 8 || topicIds.size !== 8) failures.push("Konu bankası 8 benzersiz konu içermiyor.");
 if (questions.length < 160) failures.push(`Soru bankasında en az 160 soru bulunmalı; bulunan: ${questions.length}.`);
+const requiredProvinceFields = ["region", "climate", "terrain", "agriculture", "mining", "rivers", "fact", "kpss"];
+provinces.forEach((province, index) => {
+  requiredProvinceFields.forEach(field => {
+    if (!String(province[field] || "").trim()) failures.push(`İl ${index + 1} ${province.name}: ${field} boş.`);
+  });
+});
 const ids = new Set();
 questions.forEach((question, index) => {
   if (ids.has(question.id)) failures.push(`Soru ${index + 1}: tekrar eden id ${question.id}.`);
@@ -31,4 +37,4 @@ questions.forEach((question, index) => {
   if (!topicIds.has(question.topic)) failures.push(`Soru ${index + 1}: tanımsız konu ${question.topic}.`);
 });
 if (failures.length) { console.error(failures.join("\n")); process.exitCode = 1; }
-else console.log(`Doğrulama başarılı: ${provinces.length} il, ${topics.length} konu, ${questions.length} soru.`);
+else console.log(`Doğrulama başarılı: ${provinces.length} il, ${topics.length} konu, ${questions.length} soru, il alanları dolu.`);
