@@ -22,3 +22,17 @@
   function start(){let tries=0;const tick=()=>{tries++;try{render()}catch(e){console.warn('V12 merkez hatası',e)}if(tries<30)setTimeout(tick,500)};tick();new MutationObserver(()=>{if(!$('.v12-center'))render()}).observe(document.body,{childList:true,subtree:true})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();
+
+/* v13 loader — keeps the existing dashboard script stable while adding the mobile/map layer */
+(() => {
+  const load = () => {
+    if (document.querySelector('script[data-yb-v13]')) return;
+    const s = document.createElement('script');
+    s.src = 'ux-v13.js?v=13.0.0';
+    s.dataset.ybV13 = '1';
+    s.async = false;
+    document.body.appendChild(s);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load, { once: true });
+  else load();
+})();
