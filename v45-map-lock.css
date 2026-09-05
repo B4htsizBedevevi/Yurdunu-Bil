@@ -1,0 +1,3 @@
+/* Yurdunu Bil 45.1 — legacy atlas surfaces stay hidden while Map 2.0 is parked */
+#view-dashboard .atlas-card,#view-dashboard .atlas-shell,#view-dashboard .map-v31-panel,#view-dashboard .map-v31-tooltip,#view-map .atlas-card,#view-map .atlas-shell{display:none!important}
+#view-dashboard .yb45-dashboard-map-notice,#view-map .yb45-map-maintenance{display:block!important}
