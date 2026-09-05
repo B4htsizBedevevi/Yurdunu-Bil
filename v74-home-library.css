@@ -1,0 +1,69 @@
+/* Yurdunu Bil 74 — home + library visual layer */
+.library-home{display:grid;gap:14px;margin-bottom:16px}
+.library-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:20px;padding:24px 25px;border:1px solid #2d5169;border-radius:20px;background:radial-gradient(circle at 85% 10%,rgba(76,201,245,.14),transparent 30%),linear-gradient(135deg,rgba(20,48,73,.98),rgba(12,29,46,.98));box-shadow:0 22px 60px rgba(0,0,0,.22)}
+.library-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 0 42%,rgba(75,201,255,.035) 50%,transparent 58%);transform:translateX(-80%);animation:ybHeroSweep 8s ease-in-out infinite}
+@keyframes ybHeroSweep{55%,100%{transform:translateX(80%)}}
+.library-hero-copy{position:relative;z-index:1;max-width:760px}
+.library-hero-kicker{display:inline-flex;align-items:center;gap:7px;color:#62d8ff;font-size:9px;font-weight:950;letter-spacing:.15em;text-transform:uppercase}
+.library-hero-kicker i{width:7px;height:7px;border-radius:50%;background:#49e0b2;box-shadow:0 0 13px rgba(73,224,178,.8)}
+.library-hero h2{margin:8px 0 7px;font-size:clamp(25px,2.6vw,36px);line-height:1.03;letter-spacing:-.045em}
+.library-hero h2 strong{background:linear-gradient(100deg,#67d6ff,#54e2c2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.library-hero p{margin:0;color:#a6bfce;font-size:12px;line-height:1.65;max-width:680px}
+.library-hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.library-hero-actions .btn{min-height:40px}
+.library-hero-side{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:center}
+.library-stat{padding:13px 14px;border:1px solid rgba(77,129,157,.5);border-radius:13px;background:rgba(8,23,36,.5);backdrop-filter:blur(10px)}
+.library-stat b{display:block;font-size:21px;letter-spacing:-.03em}
+.library-stat span{display:block;margin-top:3px;color:#7f9aac;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.library-stat.accent b{color:#6ddfff}
+.library-stat.accent{box-shadow:inset 0 0 0 1px rgba(79,215,255,.035)}
+.library-focus{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:15px 17px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(19,42,64,.92),rgba(14,31,48,.92))}
+.library-focus-copy{min-width:0}
+.library-focus-copy>span{display:block;color:#78d9ff;font-size:9px;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+.library-focus-copy h3{margin:5px 0 4px;font-size:17px;letter-spacing:-.025em}
+.library-focus-copy p{margin:0;color:#879eaf;font-size:10.5px;line-height:1.5}
+.library-focus-progress{display:flex;align-items:center;gap:8px;margin-top:9px}
+.library-progress{height:6px;flex:1;max-width:360px;overflow:hidden;border-radius:99px;background:#0b1b2b}
+.library-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#48c9ff,#4be0b8);border-radius:99px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.library-focus-progress b{font-size:9px;color:#7edfff;white-space:nowrap}
+.library-topic-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin:2px 0 10px}
+.library-topic-head h2{margin:0;font-size:20px;letter-spacing:-.035em}
+.library-topic-head p{margin:4px 0 0;color:#8199aa;font-size:10px}
+.library-topic-head .eyebrow{margin:0}
+.library-topic-sort{display:flex;gap:6px;flex-wrap:wrap}
+.library-topic-sort button{border:1px solid var(--line);border-radius:9px;background:#10263b;padding:7px 9px;color:#89a4b6;font-size:9px;font-weight:900}
+.library-topic-sort button.active{background:#16374f;border-color:#38657f;color:#6edaff}
+.note-card{position:relative;overflow:hidden}
+.note-card:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#4ccaf5 38%,#44dcb7 68%,transparent);opacity:0;transition:opacity .2s ease}
+.note-card:hover:before{opacity:1}
+.note-card .topic-icon{transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+.note-card:hover .topic-icon{transform:translateY(-2px) rotate(-3deg);box-shadow:0 9px 24px rgba(53,185,236,.16)}
+.note-card .note-preview div{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.note-card:hover .note-preview div{border-color:#31566e;background:#112c43}
+.note-card:hover .note-preview div:nth-child(2){transform:translateX(2px)}
+.note-card:hover .note-preview div:nth-child(3){transform:translateX(3px)}
+.note-card:hover .note-preview div:nth-child(4){transform:translateX(4px)}
+.note-card .btn{position:relative;overflow:hidden}
+.note-card .btn:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.08) 48%,transparent 76%);transform:translateX(-120%);transition:transform .45s ease}
+.note-card .btn:hover:after{transform:translateX(120%)}
+.topic-detail{overflow:hidden;position:relative}
+.topic-detail:before{content:"";position:absolute;right:-120px;top:-130px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(69,205,255,.11),transparent 68%);pointer-events:none}
+.detail-list article{transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease}
+.detail-list article:hover{transform:translateX(3px);border-color:#355a72;background:#122b42;box-shadow:0 10px 25px rgba(0,0,0,.14)}
+.detail-list article>b{transition:transform .18s ease,background .18s ease}
+.detail-list article:hover>b{transform:scale(1.05);background:#194963}
+
+@media(max-width:1050px){
+  .library-hero{grid-template-columns:1fr}
+  .library-hero-side{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .library-hero{padding:19px 16px;border-radius:16px}
+  .library-hero-side{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .library-focus{grid-template-columns:1fr}
+  .library-focus-progress{display:block}
+  .library-progress{max-width:none;margin-bottom:6px}
+  .library-topic-head{display:block}
+  .library-topic-sort{margin-top:8px}
+}
+@media(prefers-reduced-motion:reduce){.library-hero:before,.note-card .btn:after{animation:none;transition:none}.note-card:hover .topic-icon,.note-card:hover .note-preview div,.detail-list article:hover{transform:none}}
