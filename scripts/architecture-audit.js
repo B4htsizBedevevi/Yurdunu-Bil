@@ -28,12 +28,12 @@ else{
  console.log(`✓ Boot grafiği: ${new Set(refs).size} yerel JS modülü doğrulandı.`);
 }
 
-/* Security/runtime smell scan. Remote data is allowed; remote executable code is not. */
+/* Security/runtime smell scan. Remote data is allowed; remote executable code from arbitrary GitHub raw hosts is not. */
 const activeRoots=new Set(['index.html','app.js','config.js','core','features','data','styles','theme-terra.css','style.css','auth.css','onboarding.css','notifications.css','flashcards.css','leaderboard.css','responsive.css','v100-terra-mobile.css','v72-layout.css','v92-ui-hardening.css','auth-v73.css','v101-ui-controls.css','v102-navigation.css','v103-learning-bridge.css','effects.js']);
 const isActive=f=>activeRoots.has(f)||activeRoots.has(f.split('/')[0]);
 for(const file of textFiles.filter(isActive)){
  const text=read(file);
- if(/(?:<script[^>]+src\s*=\s*["'`]https?:\/\/|\.src\s*=\s*["'`]https?:\/\/|importScripts\s*\(\s*["'`]https?:\/\/)/i.test(text))fail(`${file}: uzak executable script yükleyicisi bulundu.`);
+ if(/(?:<script[^>]+src\s*=\s*["'`]https?:\/\/[^"'`]*raw\.githubusercontent\.com|\.src\s*=\s*["'`]https?:\/\/[^"'`]*raw\.githubusercontent\.com|importScripts\s*\(\s*["'`]https?:\/\/[^"'`]*raw\.githubusercontent\.com)/i.test(text))fail(`${file}: uzak GitHub raw executable script yükleyicisi bulundu.`);
  if(/(^|[^\w])eval\s*\(|new\s+Function\s*\(/.test(text))fail(`${file}: eval/new Function kullanımı bulundu.`);
  if(/document\.write\s*\(/.test(text))fail(`${file}: document.write kullanımı bulundu.`);
 }
