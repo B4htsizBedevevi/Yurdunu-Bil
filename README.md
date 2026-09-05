@@ -4,42 +4,75 @@
 
 ## Durum
 
-- Release tabanı: **98.0.0**
 - 81 il ve Türkiye coğrafyası veri katmanı
 - Geniş KPSS coğrafya soru bankası ve konu kütüphanesi
 - Mini oyunlar, flashcard, ilerleme ve liderlik özellikleri
 - Supabase giriş/kayıt, sonuç ve favori senkronizasyonu
-- Canlı Arena, matchmaking ve server-authoritative sonuç akışı
+- Canlı Arena, matchmaking ve sonuç akışı
 - Adaptive Learning / öğrenme ilerlemesi altyapısı
 - Mobil / tablet / masaüstü responsive arayüz
 - Render üzerinde statik yayın
 
-## Kanonik uygulama yapısı
+## Kanonik mimari
 
-- `index.html` — uygulama kabuğu ve kontrollü yükleme sırası
-- `app.js` — auth, temel navigasyon ve uygulama çekirdeği
+Uygulama artık yeni özellikler için `vXXX` dosyaları üretmek yerine sorumluluk bazlı tek bir yapı kullanır:
+
+```text
+index.html
+config.js
+core/
+  boot.js
+  runtime.js
+features/
+  auth/
+  home/
+  library/
+  games/
+  arena/
+  progress/
+  questions/
+  onboarding/
+  notifications/
+  flashcards/
+  leaderboard/
+  ui/
+data/
+  geography/
+  learning/
+  questions/
+styles/
+  app.css
+  components.css
+  features.css
+  responsive.css
+app.js
+supabase/
+scripts/
+```
+
+- `index.html` — yalnızca uygulama kabuğu ve tek canonical boot giriş noktası
 - `config.js` — Supabase ve çalışma zamanı yapılandırması
-- `style.css` / `theme-terra.css` / `responsive.css` — temel görsel sistem
+- `core/runtime.js` — ortak runtime ve modül kayıt sistemi
+- `core/boot.js` — veri, çekirdek ve feature yükleme sırasının merkezi sahibi
+- `features/home/` — ana sayfa ve çalışma merkezi
+- `features/library/` — kütüphane, çalışma, tekrar ve konu derinleştirme akışı
+- `features/games/` — oyun ve etkinlik merkezi
+- `features/arena/` — Arena, sosyal özellikler ve matchmaking
+- `features/progress/` — ilerleme, tekrar döngüsü ve oyun gelişimi
+- `features/questions/` — soru merkezi
+- `features/ui/` — navigasyon, öğrenme köprüsü ve sistem yardımcıları
 - `data/` — soru, konu, il, nüfus ve coğrafi veri kaynakları
-- `v90-command-center.js` — aktif ana sayfa / çalışma merkezi
-- `v90-library-compact.js` — aktif kütüphane düzeni
-- `v88-question-center.js` — soru merkezi
-- `v98-ui-cohesion.js` — merkezi navigasyon ve lazy-load harita akışı
-- `v98-events-plus.js` — etkinlik/günlük görev akışı
-- `v91-learning-bridge.js` / `v104-progress-loop.js` — öğrenme ve ilerleme köprüleri
-- `v108-game-progression.js` — oyun ilerlemesi ve başarı sistemi
-- `arena-v1.js` / `v53-arena-social.js` / `v79-arena-matchmaking.js` — Arena altyapısı
-- `v55-games-plus.js` — oyun merkezi
-- `v99-map-games.js` — yalnızca harita açıkça istendiğinde yüklenen harita oyunları
-- `core/runtime.js` — deterministik runtime kaynağı
+- `styles/` — canonical stil girişleri ve ortak responsive katman
 - `scripts/` — veri, site, production smoke ve release doğrulamaları
-- `supabase/migrations/` — Arena ve öğrenme sistemi veritabanı değişiklikleri
+- `supabase/migrations/` — veritabanı değişiklikleri
 
 ## Temizlik ilkesi
 
-Repo geçmişteki sürüm katmanlarının birikmesi nedeniyle gereksiz dosyalarla şişmişti. Temizlikte yalnızca **kanıtlanmış şekilde kullanılmayan veya boş uyumluluk dosyaları** kaldırılır. Soru verileri ve çalışan özellikler sırf eski sürüm numarası taşıyor diye silinmez.
+Repo geçmişte çok sayıda ardışık `vXX` katmanı nedeniyle büyüdü. Temizlik sırasında çalışan davranış önce canonical feature modüllerine taşınır, referanslar doğrulanır, CI çalıştırılır ve ancak bundan sonra eski dosya kaldırılır.
 
-Aktif dosyalar tek bir yükleme zincirinde tutulur; eski shell/navigation katmanları uygulama girişinden çıkarılmıştır. Harita da yalnızca açıkça istendiğinde yüklenerek başlangıçta gereksiz DOM/JS yükünü azaltır.
+Sırf dosyanın eski bir sürüm numarası taşıması, tek başına silme gerekçesi değildir. Özellikle soru bankası ve veri dosyaları içerik bütünlüğü korunarak ayrı bir veri katmanında tutulur.
+
+Harita oyunları gibi ağır özellikler ihtiyaç anında yüklenir. Böylece ilk açılışta gereksiz JavaScript ve DOM maliyeti oluşturulmaz.
 
 ## Geliştirme
 
@@ -66,6 +99,6 @@ python -m http.server 5500
 
 GitHub Actions, `main` dalına yapılan değişikliklerde bu kontrolleri otomatik çalıştırır.
 
-## Mimari hedef
+## Mimari kural
 
-Yeni özellikler yeni bir `vXXX` dosyası eklemek yerine mümkün olduğunca mevcut kanonik modüllere taşınacaktır. Birleştirme sırasında önce bağımlılık ve yükleme sırası doğrulanır, ardından gereksiz katman kaldırılır ve CI ile tekrar doğrulanır.
+Yeni özellikler yeni bir `vXXX` dosyası olarak eklenmez. Değişiklik mevcut canonical feature modülüne işlenir; yeni sorumluluk gerekiyorsa `features/<alan>/` altında isimlendirilmiş bir modül oluşturulur. Birleştirme sonrası referans taraması ve CI zorunludur.
