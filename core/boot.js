@@ -6,7 +6,7 @@ const base=new URL('../',document.currentScript?.src||location.href);
 const dataFiles=['data/questions.js','data/questions-v55.js','data/questions-v59.js','data/questions-v61.js','data/questions-v84.js','data/questions-v87a.js','data/questions-v87b.js','data/questions-v88.js','data/question-pool.js','data/questions-2026-expansion.js','data/questions-2026-expansion-2.js','data/questions-2026-expansion-3.js','data/questions-2026-expansion-4.js','data/provinces.js','data/province-facts-25.js','data/population-2025.js','data/geo-features.js','data/geo-stats.js','data/topics.js','data/learning-index.js'];
 const coreFiles=['core/runtime.js','app.js','core/ui-guard.js'];
 const featureGroups=[
- ['features/games/games-core.js','features/games/events.js','features/games/events-plus.js'],
+ ['features/games/games.js','features/games/games-core.js','features/games/events.js','features/games/events-plus.js'],
  ['features/arena/arena.js','features/arena/social.js'],
  ['features/library/manifest.js','features/library/content.js','features/library/library.js','features/library/study.js','features/library/review.js','features/library/expansion.js','features/library/deepening.js','features/library/compact.js','features/library/interactions.js'],
  ['features/progress/progress.js','features/progress/progress-loop.js','features/progress/game-progression.js'],
