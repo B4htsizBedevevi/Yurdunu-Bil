@@ -1,0 +1,20 @@
+/* Yurdunu Bil 45 — mobile overflow and parked-map guard */
+html,body{max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+@media(max-width:700px){
+  .app-shell{width:100%;min-width:0;overflow-x:hidden}
+  .main-shell{width:100%;min-width:0;overflow-x:hidden}
+  .page-wrap{width:100%;min-width:0;overflow-x:hidden;padding-bottom:96px}
+  .view{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
+  .topbar{width:100%;min-width:0}
+  .yb45-map-maintenance,.yb45-dashboard-map-notice{width:calc(100% - 20px);max-width:100%;margin:12px auto;overflow:hidden}
+  .yb45-map-maintenance h1{font-size:clamp(32px,9vw,48px);line-height:1.05;word-break:normal}
+  .yb45-map-maintenance p{font-size:15px;line-height:1.65;max-width:100%}
+  .yb45-map-status{grid-template-columns:1fr!important;gap:8px!important}
+  .yb45-map-actions{display:grid!important;grid-template-columns:1fr!important;gap:9px!important}
+  .yb45-map-actions .btn{width:100%;min-width:0}
+  .dashboard-intro,.dashboard-layout,.dashboard-lower{width:100%;min-width:0}
+  .yb45-lab-grid,.yb45-arena-grid,.yb45-arena-panels{width:100%;min-width:0}
+  .yb45-lab-card,.yb45-mode,.yb45-arena-panels article{min-width:0;max-width:100%}
+  .yb45-match-grid,.yb45-choice-grid{grid-template-columns:1fr!important}
+}
