@@ -3,7 +3,7 @@ const root=path.resolve(__dirname,'..'),fail=[];const read=p=>fs.readFileSync(pa
 const index=read('index.html');let release;
 try{release=JSON.parse(read('yb-release.json'))}catch{fail.push('yb-release.json okunamıyor')}
 const version=String(release?.version||''),indexVersion=(index.match(/name="yb-version" content="([^"]+)"/)||[])[1]||'';
-if(!/^57\.1\.\d+$/.test(version))fail.push(`Canonical release 57.1.x olmalı; bulunan ${version||'yok'}.`);
+if(version!=='57.0.0')fail.push(`Canonical release 57.0.0 olmalı; bulunan ${version||'yok'}.`);
 if(indexVersion!==version)fail.push(`Version mismatch: release ${version}, index ${indexVersion}`);
 const refs=[...index.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^"#]*)?"/g)].map(m=>m[1]).filter(x=>!x.startsWith('http')&&!x.startsWith('//')&&!x.startsWith('#'));
 for(const ref of refs)if(!fs.existsSync(path.join(root,ref)))fail.push(`Missing asset: ${ref}`);
