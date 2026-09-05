@@ -1,34 +1,34 @@
-/* Yurdunu Bil — canonical style entrypoint.
- * Feature styles remain isolated for now; this file owns their load order.
- * Migration rule: new styles go under styles/ or features/, never vXX files.
- */
+/* Yurdunu Bil — canonical style entrypoint. */
 @import url('../style.css?v=1');
 @import url('../theme-terra.css?v=1');
 @import url('../auth.css?v=1');
 @import url('../auth-v73.css?v=1');
 @import url('../v72-layout.css?v=1');
-@import url('../v73-content.css?v=1');
-@import url('../v74-home-library.css?v=1');
-@import url('../v75-library-study.css?v=1');
-@import url('../v76-review.css?v=1');
-@import url('../v77-library-polish.css?v=1');
-@import url('../v79-library-arena.css?v=1');
-@import url('../v84-library-expansion.css?v=1');
-@import url('../v87-library-deepening.css?v=1');
-@import url('../v88-question-center.css?v=1');
-@import url('../v91-library-readability.css?v=1');
-@import url('../v55-games-plus.css?v=1');
-@import url('../v86-events-single.css?v=1');
-@import url('../arena-v1.css?v=1');
-@import url('../v53-arena-social.css?v=1');
-@import url('../v79-arena-matchmaking.css?v=1');
-@import url('../v80-progress-center.css?v=1');
 @import url('../v92-ui-hardening.css?v=1');
 @import url('../onboarding.css?v=1');
 @import url('../notifications.css?v=1');
 @import url('../flashcards.css?v=1');
 @import url('../leaderboard.css?v=1');
-@import url('../arena-effects.css?v=1');
 @import url('../responsive.css?v=1');
 @import url('../v100-terra-mobile.css?v=1');
-@import url('../v108-game-progression.css?v=1');
+
+@import url('../features/home/home.css?v=1');
+@import url('../features/library/library.css?v=1');
+@import url('../features/library/study.css?v=1');
+@import url('../features/library/review.css?v=1');
+@import url('../features/library/polish.css?v=1');
+@import url('../features/library/arena.css?v=1');
+@import url('../features/library/expansion.css?v=1');
+@import url('../features/library/deepening.css?v=1');
+@import url('../features/library/readability.css?v=1');
+@import url('../features/games/games.css?v=1');
+@import url('../features/games/events.css?v=1');
+@import url('../features/games/events-plus.css?v=1');
+@import url('../features/arena/arena.css?v=1');
+@import url('../features/arena/social.css?v=1');
+@import url('../features/arena/matchmaking.css?v=1');
+@import url('../features/arena/effects.css?v=1');
+@import url('../features/progress/progress.css?v=1');
+@import url('../features/progress/progress-loop.css?v=1');
+@import url('../features/progress/game-progression.css?v=1');
+@import url('../features/questions/questions.css?v=1');
