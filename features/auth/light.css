@@ -1,0 +1,12 @@
+/* Yurdunu Bil — semantic authentication light-theme overrides. */
+body.light .auth-screen{background:radial-gradient(ellipse 60% 50% at 15% 15%,rgba(120,190,255,.15) 0%,transparent 70%),radial-gradient(ellipse 55% 45% at 85% 80%,rgba(180,160,255,.12) 0%,transparent 70%),linear-gradient(145deg,#edf3f7,#f0f5f9)}
+body.light .auth-screen::before{background-image:linear-gradient(rgba(73,145,190,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(73,145,190,.06) 1px,transparent 1px)}
+body.light .glow-a{background:radial-gradient(circle,#60aaff,transparent);opacity:.1}.body.light .glow-b{background:radial-gradient(circle,#b3a0ff,transparent);opacity:.1}
+body.light .auth-pitch h1{color:#0f2236}body.light .auth-pitch>p{color:#4c6878}body.light .pitch-points strong{color:#0f2236}
+body.light .auth-feat{background:rgba(230,242,250,.8);border-color:rgba(100,160,210,.3);color:#1e3a50}.body.light .auth-card{background:rgba(255,255,255,.97);border-color:#cbd7e1;box-shadow:0 24px 60px rgba(28,45,60,.12)}
+body.light .auth-card{background:rgba(255,255,255,.97);border-color:#cbd7e1;box-shadow:0 24px 60px rgba(28,45,60,.12)}body.light .auth-tabs{background:#edf3f7;border-color:#c8d5df}body.light .auth-tab{color:#5a7080}body.light .auth-tab.active{background:#fff;color:#0f2236;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+body.light .auth-card input[type=email],body.light .auth-card input[type=password],body.light .auth-card input[type=text]{background:#f7fafb;border-color:#c8d5df;color:#0f2236}body.light .auth-card input:focus{border-color:#4cc9f5}body.light .auth-card input::placeholder{color:#98b0be}
+body.light .auth-card h2,.auth-card .eyebrow{color:#0f2236}body.light .auth-card>div p{color:#5a7080}body.light .or{color:#8aa0b0}body.light .or::before,body.light .or::after{background:rgba(100,150,190,.25)}
+body.light .auth-card .btn.secondary{background:#edf3f7;color:#1e3a50;border-color:#c5d3dd}body.light .auth-card .btn.ghost{color:#4a6a7e;border-color:#c8d5df}body.light .check{color:#4a6a7e!important}body.light .text-action{color:#2a8fb8}body.light .form-error{color:#c0394a}
+body.light .profile-menu{background:#fff;color:#0f2236;border-color:#c8d5df}body.light .profile-menu button{color:#1e3a50}body.light .profile-menu button:hover{background:#edf3f7}
+body.light .toast{background:#fff;color:#0f2236;border-color:#c8d5df;box-shadow:0 12px 30px rgba(28,45,60,.12)}body.light .toast.error{background:#fff8f8;border-color:#e8b0b8;color:#a02030}body.light .toast.ok{background:#f4fcf8;border-color:#a0d8b8;color:#1a6040}
