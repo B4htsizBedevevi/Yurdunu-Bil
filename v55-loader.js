@@ -9,7 +9,7 @@ async function boot(){
  await Promise.all([
   load('link',{rel:'stylesheet',href:`/v55-games-plus.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v56-retention.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v56-profile-settings.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v53-arena-social.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v56-stability.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v56-events-ux.css?v=${V}`}),load('link',{rel:'stylesheet',href:`/v57-cleanup.css?v=${V}`}),load('link',{rel:'manifest',href:`/manifest.webmanifest?v=${V}`})
  ]);
- await load('script',{src:`/v55-games-plus.js?v=${V}`});await load('script',{src:`/v56-retention.js?v=${V}`});await load('script',{src:`/arena-v1.js?v=${V}`});await load('script',{src:`/v53-arena-social.js?v=${V}`});await load('script',{src:`/v56-profile-settings.js?v=${V}`});await load('script',{src:`/v56-interaction-hotfix.js?v=${V}`});await load('script',{src:`/v56-stability.js?v=${V}`});await load('script',{src:`/v56-events-ux.js?v=${V}`});await load('script',{src:`/v57-onboarding.js?v=${V}`});
+ await load('script',{src:`/v55-games-plus.js?v=${V}`});await load('script',{src:`/v56-retention.js?v=${V}`});await load('script',{src:`/arena-v1.js?v=${V}`});await load('script',{src:`/v53-arena-social.js?v=${V}`});await load('script',{src:`/v56-profile-settings.js?v=${V}`});await load('script',{src:`/v56-interaction-hotfix.js?v=${V}`});await load('script',{src:`/v56-stability.js?v=${V}`});await load('script',{src:`/v56-events-ux.js?v=${V}`});await load('script',{src:`/v57-onboarding.js?v=${V}`});await load('script',{src:`/v57-profile-ui.js?v=${V}`});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
