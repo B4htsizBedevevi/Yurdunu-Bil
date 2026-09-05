@@ -1,4 +1,4 @@
-const CACHE='yurdunu-bil-v99.0.1';
+const CACHE='yurdunu-bil-v99.0.2';
 const CORE=['/','/manifest.webmanifest','/icon-192.svg','/icon-512.svg'];
 const fresh=req=>{const u=new URL(req.url);return u.pathname==='/sw.js'||req.destination==='document'||req.destination==='script'||req.destination==='style'||req.destination==='manifest'||u.searchParams.has('yb-force')||u.searchParams.has('yb-update');};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
