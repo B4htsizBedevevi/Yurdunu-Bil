@@ -1,7 +1,6 @@
 @import url('v101-ui-controls.css?v=101.0.2');
 @import url('v102-navigation.css?v=102.0.0');
 @import url('v103-learning-bridge.css?v=103.0.0');
-@import url('v104-progress-loop.css?v=104.0.0');
-@import url('v107-mobile-final.css?v=107.0.0');
-@import url('v108-map-games-mobile.css?v=108.0.0');
-/* Yurdunu Bil Terra UI — visual skin only; learning, games, Arena and map engines are untouched. */
+/* Runtime feature styles are loaded from styles/app.css. */
+/* Harita, ilerleme ve oyun katmanları artık semantic feature CSS dosyalarından gelir. */
+/* Terra remains visual-only: feature behavior is owned by their JS modules. */
