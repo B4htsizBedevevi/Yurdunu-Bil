@@ -1,6 +1,7 @@
 @import url('v101-ui-controls.css?v=101.0.1');
 @import url('v102-navigation.css?v=102.0.0');
 @import url('v103-learning-bridge.css?v=103.0.0');
+@import url('v104-progress-loop.css?v=104.0.0');
 /* Yurdunu Bil Terra UI — visual skin only; learning, games, Arena and map engines are untouched. */
 :root{--bg:#07130f;--bg2:#0b1c15;--panel:#10271d;--panel2:#153326;--line:#285141;--text:#f3f7f1;--muted:#91aaa0;--cyan:#54d7c0;--mint:#65df9b;--violet:#9acb73;--red:#ef777f;--green:#63e0a0;--sand:#d7c79a;--shadow:0 20px 60px rgba(0,0,0,.25)}
 html,body{background:radial-gradient(circle at 12% 0%,rgba(42,112,78,.24),transparent 34%),radial-gradient(circle at 90% 90%,rgba(35,120,91,.12),transparent 32%),linear-gradient(145deg,#081710,#07130f 55%,#0b1c15)!important;color:var(--text)}
