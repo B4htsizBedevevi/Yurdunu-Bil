@@ -8,6 +8,7 @@ async function boot(){await Promise.all([
   load('link',{rel:'stylesheet',href:'/v56-profile-settings.css?v=56.0.0'}),
   load('link',{rel:'stylesheet',href:'/v53-arena-social.css?v=56.0.0'}),
   load('link',{rel:'stylesheet',href:'/v56-stability.css?v=56.0.0'}),
+  load('link',{rel:'stylesheet',href:'/v56-events-ux.css?v=56.0.0'}),
   load('link',{rel:'manifest',href:'/manifest.webmanifest'})
 ]);
 await load('script',{src:'/v55-games-plus.js?v=56.0.0'});
@@ -17,6 +18,7 @@ await load('script',{src:'/v53-arena-social.js?v=56.0.0'});
 await load('script',{src:'/v56-profile-settings.js?v=56.0.0'});
 await load('script',{src:'/v56-interaction-hotfix.js?v=56.0.0'});
 await load('script',{src:'/v56-stability.js?v=56.0.0'});
+await load('script',{src:'/v56-events-ux.js?v=56.0.0'});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
