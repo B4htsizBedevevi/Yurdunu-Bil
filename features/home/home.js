@@ -1,12 +1,7 @@
-/* Canonical Home Feature
- * Migrated from the versioned command-center layer.
- */
-(()=>{'use strict';
-if(window.__YB_HOME_FEATURE__)return;window.__YB_HOME_FEATURE__=true;
+/* Canonical Home Feature */
+(()=>{'use strict';if(window.__YB_HOME_FEATURE__)return;window.__YB_HOME_FEATURE__=true;
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 function render(){const v=$('#view-home');if(!v||!v.classList.contains('active'))return;const topics=Array.isArray(window.TOPICS)?window.TOPICS:[],qs=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK.length:0;v.innerHTML=`<div class="yb90-home"><section class="yb90-hero"><div class="yb90-hero-copy"><span class="yb90-kicker"><i class="yb90-dot"></i> YURDUNU BİL • KPSS COĞRAFYA 2026</span><h1>Türkiye coğrafyasını <strong>öğren.</strong><br>Bilgini <strong>kanıtla.</strong></h1><p>Konuları öğren, sorularla pekiştir, oyunlarla hız kazan ve Arena'da yarış.</p><div class="yb90-actions"><button class="btn primary" data-home-view="library">📚 Çalışmaya başla</button><button class="btn secondary" data-home-view="events">🎮 Oyun merkezine git</button><button class="btn ghost" data-home-view="arena">⚔️ Arena'ya gir</button></div><div class="yb90-proof"><span>📖 ${qs}+ soru</span><span>🗂️ ${topics.length||8} konu</span><span>🎮 9 oyun modu</span><span>⚔️ Canlı Arena</span></div></div></section><section class="yb90-section"><div class="yb90-section-head"><div><span class="eyebrow">HIZLI KONU SEÇ</span><h2>Bugün ne çalışacaksın?</h2><p>Doğrudan istediğin konuya gir.</p></div><button class="btn secondary" data-home-view="library">Tüm kütüphane →</button></div><div class="yb90-topic-row">${topics.slice(0,8).map(t=>`<button class="yb90-topic" data-home-topic="${String(t.id).replace(/"/g,'&quot;')}"><i>📘</i><span>${String(t.title||t.id)}</span><small>KPSS</small></button>`).join('')}</div></section></div>`;bind(v)}
 function bind(v){$$('[data-home-view]',v).forEach(b=>b.addEventListener('click',()=>{const x=b.dataset.homeView;if(x==='arena')window.YBArena?.open?.();else window.navigate?.(x)}));$$('[data-home-topic]',v).forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.homeTopic;window.navigate?.('library');setTimeout(()=>document.querySelector(`[data-open-topic="${CSS.escape(id)}"]`)?.click(),100)}))}
-function showHome(){window.navigate?.('home')||render()}
-function install(){window.YBHome={render,showHome};render()}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-})();
+function showHome(){window.navigate?.('home')||render()};function install(){window.YBHome={render,showHome};render()};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();})();
