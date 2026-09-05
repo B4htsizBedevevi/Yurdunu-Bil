@@ -1,7 +1,7 @@
 /* Yurdunu Bil 57 — safe feature loader */
 (()=>{'use strict';
 if(window.__YB57_LOADER__)return;window.__YB57_LOADER__=true;
-const V='56.3.0';
+const V='57.0.0';
 const load=(tag,attrs)=>new Promise(resolve=>{const key=tag==='script'?'src':'href',value=attrs[key];if(value&&document.querySelector(`${tag}[${key}="${value}"]`)){resolve(true);return}const e=document.createElement(tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));e.dataset.yb57Loaded='1';e.onload=()=>resolve(true);e.onerror=()=>resolve(false);(tag==='link'?document.head:document.body).appendChild(e)});
 async function registerSW(){try{if(!('serviceWorker' in navigator))return;const reg=await navigator.serviceWorker.register(`/sw.js?v=${V}`,{scope:'/',updateViaCache:'none'});await reg.update().catch(()=>null)}catch{}}
 async function boot(){
