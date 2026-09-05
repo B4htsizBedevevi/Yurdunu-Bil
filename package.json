@@ -1,1 +1,9 @@
-{"name":"yurdunu-bil","version":"63.1.0","private":true,"scripts":{"test":"node scripts/validate-data.js && node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js","check":"node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js"},"dependencies":{"@supabase/ssr":"^0.12.5","@supabase/supabase-js":"^2.115.0"}}
+{
+  "name": "yurdunu-bil",
+  "version": "98.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/validate-data.js && node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js",
+    "check": "node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js"
+  }
+}
