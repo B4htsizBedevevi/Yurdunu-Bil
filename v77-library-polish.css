@@ -1,0 +1,47 @@
+/* Yurdunu Bil 77 — library density & hierarchy polish */
+
+/* Desktop: fit all 8 main topics into two clean rows instead of leaving a sparse last row. */
+@media (min-width:1450px){
+  .library-note-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .note-card{padding:15px}
+  .note-card h2{font-size:19px}
+  .note-card>p{font-size:11px;line-height:1.5}
+  .note-preview{margin-top:10px;gap:5px}
+  .note-preview div{padding:7px 8px;font-size:10px;line-height:1.4}
+  .note-card .btn{margin-top:10px}
+}
+
+/* Main topic cards: stable internal rhythm so cards feel intentional rather than stretched. */
+.library-note-grid{align-items:stretch}
+.note-card{grid-template-rows:auto auto auto 1fr auto}
+.note-card .topic-meta{min-height:28px;align-content:start}
+.note-card .topic-meta + .topic-meta{display:none}
+
+/* Study modules become easier to scan: slightly larger title and compact previews. */
+.study-module-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.study-module{padding:13px}
+.study-module h3{font-size:14px;line-height:1.22}
+.study-module p{font-size:9.5px;line-height:1.48;min-height:34px}
+.study-points-preview{gap:4px;margin-top:9px}
+.study-points-preview span{padding:6px 7px;font-size:8.5px;line-height:1.38}
+.study-open{margin-top:9px;padding:8px;font-size:8.5px}
+
+/* Search/filter area should read as one control surface. */
+.study-zone{margin-top:16px}
+.study-filter{gap:8px}
+
+@media(max-width:1250px){
+  .study-module-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:980px){
+  .library-note-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .study-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:620px){
+  .library-note-grid{grid-template-columns:1fr}
+  .study-module-grid{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .note-card,.study-module{transition:none}
+}
