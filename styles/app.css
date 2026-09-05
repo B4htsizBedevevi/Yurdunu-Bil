@@ -3,8 +3,7 @@
 @import url('../theme-terra.css?v=99.0.9');
 @import url('../auth.css?v=99.0.9');
 @import url('../auth-v73.css?v=99.0.9');
-@import url('../v72-layout.css?v=99.0.9');
-@import url('../v92-ui-hardening.css?v=99.0.9');
+@import url('./ui-hardening.css?v=99.0.9');
 @import url('../features/home/home.css?v=99.0.9');
 @import url('../features/library/library.css?v=99.0.9');
 @import url('../features/library/study.css?v=99.0.9');
