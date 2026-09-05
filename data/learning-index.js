@@ -12,9 +12,10 @@ bolgeler:[['Marmara','Nüfus, sanayi, ulaşım ve geçiş özelliği'],['Ege','T
 };
 const topicNames={konum:'Coğrafi Konum',iklim:'İklim ve Bitki Örtüsü',yerseki:'Yerşekilleri',su:'Su Kaynakları',nufus:'Nüfus ve Yerleşme',tarim:'Tarım ve Hayvancılık',sanayi:'Madenler ve Sanayi',bolgeler:'Bölgeler ve Turizm'};
 const subtopics=Object.fromEntries(Object.entries(T).map(([topic,rows])=>[topic,rows.map(([name,desc],i)=>({id:`${topic}-${i+1}`,name,desc,topic,title:topicNames[topic]}))]));
-window.YBLearningIndex={version:'2026.4',topics:T,topicNames,subtopics,totalSubtopics:Object.values(T).reduce((n,a)=>n+a.length,0)};
+window.YBLearningIndex={version:'2026.5',topics:T,topicNames,subtopics,totalSubtopics:Object.values(T).reduce((n,a)=>n+a.length,0)};
 if(!window.__YB106_LOADER__){window.__YB106_LOADER__=true;const s=document.createElement('script');s.src='v106-library-rich-subtopics.js?v=106.0.0';s.defer=true;document.head.appendChild(s)}
 if(!window.__YB104_LOADER__){window.__YB104_LOADER__=true;const s=document.createElement('script');s.src='v104-library-deep-study.js?v=104.0.0';s.defer=true;document.head.appendChild(s)}
 if(!window.__YB105_LOADER__){window.__YB105_LOADER__=true;const s=document.createElement('script');s.src='v105-library-subtopic-hook.js?v=105.0.0';s.defer=true;document.head.appendChild(s)}
 if(!window.__YB107_LOADER__){window.__YB107_LOADER__=true;const s=document.createElement('script');s.src='data/questions-2026-expansion-3.js?v=2026.3.0';s.defer=true;document.head.appendChild(s)}
+if(!window.__YB108_LOADER__){window.__YB108_LOADER__=true;const s=document.createElement('script');s.src='data/questions-2026-expansion-2.js?v=2026.2.0';s.defer=true;document.head.appendChild(s)}
 })();
