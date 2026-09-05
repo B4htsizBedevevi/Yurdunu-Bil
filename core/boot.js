@@ -11,7 +11,7 @@ const featureGroups=[
  ['features/library/manifest.js','features/library/content.js','features/library/library.js','features/library/study.js','features/library/review.js','features/library/expansion.js','features/library/deepening.js','features/library/compact.js','features/library/interactions.js'],
  ['features/progress/progress.js','features/progress/progress-loop.js','features/progress/game-progression.js'],
  ['features/questions/questions.js','features/questions/question-center.js'],
- ['features/home/home.js','features/ui/learning-bridge.js','features/ui/system-audit.js','features/ui/stability.js','features/ui/navigation.js','features/ui/effects.js','features/ui/effects.js','features/onboarding/onboarding.js','features/notifications/notifications.js','features/flashcards/flashcards.js','features/leaderboard/leaderboard.js']
+ ['features/home/home.js','features/ui/learning-bridge.js','features/ui/system-audit.js','features/ui/stability.js','features/ui/navigation.js','features/ui/effects.js','features/onboarding/onboarding.js','features/notifications/notifications.js','features/flashcards/flashcards.js','features/leaderboard/leaderboard.js']
 ];
 const load=file=>new Promise(resolve=>{const s=document.createElement('script');s.src=new URL(file,base).href;s.async=false;s.onload=()=>resolve({file,ok:true});s.onerror=()=>resolve({file,ok:false,error:`${file} yüklenemedi`});document.body.appendChild(s)});
 const loadParallel=files=>Promise.all(files.map(load));
