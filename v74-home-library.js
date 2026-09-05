@@ -4,7 +4,7 @@ if(window.__YB74_HOME__)return;window.__YB74_HOME__=true;
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const topics=()=>Array.isArray(window.TOPICS)?window.TOPICS:[];
 const questions=()=>Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:[];
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
 function state(){try{return JSON.parse(localStorage.getItem('yb_state_70')||'{}')}catch{return {}}}
 function results(){const r=state().results;return Array.isArray(r)?r:[]}
 function topicQuestions(id){return questions().filter(q=>String(q.topic||'')===String(id)).length}
@@ -20,7 +20,6 @@ function enhance(){
    const last=rs[0];
    const correct=last?.correct??0,total=last?.total??0;
    const pct=total?Math.max(0,Math.min(100,Math.round((correct/total)*100))):0;
-   const covered=new Set(rs.map(x=>x.topic).filter(Boolean)).size;
    const name=(document.querySelector('#top-name')?.textContent||'Öğrenci').trim().split(/\s+/)[0]||'Öğrenci';
    const totalNotes=topics().reduce((n,t)=>n+(Array.isArray(t.bullets)?t.bullets.length:0),0);
    const focus=highTopic();
@@ -51,30 +50,23 @@ function enhance(){
        <div class="library-focus-progress"><div class="library-progress"><i style="width:${pct}%"></i></div><b>${last?pct+'% son performans':'İlk turunu başlat'}</b></div>
      </div>
      <button class="btn secondary" data-yb74-topic="${esc(focus?.id||'')}">Çalışmaya başla</button>
-   </section>
    </section>`;
    toolbar.parentNode.insertBefore(home,toolbar);
  }
  if(!$('.library-topic-head',v)){
-   const head=document.createElement('div');head.className='library-topic-head';head.innerHTML=`<div><span class="eyebrow">KONU KÜTÜPHANESİ</span><h2>Konunu seç ve ilerle</h2><p>Her kart kısa tekrar için tasarlandı; detaydan sonra doğrudan sorulara geçebilirsin.</p></div><div class="library-topic-sort"><button class="active" type="button" data-yb74-sort="default">Tümü</button><button type="button" data-yb74-sort="high">Yüksek getiri</button><button type="button" data-yb74-sort="short">Kısa konular</button></div>`;
+   const head=document.createElement('div');head.className='library-topic-head';head.innerHTML=`<div><span class="eyebrow">KONU KÜTÜPHANESİ</span><h2>Konunu seç ve ilerle</h2><p>Her kart kısa tekrar için tasarlandı; detaydan sonra doğrudan çalışma modüllerine geçebilirsin.</p></div><div class="library-topic-sort"><button class="active" type="button" data-yb74-sort="default">Tümü</button><button type="button" data-yb74-sort="high">Yüksek getiri</button><button type="button" data-yb74-sort="short">Kısa konular</button></div>`;
    grid.parentNode.insertBefore(head,grid);
  }
- enhanceCards(v);
+ prepareCards(v);
  bind(v);
 }
-function enhanceCards(v){
+function prepareCards(v){
  $$('.note-card',v).forEach(card=>{
-   if(card.dataset.yb74Done)return;
+   if(card.dataset.yb74Prepared==='1')return;
    const title=card.querySelector('h2')?.textContent||'';
    const t=topics().find(x=>(x.title||x.name)===title);
    if(!t)return;
-   card.dataset.topicId=t.id;card.dataset.level=t.level||'';card.dataset.minutes=t.minutes||10;card.dataset.qcount=topicQuestions(t.id);
-   const meta=document.createElement('div');meta.className='topic-meta';
-   const level=(t.level||'KPSS');const cls=/yüksek/i.test(level)?'high':/orta/i.test(level)?'mid':'low';
-   meta.innerHTML=`<span class="topic-level ${cls}">${esc(level)}</span><span>⏱ ${Number(t.minutes||10)} dk</span><span>❓ ${topicQuestions(t.id)} soru</span><span>📌 ${(t.bullets||[]).length} bilgi</span>`;
-   const p=card.querySelector('.note-preview');
-   if(p)p.insertAdjacentElement('beforebegin',meta);else card.insertBefore(meta,card.querySelector('.btn'));
-   card.dataset.yb74Done='1';
+   card.dataset.topicId=t.id;card.dataset.level=t.level||'';card.dataset.minutes=t.minutes||10;card.dataset.qcount=topicQuestions(t.id);card.dataset.yb74Prepared='1';
  });
 }
 function openTopic(id){
@@ -91,7 +83,8 @@ function sortCards(v,mode){
  const grid=$('.library-note-grid',v);if(!grid)return;
  const cards=$$('.note-card',grid);
  $$('.library-topic-sort button',v).forEach(x=>x.classList.toggle('active',x.dataset.yb74Sort===mode));
- cards.sort((a,b)=>{
+ const order=cards.slice();
+ order.sort((a,b)=>{
    if(mode==='high')return (/yüksek/i.test(b.dataset.level||'')?1:0)-(/yüksek/i.test(a.dataset.level||'')?1:0)||(Number(a.dataset.qcount)-Number(b.dataset.qcount));
    if(mode==='short')return Number(a.dataset.minutes)-Number(b.dataset.minutes);
    return cards.indexOf(a)-cards.indexOf(b);
