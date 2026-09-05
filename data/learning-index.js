@@ -12,7 +12,7 @@ bolgeler:[['Marmara','Nüfus, sanayi, ulaşım ve geçiş özelliği'],['Ege','T
 };
 const topicNames={konum:'Coğrafi Konum',iklim:'İklim ve Bitki Örtüsü',yerseki:'Yerşekilleri',su:'Su Kaynakları',nufus:'Nüfus ve Yerleşme',tarim:'Tarım ve Hayvancılık',sanayi:'Madenler ve Sanayi',bolgeler:'Bölgeler ve Turizm'};
 const subtopics=Object.fromEntries(Object.entries(T).map(([topic,rows])=>[topic,rows.map(([name,desc],i)=>({id:`${topic}-${i+1}`,name,desc,topic,title:topicNames[topic]}))]));
-window.YBLearningIndex={version:'2026.6',topics:T,topicNames,subtopics,totalSubtopics:Object.values(T).reduce((n,a)=>n+a.length,0)};
-const loaders=[['__YB106_LOADER__','v106-library-rich-subtopics.js?v=106.0.0'],['__YB104_LOADER__','v104-library-deep-study.js?v=104.0.0'],['__YB105_LOADER__','v105-library-subtopic-hook.js?v=105.0.0'],['__YB107_LOADER__','data/questions-2026-expansion-3.js?v=2026.3.0'],['__YB108_LOADER__','data/questions-2026-expansion-2.js?v=2026.2.0'],['__YB109_LOADER__','data/questions-2026-expansion-4.js?v=2026.4.0']];
-loaders.forEach(([flag,src])=>{if(!window[flag]){window[flag]=true;const s=document.createElement('script');s.src=src;s.defer=true;document.head.appendChild(s)}});
+window.YBLearningIndex={version:'2026.7',topics:T,topicNames,subtopics,totalSubtopics:Object.values(T).reduce((n,a)=>n+a.length,0)};
+const loaders=[['__YB106_LOADER__','v106-library-rich-subtopics.js?v=106.1.0'],['__YB104_LOADER__','v104-library-deep-study.js?v=104.1.0'],['__YB105_LOADER__','v105-library-subtopic-hook.js?v=105.1.0'],['__YB107_LOADER__','data/questions-2026-expansion-3.js?v=2026.3.1'],['__YB108_LOADER__','data/questions-2026-expansion-2.js?v=2026.2.1'],['__YB109_LOADER__','data/questions-2026-expansion-4.js?v=2026.4.1']];
+loaders.forEach(([flag,src])=>{if(!window[flag]){window[flag]=true;const s=document.createElement('script');s.src=src;s.defer=true;s.onload=function(){if(window.YBQuestionPool&&window.YBQuestionPool.refresh)window.YBQuestionPool.refresh()};s.onerror=function(){window[flag]=false};document.head.appendChild(s)}});
 })();
