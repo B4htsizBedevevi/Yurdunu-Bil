@@ -18,7 +18,7 @@ function openMap(){
   if(window.__YB_MAP_LOADING__)return false;
   window.__YB_MAP_LOADING__=true;
   const s=document.createElement('script');
-  s.src='features/games/map-games.js?v=99.0.4';
+  s.src='features/games/map-games.js?v=99.0.5';
   s.onload=()=>{window.__YB_MAP_LOADING__=false;window.YBMapGames?.open?.()};
   s.onerror=()=>{window.__YB_MAP_LOADING__=false;window.showToast?.('Harita modülü yüklenemedi.','error')};
   document.body.appendChild(s);
