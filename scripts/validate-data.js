@@ -6,7 +6,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const checks = [
-  ['data/questions.js', /window\.QUESTION_BANK\s*=\s*\[/], 'QUESTION_BANK'],
+  ['data/questions.js', /window\.QUESTION_BANK\s*=\s*\[/, 'QUESTION_BANK'],
   ['data/topics.js', /window\.TOPICS\s*=\s*\[/, 'TOPICS'],
   ['data/provinces.js', /(?:window\.)?(?:PROVINCES|provinces)\s*=|export\s+/, 'province data']
 ];
