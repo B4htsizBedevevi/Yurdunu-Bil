@@ -11,7 +11,6 @@
 @import url('../leaderboard.css?v=99.0.1');
 @import url('../responsive.css?v=99.0.1');
 @import url('../v100-terra-mobile.css?v=99.0.1');
-
 @import url('../features/home/home.css?v=99.0.1');
 @import url('../features/library/library.css?v=99.0.1');
 @import url('../features/library/study.css?v=99.0.1');
@@ -31,3 +30,20 @@
 @import url('../features/progress/progress-loop.css?v=99.0.1');
 @import url('../features/progress/game-progression.css?v=99.0.1');
 @import url('../features/questions/questions.css?v=99.0.1');
+
+/* 99.0.1 shell: desktop sidebar + mobile bottom navigation */
+.desktop-top-nav{display:none!important}
+.primary-side-nav{display:flex!important}
+.primary-side-nav .primary-nav-item{min-height:40px}
+.mobile-bottom-nav{display:none}
+.mobile-bottom-link{appearance:none;border:0;background:transparent;color:var(--muted,#8fa7ba);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;flex:1;height:56px;padding:5px 3px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .18s,background .18s,transform .18s}
+.mobile-bottom-link span{font-size:18px;line-height:1}.mobile-bottom-link b{font-size:10px;font-weight:700;white-space:nowrap}.mobile-bottom-link.active{color:var(--accent,#43e1c2);background:rgba(67,225,194,.08);border-radius:12px}.mobile-bottom-link:active{transform:scale(.96)}
+.page-wrap{scroll-behavior:auto}button,a,[role="button"]{touch-action:manipulation}
+@media (min-width:701px){.sidebar{width:190px!important;min-width:190px!important}.main-shell{min-width:0}.topbar{padding-left:16px!important}.primary-side-nav{margin-top:10px!important}.primary-side-nav .nav-item{display:flex!important}}
+@media (max-width:700px){
+  .app-shell{padding-bottom:62px!important}.sidebar{display:none!important}.main-shell{width:100%!important;min-width:0!important}
+  .topbar{height:54px!important;min-height:54px!important;padding:0 10px!important}.breadcrumbs{min-width:0!important;flex:1!important}.breadcrumbs>span,.breadcrumbs>b{display:none!important}.breadcrumbs>strong{font-size:13px!important}
+  .top-actions{gap:5px!important}.global-search{max-width:42px!important;overflow:hidden!important}.global-search input,.global-search kbd{display:none!important}.global-search>span{margin:auto!important}.profile-chip>span:not(.avatar){display:none!important}.profile-chip{padding:3px!important}
+  .mobile-bottom-nav{position:fixed;z-index:10000;left:8px;right:8px;bottom:max(7px,env(safe-area-inset-bottom));display:flex;gap:3px;padding:4px;background:rgba(7,19,15,.94);border:1px solid rgba(100,220,190,.16);border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.35);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .page-wrap{padding-bottom:10px!important}.view{min-height:calc(100dvh - 62px)}
+}
