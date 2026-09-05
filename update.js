@@ -1,8 +1,20 @@
+/* Yurdunu Bil — stable update controller */
 (()=>{'use strict';
-const RAW='https://raw.githubusercontent.com/B4htsizBedevevi/Yurdunu-Bil/main/',CFG=window.YURDUNUBIL_CONFIG||{},CURRENT=CFG.APP_VERSION||'56.0.0';
-const $=(s,r=document)=>r.querySelector(s),parts=v=>String(v||'0').replace(/^v/i,'').split('.').map(x=>parseInt(x,10)||0),newer=(a,b)=>{const A=parts(a),B=parts(b);for(let i=0;i<3;i++)if((A[i]||0)!==(B[i]||0))return(A[i]||0)>(B[i]||0);return false};
+const RAW='https://raw.githubusercontent.com/B4htsizBedevevi/Yurdunu-Bil/main/',CFG=window.YURDUNUBIL_CONFIG||{},META=document.querySelector('meta[name="yb-version"]'),CURRENT=String(CFG.APP_VERSION||META?.content||'56.1.0');
+const $=(s,r=document)=>r.querySelector(s),parts=v=>String(v||'0').replace(/^v/i,'').split('.').map(x=>parseInt(x,10)||0),newer=(a,b)=>{const A=parts(a),B=parts(b);for(let i=0;i<3;i++)if(A[i]!==B[i])return A[i]>B[i];return false};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function check(){try{const r=await fetch(RAW+'yb-release.json?probe='+Date.now(),{cache:'no-store'});if(!r.ok)return;const d=await r.json(),remote=d.version||CURRENT;if(!newer(remote,CURRENT))return;show(remote,d.message||'Yeni sürüm hazır.');}catch{}}
-function show(remote,msg){if($('.yb56-update'))return;const n=document.createElement('aside');n.className='yb56-update';n.innerHTML=`<small>🚀 YENİ SÜRÜM HAZIR</small><b>Yurdunu Bil ${esc(remote)}</b><small>${esc(msg)}</small><div class="yb56-update-actions"><button class="btn primary" data-update-now>Şimdi yenile</button><button class="btn ghost" data-update-later>Daha sonra</button></div>`;document.body.appendChild(n);n.querySelector('[data-update-later]').onclick=()=>n.remove();n.querySelector('[data-update-now]').onclick=async()=>{const b=n.querySelector('[data-update-now]');b.disabled=true;b.textContent='Hazırlanıyor…';try{if(navigator.serviceWorker?.getRegistrations){for(const reg of await navigator.serviceWorker.getRegistrations())await reg.update()}if(window.caches){for(const k of await caches.keys())if(k!=='yurdunu-bil-v56')await caches.delete(k)}}catch{}location.reload()};}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(check,2200),{once:true});else setTimeout(check,2200);
+let checking=false;
+async function check(){if(checking)return;checking=true;try{const r=await fetch(RAW+'yb-release.json?probe='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)return;const d=await r.json(),remote=String(d.version||CURRENT);if(!newer(remote,CURRENT))return;show(remote,d.message||'Yeni sürüm hazır.')}catch{}finally{checking=false}}
+function show(remote,msg){if($('.yb56-update'))return;const n=document.createElement('aside');n.className='yb56-update';n.innerHTML=`<small>🚀 YENİ SÜRÜM HAZIR</small><b>Yurdunu Bil ${esc(remote)}</b><small>${esc(msg)}</small><div class="yb56-update-actions"><button class="btn primary" data-update-now>Şimdi yenile</button><button class="btn ghost" data-update-later>Daha sonra</button></div>`;document.body.appendChild(n);n.querySelector('[data-update-later]').onclick=()=>n.remove();n.querySelector('[data-update-now]').onclick=apply}
+async function apply(){const b=$('[data-update-now]'),n=$('.yb56-update');if(!b)return;b.disabled=true;b.textContent='Güncelleniyor…';try{
+ const regs=navigator.serviceWorker?.getRegistrations?await navigator.serviceWorker.getRegistrations():[];
+ await Promise.all(regs.map(reg=>reg.update().catch(()=>null)));
+ // Do not delete the current cache here: the new Service Worker owns cache lifecycle.
+ // Waiting for controllerchange avoids reloading back into the previous worker.
+ if(regs.length){await Promise.race([new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true})),new Promise(resolve=>setTimeout(resolve,1800))]);}
+}catch{}
+ n?.remove();
+ location.reload();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(check,1800),{once:true});else setTimeout(check,1800);
 })();
