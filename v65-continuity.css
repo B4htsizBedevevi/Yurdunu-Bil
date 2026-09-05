@@ -1,0 +1,5 @@
+/* Yurdunu Bil 63.1 — release continuity layer */
+html[data-yb-release] .yb62-update,html[data-yb-release] .yb56-update{display:none!important}
+html[data-yb-release] .view:not(.active){display:none}
+html[data-yb-release] .yb-loading{min-height:120px}
+@media(prefers-reduced-motion:reduce){html[data-yb-release] *{scroll-behavior:auto!important}}
