@@ -1,76 +1,19 @@
 /* Yurdunu Bil — shell reliability + auth gate */
 (()=>{
-  'use strict';
-  if(window.__YB_UI_GUARD__)return;
-  window.__YB_UI_GUARD__=true;
-  const ROUTES=new Set(['home','library','events','settings']);
-  const $=(s,r=document)=>r.querySelector(s);
-  const $$=(s,r=document)=>[...r.querySelectorAll(s)];
-  const reveal=()=>document.body.classList.remove('yb-starting');
-  const syncRoute=v=>{
-    const route=ROUTES.has(v)?v:'home';
-    try{localStorage.setItem('yb_last_view',route)}catch{}
-    $$('.mobile-bottom-link').forEach(b=>b.classList.toggle('active',b.dataset.view===route));
-    $$('.primary-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===route));
-    $$('.desktop-top-nav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===route));
-  };
-  const animateNumber=(el,target,duration=900)=>{
-    if(!el)return;
-    target=Math.max(0,Number(target)||0);
-    if(el.dataset.countAnimated===String(target))return;
-    el.dataset.countAnimated=String(target);el.textContent='0';
-    const start=performance.now();
-    const frame=now=>{const p=Math.min(1,(now-start)/duration);const eased=1-Math.pow(1-p,3);el.textContent=Math.round(target*eased).toLocaleString('tr-TR');if(p<1)requestAnimationFrame(frame)};
-    requestAnimationFrame(frame);
-  };
-  const animateAuthCounts=()=>{
-    const topics=Array.isArray(window.TOPICS)?window.TOPICS:[];
-    const questions=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:[];
-    if(topics.length)animateNumber($('#auth-topic-count'),topics.length,650);
-    if(questions.length)animateNumber($('#auth-question-count'),questions.length,1200);
-  };
-  const routeFromApp=route=>{
-    if(route==='arena'){
-      window.YBArena?.open?.();
-      return true;
-    }
-    if(!ROUTES.has(route))return false;
-    const fn=window.YURDUNUBIL_NAVIGATE||window.navigate;
-    if(typeof fn!=='function')return false;
-    fn(route);syncRoute(route);return true;
-  };
-  document.addEventListener('click',e=>{
-    const el=e.target?.closest?.('button,a,[role="button"]');
-    if(!el)return;
-    const route=el.dataset?.view;
-    if(route==='arena'){
-      e.preventDefault();e.stopImmediatePropagation();routeFromApp('arena');return;
-    }
-    if(ROUTES.has(route)){
-      e.preventDefault();e.stopImmediatePropagation();routeFromApp(route);return;
-    }
-  },true);
-  document.addEventListener('yb:navigate',e=>syncRoute(e.detail?.view));
-  const finishBoot=()=>{
-    animateAuthCounts();
-    const app=$('#app-shell'),auth=$('#auth-screen');
-    if(app&&!app.classList.contains('hidden'))reveal();
-    else if(auth&&!auth.classList.contains('hidden'))reveal();
-  };
-  const observer=new MutationObserver(finishBoot);
-  observer.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['class']});
-  window.addEventListener('load',()=>{
-    finishBoot();
-    setTimeout(finishBoot,250);
-    setTimeout(finishBoot,1200);
-    setTimeout(()=>{
-      finishBoot();
-      const app=$('#app-shell');
-      if(!app||app.classList.contains('hidden'))return;
-      let last='home';try{last=localStorage.getItem('yb_last_view')||'home'}catch{}
-      if(last!=='home'&&ROUTES.has(last)&&typeof window.YURDUNUBIL_NAVIGATE==='function')window.YURDUNUBIL_NAVIGATE(last);
-      syncRoute(last);
-    },1600);
-  });
-  animateAuthCounts();
+'use strict';
+if(window.__YB_UI_GUARD__)return;window.__YB_UI_GUARD__=true;
+const ROUTES=new Set(['home','library','events','settings']);
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const reveal=()=>document.body.classList.remove('yb-starting');
+const syncRoute=v=>{const route=ROUTES.has(v)?v:'home';try{localStorage.setItem('yb_last_view',route)}catch{};$$('.mobile-bottom-link').forEach(b=>b.classList.toggle('active',b.dataset.view===route));$$('.primary-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===route));$$('.desktop-top-nav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===route))};
+const animateNumber=(el,target,duration=900)=>{if(!el)return;target=Math.max(0,Number(target)||0);if(el.dataset.countAnimated===String(target))return;el.dataset.countAnimated=String(target);el.textContent='0';const start=performance.now();const frame=now=>{const p=Math.min(1,(now-start)/duration),eased=1-Math.pow(1-p,3);el.textContent=Math.round(target*eased).toLocaleString('tr-TR');if(p<1)requestAnimationFrame(frame)};requestAnimationFrame(frame)};
+const animateAuthCounts=()=>{const topics=Array.isArray(window.TOPICS)?window.TOPICS:[],questions=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:[];if(topics.length)animateNumber($('#auth-topic-count'),topics.length,650);if(questions.length)animateNumber($('#auth-question-count'),questions.length,1200)};
+const routeFromApp=route=>{if(route==='arena'){window.YBArena?.open?.();return true}if(!ROUTES.has(route))return false;const fn=window.YURDUNUBIL_NAVIGATE||window.navigate;if(typeof fn!=='function')return false;fn(route);syncRoute(route);return true};
+document.addEventListener('click',e=>{const el=e.target?.closest?.('button,a,[role="button"]');if(!el)return;const route=el.dataset?.view;if(route==='arena'){e.preventDefault();e.stopImmediatePropagation();routeFromApp('arena');return}if(ROUTES.has(route)){e.preventDefault();e.stopImmediatePropagation();routeFromApp(route);return}},true);
+document.addEventListener('yb:navigate',e=>syncRoute(e.detail?.view));
+const finishBoot=()=>{animateAuthCounts();const app=$('#app-shell'),auth=$('#auth-screen');if(app&&!app.classList.contains('hidden'))reveal();else if(auth&&!auth.classList.contains('hidden'))reveal()};
+const watch=(id)=>{const el=$(id);if(!el)return;new MutationObserver(finishBoot).observe(el,{attributes:true,attributeFilter:['class']})};
+watch('#app-shell');watch('#auth-screen');
+window.addEventListener('load',()=>{finishBoot();setTimeout(finishBoot,300);setTimeout(finishBoot,1200);setTimeout(()=>{finishBoot();const app=$('#app-shell');if(!app||app.classList.contains('hidden'))return;let last='home';try{last=localStorage.getItem('yb_last_view')||'home'}catch{}if(last!=='home'&&ROUTES.has(last)&&typeof window.YURDUNUBIL_NAVIGATE==='function')window.YURDUNUBIL_NAVIGATE(last);syncRoute(last)},1600)});
+animateAuthCounts();
 })();
