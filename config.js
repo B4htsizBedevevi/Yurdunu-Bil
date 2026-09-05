@@ -1,7 +1,5 @@
 window.YURDUNUBIL_CONFIG=window.YURDUNUBIL_CONFIG||{};
-YURDUNUBIL_CONFIG.APP_VERSION='63.1.0';
+YURDUNUBIL_CONFIG.APP_VERSION='98.0.0';
 YURDUNUBIL_CONFIG.SUPABASE_URL='https://rdgefzwvfqvzmpfoiprj.supabase.co';
 YURDUNUBIL_CONFIG.SUPABASE_PUBLISHABLE_KEY='sb_publishable_LjA0E5FY6t6ID0YMwjJpxA_vCRNCuY7';
-
-/* Deterministic boot/runtime guard. Loaded before every application module. */
 (()=>{'use strict';if(window.__YB_RUNTIME__)return;window.__YB_RUNTIME__=true;const root=window.YB44=window.YB44||{};root.version=YURDUNUBIL_CONFIG.APP_VERSION;root.modules=root.modules||{};root.env={production:!['localhost','127.0.0.1'].includes(location.hostname),mobile:matchMedia('(max-width:700px)').matches};root.register=(name,api={})=>{root.modules[name]={...api,version:root.version};return root.modules[name]};root.ready=name=>Boolean(root.modules[name]);root.require=name=>root.modules[name]||null;root.diagnostics=()=>({version:root.version,modules:Object.keys(root.modules),views:document.querySelectorAll('.view').length});root.onReady=fn=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',fn,{once:true}):queueMicrotask(fn);root.register('runtime',{boot:true});window.YBRuntime=root;})();
