@@ -1,0 +1,27 @@
+/* Yurdunu Bil — semantic learning journey visual layer. */
+:root{--yb-green:#61d59a;--yb-green2:#39c8a5;--yb-surface:rgba(14,42,31,.96);--yb-surface2:rgba(9,28,21,.98);--yb-line:rgba(117,190,157,.22)}
+.yb90-home,.library-home,#view-events,.arena-page{--journey-gap:14px}
+.yb90-section-head,.section-head,.events-section-head,.study-zone-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.yb90-section-head h2,.section-head h2,.events-section-head h2{letter-spacing:-.02em}
+.yb90-topic{position:relative;overflow:hidden;cursor:pointer;text-align:left!important;min-height:112px!important;padding:14px!important}
+.yb90-topic::after{content:"›";position:absolute;right:12px;bottom:10px;color:rgba(139,224,179,.65);font-size:19px;font-weight:900;transition:transform .16s ease}
+.yb90-topic:hover::after{transform:translateX(4px);color:#8be0b3}
+.yb90-topic small{display:block;margin-top:4px;color:#8cae9e!important}
+.study-module{position:relative;overflow:hidden}
+.study-module::after{content:"→";position:absolute;right:14px;bottom:12px;color:rgba(139,224,179,.55);font-weight:900;transition:transform .16s ease}
+.study-module:hover::after{transform:translateX(4px);color:#8be0b3}
+.events-feature,.yb86-game-card,.yb55-game-card{min-height:0}
+.yb86-game-card .btn.primary,.yb55-game-card .btn.primary{margin-top:auto}
+.yb86-game-card h3,.yb55-game-card h3{letter-spacing:-.015em}
+.yb90-arena-cta,.arena-card,.yb55-arena-restore{position:relative;overflow:hidden}
+.yb90-arena-cta::before,.arena-card::before{content:"";position:absolute;inset:auto -10% -55% 35%;height:150px;background:radial-gradient(circle,rgba(57,200,165,.15),transparent 65%);pointer-events:none}
+.eyebrow{letter-spacing:.12em!important}
+.yb90-actions,.page-actions,.events-hero-actions{display:flex;flex-wrap:wrap;gap:9px}
+@media(max-width:760px){
+  .yb90-section-head,.section-head,.events-section-head,.study-zone-head{align-items:flex-start;flex-direction:column}
+  .yb90-section-head>.btn,.section-head>.btn{width:100%}
+  .yb90-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .yb90-actions .btn{width:100%}
+  .yb90-topic{min-height:104px!important}
+}
+@media(prefers-reduced-motion:reduce){.yb90-topic::after,.study-module::after{transition:none!important}}
