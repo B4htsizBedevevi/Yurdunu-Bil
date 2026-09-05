@@ -29,7 +29,9 @@ function navigate(view){
   if(view==='arena'){
     const open=window.YBArena?.open;
     if(!open){window.showToast?.('Arena henüz hazır değil.','error');return false}
-    Promise.resolve(open()).finally(()=>syncActive('arena'));
+    open();
+    // Arena internally enters the events shell first; keep the user-facing route as Arena.
+    setTimeout(()=>syncActive('arena'),300);
     return true;
   }
   if(typeof window.YURDUNUBIL_NAVIGATE==='function')return window.YURDUNUBIL_NAVIGATE(view);
