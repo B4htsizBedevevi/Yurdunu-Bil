@@ -8,7 +8,7 @@ const coreFiles=['core/runtime.js','app.js','core/ui-guard.js'];
 const featureGroups=[
  ['features/games/games-core.js','features/games/events.js','features/games/events-plus.js'],
  ['features/arena/arena.js','features/arena/social.js'],
- ['features/library/content.js','features/library/library.js','features/library/study.js','features/library/review.js','features/library/expansion.js','features/library/deepening.js','features/library/compact.js','features/library/interactions.js'],
+ ['features/library/manifest.js','features/library/content.js','features/library/library.js','features/library/study.js','features/library/review.js','features/library/expansion.js','features/library/deepening.js','features/library/compact.js','features/library/interactions.js'],
  ['features/progress/progress.js','features/progress/progress-loop.js','features/progress/game-progression.js'],
  ['features/questions/questions.js','features/questions/question-center.js'],
  ['features/home/home.js','features/ui/learning-bridge.js','features/ui/system-audit.js','features/ui/stability.js','features/ui/navigation.js','onboarding.js','notifications.js','flashcards.js','leaderboard.js','effects.js']
