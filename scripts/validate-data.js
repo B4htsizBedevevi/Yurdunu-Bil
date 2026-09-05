@@ -1,40 +1,15 @@
 "use strict";
-
-/* Yurdunu Bil v31 release check. No network or build tooling required. */
-const fs = require("fs");
-const path = require("path");
-const vm = require("vm");
-const root = path.resolve(__dirname, "..");
-const context = { window: {} };
-vm.createContext(context);
-for (const file of ["data/provinces.js", "data/topics.js", "data/questions.js", "data/questions-v30.js", "data/question-topic-fix-v30.js"]) {
-  vm.runInContext(fs.readFileSync(path.join(root, file), "utf8"), context, { filename: file });
-}
-const provinces = context.window.PROVINCE_DATA || [];
-const topics = context.window.TOPICS || [];
-const questions = context.window.QUESTION_BANK || [];
-const geojson = JSON.parse(fs.readFileSync(path.join(root, "data/provinces.geojson"), "utf8"));
-const topicIds = new Set(topics.map(topic => topic.id));
-const plates = new Set(provinces.map(province => Number(province.plate)));
-const geoPlates = new Set((geojson.features || []).map(feature => Number(String(feature?.properties?.id || "").replace("TR-P-", ""))));
-const failures = [];
-if (provinces.length !== 81 || plates.size !== 81) failures.push("İl verisi 81 benzersiz plaka içermiyor.");
-if ((geojson.features || []).length !== 81 || geoPlates.size !== 81) failures.push("GeoJSON 81 benzersiz il içermiyor.");
-if (topics.length !== 8 || topicIds.size !== 8) failures.push("Konu bankası 8 benzersiz konu içermiyor.");
-if (questions.length < 160) failures.push(`Soru bankasında en az 160 soru bulunmalı; bulunan: ${questions.length}.`);
-const requiredProvinceFields = ["region", "climate", "terrain", "agriculture", "mining", "rivers", "fact", "kpss"];
-provinces.forEach((province, index) => {
-  requiredProvinceFields.forEach(field => {
-    if (!String(province[field] || "").trim()) failures.push(`İl ${index + 1} ${province.name}: ${field} boş.`);
-  });
-});
-const ids = new Set();
-questions.forEach((question, index) => {
-  if (ids.has(question.id)) failures.push(`Soru ${index + 1}: tekrar eden id ${question.id}.`);
-  ids.add(question.id);
-  if (!question.q || !Array.isArray(question.options) || question.options.length !== 4) failures.push(`Soru ${index + 1}: metin veya 4 seçenek geçersiz.`);
-  if (!Number.isInteger(question.answer) || question.answer < 0 || question.answer >= question.options.length) failures.push(`Soru ${index + 1}: doğru cevap indisi geçersiz.`);
-  if (!topicIds.has(question.topic)) failures.push(`Soru ${index + 1}: tanımsız konu ${question.topic}.`);
-});
-if (failures.length) { console.error(failures.join("\n")); process.exitCode = 1; }
-else console.log(`Doğrulama başarılı: ${provinces.length} il, ${topics.length} konu, ${questions.length} soru, il alanları dolu.`);
+const fs=require("fs"),path=require("path"),vm=require("vm");
+const root=path.resolve(__dirname,"..");
+const context={window:{}};vm.createContext(context);
+for(const file of ["data/provinces.js","data/topics.js","data/questions.js","data/questions-v55.js"]){vm.runInContext(fs.readFileSync(path.join(root,file),"utf8"),context,{filename:file})}
+const provinces=context.window.PROVINCE_DATA||[],topics=context.window.TOPICS||[],questions=context.window.QUESTION_BANK||[];
+const topicIds=new Set(topics.map(x=>x.id)),plates=new Set(provinces.map(x=>Number(x.plate))),ids=new Set(),fail=[];
+if(provinces.length!==81||plates.size!==81)fail.push(`İl verisi geçersiz: ${provinces.length} il / ${plates.size} benzersiz plaka.`);
+if(topics.length!==8||topicIds.size!==8)fail.push(`Konu verisi geçersiz: ${topics.length} konu.`);
+if(questions.length<280)fail.push(`Soru bankası yetersiz: ${questions.length} soru.`);
+const required=["region","climate","terrain","agriculture","mining","rivers","fact","kpss"];
+provinces.forEach((p,i)=>required.forEach(f=>{if(!String(p[f]||"").trim())fail.push(`İl ${i+1} ${p.name}: ${f} boş.`)}));
+questions.forEach((q,i)=>{if(ids.has(q.id))fail.push(`Soru ${i+1}: tekrar eden id ${q.id}.`);ids.add(q.id);if(!q.q||!Array.isArray(q.options)||q.options.length!==4)fail.push(`Soru ${i+1}: metin veya 4 seçenek geçersiz.`);if(!Number.isInteger(q.answer)||q.answer<0||q.answer>=q.options.length)fail.push(`Soru ${i+1}: doğru cevap geçersiz.`);if(!topicIds.has(q.topic))fail.push(`Soru ${i+1}: tanımsız konu ${q.topic}.`)});
+if(fail.length){console.error("YB DATA VALIDATION FAILED\n- "+fail.join("\n- "));process.exit(1)}
+console.log(`YB DATA OK — 81 il — 8 konu — ${questions.length} soru — eski GeoJSON/legacy soru zinciri gerekmiyor.`);
