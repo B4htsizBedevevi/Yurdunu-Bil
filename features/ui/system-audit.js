@@ -1,4 +1,4 @@
-/* Yurdunu Bil 94 — direct single-owner interaction kernel */
+/* Yurdunu Bil — interaction kernel */
 (()=>{'use strict';
 if(window.__YB94_KERNEL__)return;window.__YB94_KERNEL__=true;
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -6,7 +6,7 @@ const ROUTES=new Set(['home','library','events','settings']);
 const TITLES={home:'Ana Sayfa',library:'Kütüphane',events:'Etkinlikler & Oyunlar',settings:'Ayarlar'};
 function valid(v){return ROUTES.has(v)?v:'home'}
 function sync(v){v=valid(v);window.YURDUNUBIL_ROUTE=v;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('.nav-item[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('.yb82-home-nav').forEach(x=>x.classList.toggle('active',v==='home'));const t=$('#page-title');if(t)t.textContent=TITLES[v];const sc=$('#page-wrap');if(sc)sc.scrollTop=0;return v}
-function navigate(v){v=sync(v);window.dispatchEvent(new CustomEvent('yb:navigate',{detail:{view:v}}));if(v==='home'){setTimeout(()=>window.YB90Home?.render?.(),0)}else if(v==='library'){setTimeout(()=>window.YB88QuestionCenter?.render?.(),120)}}
+function navigate(v){v=valid(v);const appNavigate=window.YURDUNUBIL_NAVIGATE;if(typeof appNavigate==='function'&&appNavigate!==navigate){appNavigate(v);return v}v=sync(v);window.dispatchEvent(new CustomEvent('yb:navigate',{detail:{view:v}}));if(v==='home')setTimeout(()=>window.YB90Home?.render?.(),0);return v}
 window.navigate=navigate;window.YBAppNavigate=navigate;
 function toggleTheme(){const light=!document.body.classList.contains('light');document.body.classList.toggle('light',light);try{localStorage.setItem('yb_theme',light?'light':'dark')}catch{}}
 function closeProfile(){$('#profile-menu')?.classList.add('hidden')}
@@ -17,6 +17,6 @@ function special(el){const d=el.dataset||{};if(d.yb55Game)return window.YB55Game
 function handle(e){const el=e.target?.closest?.('button,a,[role="button"]');if(!el)return;if(el.id==='theme-btn'){e.preventDefault();e.stopImmediatePropagation();toggleTheme();return}if(el.id==='profile-btn'){e.preventDefault();e.stopImmediatePropagation();$('#profile-menu')?.classList.toggle('hidden');return}if(el.id==='menu-btn'){e.preventDefault();e.stopImmediatePropagation();$('#sidebar')?.classList.add('open');$('#drawer-backdrop')?.classList.add('open');return}if(el.id==='sidebar-close'){e.preventDefault();closeDrawer();return}if(el.id==='drawer-backdrop'){e.preventDefault();closeDrawer();return}if(el.id==='logout-btn'||el.id==='menu-logout'){e.preventDefault();e.stopImmediatePropagation();try{localStorage.removeItem('yb_demo_session_70')}catch{};location.reload();return}if(el.matches('.yb81-arena')){e.preventDefault();e.stopImmediatePropagation();window.YBArena?.open?.();return}if(el.matches('.quick-test')){e.preventDefault();e.stopImmediatePropagation();navigate('events');closeDrawer();return}const v=el.dataset?.view;if(ROUTES.has(v)){e.preventDefault();e.stopImmediatePropagation();navigate(v);closeDrawer();closeProfile();return}const out=special(el);if(out!==undefined){e.preventDefault();e.stopImmediatePropagation()}}
 document.addEventListener('click',handle,true);
 document.addEventListener('yb:navigate',e=>{if(ROUTES.has(e.detail?.view))sync(e.detail.view)});
-window.addEventListener('load',()=>{try{const t=localStorage.getItem('yb_theme');if(t)document.body.classList.toggle('light',t==='light')}catch{};normalize();sync(window.YURDUNUBIL_ROUTE||'home');setTimeout(()=>window.YB90Home?.render?.(),120)});
+window.addEventListener('load',()=>{try{const t=localStorage.getItem('yb_theme');if(t)document.body.classList.toggle('light',t==='light')}catch{};normalize();navigate(window.YURDUNUBIL_ROUTE||'home')});
 window.YB94Kernel={navigate,sync,normalize};
 })();
