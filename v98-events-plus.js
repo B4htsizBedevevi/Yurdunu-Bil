@@ -1,0 +1,19 @@
+/* Yurdunu Bil 98 — daily challenge layer */
+(()=>{'use strict';
+if(window.__YB98_EVENTS_PLUS__)return;window.__YB98_EVENTS_PLUS__=true;
+const $=(s,r=document)=>r.querySelector(s);
+const topics=[['konum','🧭','Coğrafi Konum'],['iklim','🌦️','İklim ve Bitki Örtüsü'],['yerseki','⛰️','Yerşekilleri'],['su','💧','Su Kaynakları'],['nufus','👥','Nüfus ve Yerleşme'],['tarim','🌾','Tarım ve Hayvancılık'],['sanayi','⛏️','Madenler ve Sanayi'],['bolgeler','🗺️','Bölgeler ve Turizm']];
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function challenge(){
+ const raw=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:[];if(!raw.length)return null;
+ const key=todayKey();let seed=0;for(const c of key)seed=(seed*31+c.charCodeAt(0))>>>0;
+ const t=topics[seed%topics.length];const qs=raw.filter(q=>q.topic===t[0]);return {topic:t[0],icon:t[1],label:t[2],count:qs.length};
+}
+function mount(){const v=$('#view-events');if(!v?.classList.contains('active')||$('.yb98-daily-challenge',v))return;const c=challenge();if(!c)return;
+ const anchor=$('.yb86-game-section',v)||$('.events-dashboard',v);if(!anchor)return;
+ const el=document.createElement('section');el.className='yb98-daily-challenge';el.innerHTML=`<div class="yb98-dc-icon">${c.icon}</div><div class="yb98-dc-copy"><span>GÜNÜN COĞRAFYA GÖREVİ</span><h3>${c.label} · 10 soru</h3><p>Bugünün konu havuzundan seçilen sorularla kısa bir tekrar yap. Görevi bitir, serini büyüt.</p></div><div class="yb98-dc-meta"><b>${c.count}</b><small>konu sorusu</small><button type="button" class="btn primary" data-yb98-daily="${c.topic}">Görevi Başlat →</button></div>`;anchor.insertAdjacentElement('beforebegin',el);
+ el.querySelector('[data-yb98-daily]')?.addEventListener('click',()=>{const b=$(`[data-view="library"]`);const topic=document.querySelector('#yb88-topic');if(topic)topic.value=c.topic;if(window.YB55Games?.start)window.YB55Games.start('ten')||b?.click();else b?.click();});
+}
+const css=`.yb98-daily-challenge{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:center;margin:0 0 18px;padding:18px 20px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:linear-gradient(135deg,rgba(41,74,96,.42),rgba(20,31,45,.72));box-shadow:0 12px 30px rgba(0,0,0,.12)}.yb98-dc-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.07);font-size:28px}.yb98-dc-copy span{font-size:10px;font-weight:900;letter-spacing:.13em;opacity:.58}.yb98-dc-copy h3{margin:4px 0 5px;font-size:17px}.yb98-dc-copy p{margin:0;max-width:720px;font-size:12px;line-height:1.5;opacity:.68}.yb98-dc-meta{text-align:right}.yb98-dc-meta>b{display:block;font-size:20px}.yb98-dc-meta small{display:block;margin:2px 0 10px;opacity:.55;font-size:9px;text-transform:uppercase}.yb98-dc-meta button{white-space:nowrap}@media(max-width:720px){.yb98-daily-challenge{grid-template-columns:44px 1fr}.yb98-dc-icon{width:44px;height:44px;font-size:22px}.yb98-dc-meta{grid-column:1/-1;text-align:left}.yb98-dc-meta button{width:100%}}`;const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+document.addEventListener('yb:navigate',e=>{if(e.detail?.view==='events')setTimeout(mount,120)});window.addEventListener('load',()=>setTimeout(mount,500));new MutationObserver(()=>setTimeout(mount,90)).observe(document.body,{childList:true,subtree:true});
+})();
