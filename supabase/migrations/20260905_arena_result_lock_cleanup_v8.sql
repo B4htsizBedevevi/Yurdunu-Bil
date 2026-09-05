@@ -1,0 +1,3 @@
+-- Production mirror for the applied arena_result_lock_cleanup_v8 migration.
+-- Rating rows are locked while a finished Arena result is applied to prevent concurrent result races.
+-- Client execution of result application and stale-match cleanup is disabled; these routines are service-role maintenance paths.
