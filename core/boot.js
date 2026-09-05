@@ -13,6 +13,7 @@ const featureGroups=[
  ['features/questions/questions.js','features/questions/question-center.js'],
  ['features/home/home.js','features/ui/learning-bridge.js','features/ui/system-audit.js','features/ui/stability.js','features/ui/navigation.js','onboarding.js','notifications.js','flashcards.js','leaderboard.js','effects.js']
 ];
+const files=[...dataFiles,...coreFiles,...featureGroups.flat()];
 const load=file=>new Promise(resolve=>{const s=document.createElement('script');s.src=new URL(file,base).href;s.async=false;s.onload=()=>resolve({file,ok:true});s.onerror=()=>resolve({file,ok:false,error:`${file} yüklenemedi`});document.body.appendChild(s)});
 const loadParallel=files=>Promise.all(files.map(load));
 (async()=>{
@@ -28,9 +29,9 @@ const loadParallel=files=>Promise.all(files.map(load));
    const toast=document.getElementById('toast-root');
    if(toast){toast.textContent=`${failed.length} yardımcı modül yüklenemedi; temel uygulama çalışmaya devam ediyor.`;toast.setAttribute('role','status')}
  }else{
-   root.register?.('boot',{ready:true,modules:results.length,migration:'semantic',parallel:true});
+   root.register?.('boot',{ready:true,modules:files.length,migration:'semantic',parallel:true});
    document.documentElement.classList.add('yb-ready');
-   window.dispatchEvent(new CustomEvent('yb:ready',{detail:{modules:results.length}}));
+   window.dispatchEvent(new CustomEvent('yb:ready',{detail:{modules:files.length}}));
  }
 })();
 })();
