@@ -1,10 +1,11 @@
-/* Yurdunu Bil 44 — architecture-level visual normalization */
+/* Yurdunu Bil 45.6 — architecture guard + map removal */
 :root{--yb44-radius:18px;--yb44-gap:14px;--yb44-max:1540px}
-[data-yb-architecture="44.0.0"] .view{max-width:var(--yb44-max)}
-[data-yb-architecture="44.0.0"] .surface,[data-yb-architecture="44.0.0"] .atlas-card{border-radius:var(--yb44-radius)}
-[data-yb-architecture="44.0.0"] .page-wrap{scrollbar-gutter:stable}
-[data-yb-architecture="44.0.0"] button,[data-yb-architecture="44.0.0"] input{touch-action:manipulation}
-/* HARD FIRST-PAINT GATE: never show the legacy app while the latest V45 layer is booting. */
+[data-yb-architecture="45.6.0"] .view{max-width:var(--yb44-max)}
+[data-yb-architecture="45.6.0"] .surface,[data-yb-architecture="45.6.0"] .atlas-card{border-radius:var(--yb44-radius)}
+[data-yb-architecture="45.6.0"] .page-wrap{scrollbar-gutter:stable}
+[data-yb-architecture="45.6.0"] button,[data-yb-architecture="45.6.0"] input{touch-action:manipulation}
+/* Retired map: never allow it to paint, even for one frame. */
+#view-map,[data-view="map"],#view-dashboard .atlas-card,#view-dashboard .atlas-shell,#view-dashboard #dash-atlas,#view-dashboard #dash-svg,.map-v31-panel,.map-v31-tooltip{display:none!important}
 body:not(.yb45-ready) #app-shell{visibility:hidden!important;pointer-events:none!important}
-@media(max-width:900px){[data-yb-architecture="44.0.0"] .dashboard-layout{grid-template-columns:1fr}[data-yb-architecture="44.0.0"] .atlas-shell{height:min(72vh,620px)}}
-@media(max-width:600px){[data-yb-architecture="44.0.0"] .page-wrap{padding-left:12px;padding-right:12px;padding-bottom:94px}[data-yb-architecture="44.0.0"] .dashboard-intro{align-items:flex-start;flex-direction:column}[data-yb-architecture="44.0.0"] .intro-actions{width:100%}[data-yb-architecture="44.0.0"] .intro-actions .btn{flex:1}[data-yb-architecture="44.0.0"] .atlas-shell{height:clamp(430px,68vh,560px)}[data-yb-architecture="44.0.0"] .mode-tabs{max-width:100%;overflow:auto;flex-wrap:nowrap;justify-content:flex-start;padding-bottom:2px}}
+@media(max-width:900px){[data-yb-architecture="45.6.0"] .dashboard-layout{grid-template-columns:1fr}}
+@media(max-width:600px){[data-yb-architecture="45.6.0"] .page-wrap{padding-left:12px;padding-right:12px;padding-bottom:94px}[data-yb-architecture="45.6.0"] .dashboard-intro{align-items:flex-start;flex-direction:column}[data-yb-architecture="45.6.0"] .intro-actions{width:100%}[data-yb-architecture="45.6.0"] .intro-actions .btn{flex:1}}
