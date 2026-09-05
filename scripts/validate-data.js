@@ -29,9 +29,10 @@ for (const [file, pattern, label] of checks) {
 const q = path.join(ROOT, 'data/questions.js');
 if (fs.existsSync(q)) {
   const text = fs.readFileSync(q, 'utf8');
-  const count = (text.match(/\bid\s*:/g) || []).length;
-  if (count < 100) console.warn(`⚠ Soru bankası yaklaşık ${count} kayıt içeriyor; içerik genişliği ayrıca gözden geçirilmeli.`);
-  else console.log(`✓ Soru bankası kontrolü: yaklaşık ${count}+ kayıt.`);
+  // questions.js uses JSON-style quoted property names ("id":), not bare id: keys.
+  const count = (text.match(/(?:["']id["']|\bid)\s*:/g) || []).length;
+  if (count < 100) console.warn(`⚠ Ana soru bankası ${count} kayıt içeriyor; ek paketler ayrıca yüklenebilir.`);
+  else console.log(`✓ Ana soru bankası kontrolü: ${count}+ kayıt.`);
 }
 
 if (failed) process.exitCode = 1;
