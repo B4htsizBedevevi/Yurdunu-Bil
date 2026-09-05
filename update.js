@@ -10,11 +10,10 @@ async function apply(){const b=$('[data-update-now]'),n=$('.yb56-update');if(!b)
  const regs=navigator.serviceWorker?.getRegistrations?await navigator.serviceWorker.getRegistrations():[];
  await Promise.all(regs.map(reg=>reg.update().catch(()=>null)));
  if(regs.length){await Promise.race([new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true})),new Promise(resolve=>setTimeout(resolve,2500))]);}
- // Remove only obsolete Yurdunu Bil caches. The active cache is owned by the new worker.
  if(window.caches){const keys=await caches.keys();await Promise.all(keys.filter(k=>/^yurdunu-bil-v/.test(k)&&k!=='yurdunu-bil-v56.2').map(k=>caches.delete(k)));}
 }catch{}
 n?.remove();
-location.replace(location.pathname+location.search+'?v='+Date.now());
+const u=new URL(location.href);u.searchParams.set('yb-update',Date.now());location.replace(u.href);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(check,1800),{once:true});else setTimeout(check,1800);
 })();
