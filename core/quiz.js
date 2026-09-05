@@ -1,2 +1,0 @@
-/* Yurdunu Bil 44 — quiz intelligence core */
-(()=>{'use strict';const r=window.YB44;if(!r)return;const bank=()=>Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:[];const topics=()=>Array.isArray(window.TOPICS)?window.TOPICS:[];const api={version:'44.0.0',count:()=>bank().length,topics,byTopic:id=>bank().filter(q=>q.topic===id),random:(n=10,topic)=>{const src=topic?api.byTopic(topic):bank();return [...src].sort(()=>Math.random()-.5).slice(0,n)}};r.register('quiz',api);})();
