@@ -1,198 +1,64 @@
-/* Yurdunu Bil — Leaderboard v1: genel, haftalık, arkadaşlar sıralaması */
+/* Yurdunu Bil — Leaderboard v2: gerçek kullanıcılar + canlı yenileme */
 (()=>{
 'use strict';
 if(window.__YB_LEADERBOARD__)return;
 window.__YB_LEADERBOARD__=true;
-
-const $=(s,r=document)=>r.querySelector(s);
-const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
 const MEDAL=['🥇','🥈','🥉'];
-
-function getLocalEntry(){
-  try{
-    const p=JSON.parse(localStorage.getItem('yb52_progress_v1')||'{}');
-    const prof=window.YBOnboarding?.getProfile?.()||{};
-    const username=prof.username||window.YURDUNUBIL_STATE?.profile?.displayName||'Sen';
-    const avatar=prof.avatarEmoji||'🧭';
-    return {
-      username,avatar,
-      xp:Number(p.xp||0),
-      answers:Number(p.answers||0),
-      correct:Number(p.correct||0),
-      streak:Number(p.bestStreak||0),
-      isYou:true
-    };
-  }catch{return null}
+let sb=null,uid=null,channel=null,currentTab='global',refreshTimer=null;
+function init(){
+ const cfg=window.YURDUNUBIL_CONFIG||{};
+ try{if(cfg.SUPABASE_URL&&cfg.SUPABASE_PUBLISHABLE_KEY&&window.supabase)sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY)}catch(e){console.warn('leaderboard init',e)}
 }
-
-/* Demo/offline sıralama — Supabase yokken gösterilir */
-function getDemoBoard(){
-  const you=getLocalEntry();
-  const board=[
-    {username:'KorumalıKırkçalı',avatar:'🏆',xp:4280,answers:312,correct:268,streak:18,isYou:false},
-    {username:'CoğrafyaUzmanı',avatar:'🗺️',xp:3760,answers:290,correct:241,streak:14,isYou:false},
-    {username:'AnatoliaWatcher',avatar:'⛰️',xp:3210,answers:260,correct:210,streak:11,isYou:false},
-    {username:'HaritaDeli',avatar:'🧭',xp:2890,answers:224,correct:178,streak:9,isYou:false},
-    {username:'KPSSMaster2026',avatar:'📚',xp:2450,answers:198,correct:154,streak:7,isYou:false},
-    {username:'BölgeBlitzKing',avatar:'🔥',xp:2110,answers:170,correct:130,streak:5,isYou:false},
-    {username:'SorucuDelisi',avatar:'🎯',xp:1820,answers:142,correct:108,streak:4,isYou:false},
-    {username:'AtlasGezgini',avatar:'🌍',xp:1560,answers:118,correct:88,streak:3,isYou:false},
-    {username:'MeridyenHunter',avatar:'⭐',xp:1320,answers:96,correct:70,streak:2,isYou:false},
-    {username:'TopraküstüAdayı',avatar:'💡',xp:980,answers:74,correct:52,streak:1,isYou:false},
-  ];
-  /* Kullanıcıyı listeye ekle ve sırala */
-  if(you){
-    const idx=board.findIndex(r=>r.xp<=you.xp);
-    if(idx>=0)board.splice(idx,0,you);
-    else board.push(you);
-  }
-  return board.slice(0,15);
+async function session(){if(!sb)return null;try{const {data}=await sb.auth.getSession();uid=data?.session?.user?.id||null;return data?.session||null}catch{return null}}
+async function fetchBoard(tab){
+ if(!sb)return {rows:[],error:'Sıralama için hesap bağlantısı gerekli.'};
+ const table=tab==='arena'?'arena_ratings':'learning_stats';
+ const fields=tab==='arena'?'user_id,rating,wins,losses,best_streak,matches':'user_id,xp,total_questions,total_correct,best_streak';
+ const sort=tab==='arena'?'rating':'xp';
+ const {data,error}=await sb.from(table).select(fields).order(sort,{ascending:false}).limit(200);
+ if(error)throw error;
+ const stats=data||[];
+ if(!stats.length)return {rows:[],total:0};
+ const ids=stats.map(x=>x.user_id).filter(Boolean);
+ const {data:profiles,pError}=await sb.from('profiles').select('id,display_name,avatar_emoji').in('id',ids);
+ if(pError)throw pError;
+ const map={};(profiles||[]).forEach(p=>{map[p.id]=p});
+ const rows=stats.map(r=>{const p=map[r.user_id]||{};return {id:r.user_id,username:String(p.display_name||'').trim(),avatar:p.avatar_emoji||'🧭',xp:Number(tab==='arena'?r.rating:r.xp)||0,answers:Number(tab==='arena'?r.matches:r.total_questions)||0,correct:Number(tab==='arena'?r.wins:r.total_correct)||0,streak:Number(r.best_streak)||0,isYou:r.user_id===uid}}).filter(r=>r.username.length>=2);
+ return {rows,total:rows.length};
 }
-
-async function getSupabaseBoard(tab='global'){
-  try{
-    const cfg=window.YURDUNUBIL_CONFIG||{};
-    if(!cfg.SUPABASE_URL||!window.supabase)return null;
-    const sb=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_PUBLISHABLE_KEY);
-    const {data:sess}=await sb.auth.getSession();
-    const uid=sess?.session?.user?.id;
-
-    if(tab==='global'){
-      const {data}=await sb.from('learning_stats')
-        .select('user_id,xp,total_questions,total_correct,best_streak')
-        .order('xp',{ascending:false}).limit(50);
-      if(!data?.length)return null;
-      /* Profil isimlerini getir */
-      const ids=data.map(r=>r.user_id);
-      const {data:profiles}=await sb.from('profiles').select('id,display_name,avatar_emoji').in('id',ids);
-      const pmap={};(profiles||[]).forEach(p=>{pmap[p.id]=p});
-      return data.map(r=>{
-        const prof=pmap[r.user_id]||{};
-        return {
-          username:prof.display_name||'Anonim',
-          avatar:prof.avatar_emoji||'🧭',
-          xp:r.xp,answers:r.total_questions,correct:r.total_correct,streak:r.best_streak,
-          isYou:r.user_id===uid
-        };
-      });
-    }
-    if(tab==='arena'){
-      const {data}=await sb.from('arena_ratings')
-        .select('user_id,rating,wins,losses,best_streak,matches')
-        .order('rating',{ascending:false}).limit(50);
-      if(!data?.length)return null;
-      const ids=data.map(r=>r.user_id);
-      const {data:profiles}=await sb.from('profiles').select('id,display_name,avatar_emoji').in('id',ids);
-      const pmap={};(profiles||[]).forEach(p=>{pmap[p.id]=p});
-      return data.map(r=>{
-        const prof=pmap[r.user_id]||{};
-        return {
-          username:prof.display_name||'Anonim',
-          avatar:prof.avatar_emoji||'⚔️',
-          xp:r.rating,answers:r.matches,correct:r.wins,streak:r.best_streak,
-          isYou:r.user_id===uid,
-          isArena:true
-        };
-      });
-    }
-  }catch(e){console.warn('leaderboard',e);return null}
-  return null;
+function rankFor(rows,id){const i=rows.findIndex(x=>x.id===id);return i<0?null:i+1}
+function render(list,rows,tab,total){
+ const isArena=tab==='arena';
+ if(!rows.length){list.innerHTML='<div class="yb-lb-empty"><b>Henüz sıralama oluşmadı.</b><span>İlk soruları çözen gerçek kullanıcılar burada görünecek.</span></div>';return}
+ const myRank=rankFor(rows,uid);
+ const header=`<div class="yb-lb-header"><span>Sıra</span><span>Avatar</span><span>Oyuncu</span><span>${isArena?'RP':'XP'}</span><span>Seri</span></div>`;
+ const visible=rows.slice(0,50);
+ const body=visible.map((r,i)=>`<div class="yb-lb-row ${r.isYou?'yb-lb-you':''}" data-user-id="${esc(r.id)}"><span class="yb-lb-rank">${i<3?MEDAL[i]:String(i+1)}</span><span class="yb-lb-av">${esc(r.avatar)}</span><div class="yb-lb-info"><b>${esc(r.username)}${r.isYou?' <em>(Sen)</em>':''}</b><small>${isArena?`${r.answers} maç · ${r.correct} galibiyet`:`${r.answers} soru · ${r.correct} doğru`}</small></div><div class="yb-lb-score"><b>${r.xp.toLocaleString('tr-TR')}</b><small>${isArena?'RP':'XP'}</small></div><div class="yb-lb-streak">🔥${r.streak}</div></div>`).join('');
+ let me='';
+ if(uid&&myRank){const r=rows[myRank-1];if(myRank>50)me=`<div class="yb-lb-me"><b>Sen #${myRank}</b><span>${esc(r.username)} · ${r.xp.toLocaleString('tr-TR')} ${isArena?'RP':'XP'}</span></div>`}
+ list.innerHTML=header+body+me;
+ const foot=list.parentElement?.querySelector('.yb-lb-foot span');if(foot)foot.textContent=`Canlı sıralama · ${total} gerçek oyuncu`;
 }
-
-function renderRows(board,isArena){
-  return board.map((r,i)=>`
-  <div class="yb-lb-row ${r.isYou?'yb-lb-you':''}">
-    <span class="yb-lb-rank">${i<3?MEDAL[i]:String(i+1)}</span>
-    <span class="yb-lb-av">${esc(r.avatar)}</span>
-    <div class="yb-lb-info">
-      <b>${esc(r.username)}${r.isYou?' <em>(Sen)</em>':''}</b>
-      <small>${isArena?`${r.answers||0} maç · ${r.correct||0} galiyet`:`${r.answers||0} soru · ${r.correct||0} doğru`}</small>
-    </div>
-    <div class="yb-lb-score">
-      <b>${Number(r.xp||0).toLocaleString('tr-TR')}</b>
-      <small>${isArena?'RP':'XP'}</small>
-    </div>
-    <div class="yb-lb-streak" title="En iyi seri">🔥${r.streak||0}</div>
-  </div>`).join('');
+async function loadTab(tab,list){
+ currentTab=tab;list.innerHTML='<div class="yb-lb-loading"><div class="yb-lb-spin"></div><span>Gerçek sıralama yükleniyor…</span></div>';
+ try{const result=await fetchBoard(tab);render(list,result.rows,tab,result.total)}catch(e){console.warn('leaderboard fetch',e);list.innerHTML='<div class="yb-lb-empty"><b>Sıralama şu anda alınamadı.</b><span>Bağlantıyı kontrol edip tekrar dene.</span><button class="btn secondary" id="yb-lb-retry">Tekrar dene</button></div>';list.querySelector('#yb-lb-retry')?.addEventListener('click',()=>loadTab(tab,list))}
 }
-
-async function loadTab(tab,listEl){
-  listEl.innerHTML='<div class="yb-lb-loading"><div class="yb-lb-spin"></div><span>Yükleniyor…</span></div>';
-  let board=tab==='offline'?getDemoBoard():await getSupabaseBoard(tab);
-  if(!board)board=getDemoBoard();
-  const isArena=tab==='arena';
-  const header=isArena?
-    '<div class="yb-lb-header"><span>Sıra</span><span>Avatar</span><span>Oyuncu</span><span>Reyting</span><span>Seri</span></div>':
-    '<div class="yb-lb-header"><span>Sıra</span><span>Avatar</span><span>Oyuncu</span><span>XP</span><span>Seri</span></div>';
-  listEl.innerHTML=header+renderRows(board,isArena);
+function subscribe(){
+ if(!sb)return;
+ if(channel){try{sb.removeChannel(channel)}catch{}}
+ channel=sb.channel('yb-live-leaderboard').on('postgres_changes',{event:'*',schema:'public',table:'learning_stats'},()=>refresh()).on('postgres_changes',{event:'*',schema:'public',table:'arena_ratings'},()=>{if(currentTab==='arena')refresh()}).on('postgres_changes',{event:'*',schema:'public',table:'profiles'},()=>refresh()).subscribe();
 }
-
+function refresh(){const list=document.getElementById('yb-lb-list');if(list)loadTab(currentTab,list)}
 function open(){
-  const existing=document.getElementById('yb-lb-modal');
-  if(existing){existing.classList.toggle('yb-lb-visible');return}
-  const wrap=document.createElement('div');
-  wrap.id='yb-lb-modal';
-  wrap.innerHTML=`
-  <div class="yb-lb-backdrop"></div>
-  <section class="yb-lb-shell">
-    <header class="yb-lb-top">
-      <div>
-        <span class="eyebrow">🏆 SIRALAMA</span>
-        <h2>Liderlik Tablosu</h2>
-      </div>
-      <button class="yb-lb-close" type="button">×</button>
-    </header>
-    <div class="yb-lb-tabs">
-      <button class="yb-lb-tab active" data-lbtab="global">🌍 Genel (XP)</button>
-      <button class="yb-lb-tab" data-lbtab="arena">⚔️ Arena (RP)</button>
-    </div>
-    <div class="yb-lb-list" id="yb-lb-list"></div>
-    <div class="yb-lb-foot">
-      <span>Sıralama her saat güncellenir</span>
-      <button class="btn secondary" id="yb-lb-arena-btn">⚔️ Beni Sıralamaya Kat</button>
-    </div>
-  </section>`;
-  document.body.appendChild(wrap);
-  requestAnimationFrame(()=>wrap.classList.add('yb-lb-visible'));
-
-  const list=document.getElementById('yb-lb-list');
-  loadTab('global',list);
-
-  wrap.querySelector('.yb-lb-backdrop').addEventListener('click',()=>close());
-  wrap.querySelector('.yb-lb-close').addEventListener('click',()=>close());
-  wrap.querySelectorAll('.yb-lb-tab').forEach(b=>b.addEventListener('click',()=>{
-    wrap.querySelectorAll('.yb-lb-tab').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    loadTab(b.dataset.lbtab,list);
-  }));
-  document.getElementById('yb-lb-arena-btn')?.addEventListener('click',()=>{close();window.YBArena?.open?.()});
+ const old=document.getElementById('yb-lb-modal');if(old){old.classList.add('yb-lb-visible');refresh();return}
+ const wrap=document.createElement('div');wrap.id='yb-lb-modal';wrap.innerHTML=`<div class="yb-lb-backdrop"></div><section class="yb-lb-shell"><header class="yb-lb-top"><div><span class="eyebrow">🏆 SIRALAMA</span><h2>Liderlik Tablosu</h2></div><button class="yb-lb-close" type="button">×</button></header><div class="yb-lb-tabs"><button class="yb-lb-tab active" data-lbtab="global">🌍 Genel (XP)</button><button class="yb-lb-tab" data-lbtab="arena">⚔️ Arena (RP)</button></div><div class="yb-lb-list" id="yb-lb-list"></div><div class="yb-lb-foot"><span>Canlı sıralama</span><button class="btn secondary" id="yb-lb-refresh">↻ Yenile</button></div></section>`;
+ document.body.appendChild(wrap);requestAnimationFrame(()=>wrap.classList.add('yb-lb-visible'));
+ const list=wrap.querySelector('#yb-lb-list');loadTab('global',list);wrap.querySelector('.yb-lb-backdrop').onclick=close;wrap.querySelector('.yb-lb-close').onclick=close;wrap.querySelector('#yb-lb-refresh').onclick=refresh;
+ wrap.querySelectorAll('.yb-lb-tab').forEach(b=>b.onclick=()=>{wrap.querySelectorAll('.yb-lb-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');loadTab(b.dataset.lbtab,list)});
 }
-
-function close(){
-  const wrap=document.getElementById('yb-lb-modal');
-  if(!wrap)return;
-  wrap.classList.remove('yb-lb-visible');
-  setTimeout(()=>wrap.remove(),300);
-}
-
-/* Sidebar'a sıralama butonu ekle */
-function mountSidebarBtn(){
-  const nav=document.querySelector('.side-nav');
-  if(!nav||nav.querySelector('#yb-lb-nav-btn'))return;
-  const eventsBtn=nav.querySelector('[data-view="events"]');
-  if(!eventsBtn)return;
-  const btn=document.createElement('button');
-  btn.id='yb-lb-nav-btn';btn.type='button';
-  btn.className='nav-item';
-  btn.innerHTML='<span>🏆</span>Sıralama';
-  btn.addEventListener('click',open);
-  eventsBtn.parentNode.insertBefore(btn,eventsBtn.nextSibling);
-}
-
-window.addEventListener('load',()=>setTimeout(mountSidebarBtn,1000));
-new MutationObserver(()=>setTimeout(mountSidebarBtn,200)).observe(document.body,{childList:true,subtree:true});
-
-window.YBLeaderboard={open,close};
+function close(){const w=document.getElementById('yb-lb-modal');if(w){w.classList.remove('yb-lb-visible');setTimeout(()=>w.remove(),300)}}
+function mount(){const nav=document.querySelector('.side-nav');if(!nav||nav.querySelector('#yb-lb-nav-btn'))return;const btn=document.createElement('button');btn.id='yb-lb-nav-btn';btn.type='button';btn.className='nav-item';btn.innerHTML='<span>🏆</span>Sıralama';btn.onclick=open;nav.appendChild(btn)}
+init();window.addEventListener('load',async()=>{await session();subscribe();setTimeout(mount,800)});window.addEventListener('yb:profile-set',()=>refresh());window.addEventListener('yb:auth-ready',async()=>{await session();subscribe();refresh()});refreshTimer=setInterval(()=>{if(document.visibilityState==='visible')refresh()},60000);
+window.YBLeaderboard={open,close,refresh};
 })();
