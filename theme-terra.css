@@ -1,21 +1,9 @@
-/* Yurdunu Bil Terra UI — visual skin only. Does not own application logic. */
-:root{
-  --bg:#07130f;--bg2:#0b1c15;--panel:#10271d;--panel2:#153326;--line:#285141;
-  --text:#f3f7f1;--muted:#91aaa0;--cyan:#54d7c0;--mint:#65df9b;--violet:#9acb73;
-  --red:#ef777f;--green:#63e0a0;--shadow:0 20px 60px rgba(0,0,0,.25);--ease:cubic-bezier(.2,.8,.2,1)
-}
+/* Yurdunu Bil Terra UI — visual skin only; application logic remains untouched. */
+:root{--bg:#07130f;--bg2:#0b1c15;--panel:#10271d;--panel2:#153326;--line:#285141;--text:#f3f7f1;--muted:#91aaa0;--cyan:#54d7c0;--mint:#65df9b;--violet:#9acb73;--red:#ef777f;--green:#63e0a0;--shadow:0 20px 60px rgba(0,0,0,.25)}
 html,body{background:radial-gradient(circle at 15% 0%,rgba(42,112,78,.20),transparent 35%),linear-gradient(145deg,#081710,#07130f 55%,#0b1c15)!important}
-.brand-mark,.avatar{background:linear-gradient(135deg,#69e3a0,#58cfc0)!important;color:#062018!important}
-.quick-test,.icon-btn,.profile-chip{background:linear-gradient(135deg,#12372a,#10281f)!important;border-color:#2c5e4b!important}
-.quick-test b,.eyebrow,.nav-item.active>span{color:#69dfac!important}
-.nav-item:hover,.nav-item.active{background:linear-gradient(90deg,rgba(72,183,126,.20),rgba(50,139,108,.08))!important;border-color:#32614f!important}
-.btn.primary{background:linear-gradient(100deg,#55d89e,#54d7c0)!important;box-shadow:0 12px 30px rgba(63,206,148,.16)!important}
-.surface,.note-card,.events-feature,.events-info-grid .surface,.settings-profile,.settings-actions{background:linear-gradient(145deg,rgba(17,43,32,.98),rgba(12,31,23,.98))!important;border-color:#285141!important}
-.topic-icon,.note-preview div,.detail-list article,.tip-card,.arena-mini-pills b{background:#123025!important;border-color:#2b5847!important}
-.topbar{background:rgba(6,20,15,.90)!important;border-color:#234638!important}
-.global-search,.library-toolbar label{background:#0a1d15!important;border-color:#285141!important}
-.events-pulse i,.online-dot{background:#63e0a0!important;box-shadow:0 0 12px rgba(99,224,160,.72)!important}
-.drawer-backdrop{background:rgba(1,9,6,.82)!important}
-@media(max-width:760px){
-  #sidebar.sidebar{background:#071812!important;border-right-color:#2c5e4b!important}
-}
+.brand-mark,.avatar{background:linear-gradient(135deg,#69e3a0,#58cfc0)!important;color:#062018!important}.quick-test,.icon-btn,.profile-chip{background:linear-gradient(135deg,#12372a,#10281f)!important;border-color:#2c5e4b!important}.quick-test b,.eyebrow,.nav-item.active>span{color:#69dfac!important}
+.nav-item:hover,.nav-item.active,.yb98-top-link:hover,.yb98-top-link.active{background:linear-gradient(90deg,rgba(72,183,126,.20),rgba(50,139,108,.08))!important;border-color:#32614f!important}.btn.primary{background:linear-gradient(100deg,#55d89e,#54d7c0)!important;color:#062018!important;box-shadow:0 12px 30px rgba(63,206,148,.16)!important}
+.surface,.note-card,.events-feature,.events-info-grid .surface,.settings-profile,.settings-actions{background:linear-gradient(145deg,rgba(17,43,32,.98),rgba(12,31,23,.98))!important;border-color:#285141!important}.topic-icon,.note-preview div,.detail-list article,.tip-card,.arena-mini-pills b{background:#123025!important;border-color:#2b5847!important}
+.topbar{background:rgba(6,20,15,.90)!important;border-color:#234638!important}.sidebar{background:rgba(7,24,18,.98)!important;border-right-color:#234638!important}.global-search,.library-toolbar label{background:#0a1d15!important;border-color:#285141!important}.events-pulse i,.online-dot{background:#63e0a0!important;box-shadow:0 0 12px rgba(99,224,160,.72)!important}.drawer-backdrop{background:rgba(1,9,6,.82)!important}
+body.light{--bg:#eff7f1;--bg2:#f8fbf8;--panel:#fff;--panel2:#f3f8f4;--line:#c7dacd;--text:#173024;--muted:#607a6d;background:linear-gradient(180deg,#f8fbf8,#e9f3ec)!important}body.light .sidebar,body.light .topbar{background:rgba(247,251,248,.96)!important;border-color:#c7dacd!important}
+@media(max-width:760px){#sidebar.sidebar{background:#071812!important;border-right-color:#2c5e4b!important}.page-wrap{padding-left:14px;padding-right:14px}}
