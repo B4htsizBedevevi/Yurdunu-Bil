@@ -3,9 +3,10 @@
 if(window.__YB98_COHESION__)return;window.__YB98_COHESION__=true;
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const LABELS={home:'Ana Sayfa',library:'Kütüphane',arena:'Arena',events:'Etkinlikler & Oyunlar',settings:'Ayarlar'};
+function loadLearningIndex(){if(window.YBLearningIndex||window.__YB_LEARNING_LOADING__)return;window.__YB_LEARNING_LOADING__=true;const s=document.createElement('script');s.src='data/learning-index.js?v=98.0.0';s.onload=()=>window.__YB_LEARNING_READY__=true;s.onerror=()=>window.__YB_LEARNING_LOADING__=false;document.head.appendChild(s)}
 function safeNavigate(view){
  if(view==='arena'&&window.YBArena?.open){window.YBArena.open();return}
- const b=$(`.yb98-top-link[data-view="${view}"]`);if(b&&view!=='arena'){b.classList.add('active');b.click();return}
+ const b=$(`.yb98-top-link[data-view="${view}"]`);if(b&&view!=='arena'){b.classList.add('active');b.dispatchEvent(new MouseEvent('click',{bubbles:true}));return}
  const fallback=$(`[data-view="${view}"]`);if(fallback&&view!=='arena'){fallback.click();return}
  const v=$(`#view-${view}`);if(!v)return;
  $$('.view').forEach(x=>x.classList.toggle('active',x===v));
@@ -19,10 +20,7 @@ function cleanDrawer(){
 }
 function ensureTopNav(){
  let top=$('.yb98-top-nav');
- if(!top){
-   const host=$('.breadcrumbs');if(!host)return;
-   top=document.createElement('nav');top.className='yb98-top-nav';top.setAttribute('aria-label','Ana gezinme');host.insertAdjacentElement('afterend',top);
- }
+ if(!top){const host=$('.breadcrumbs');if(!host)return;top=document.createElement('nav');top.className='yb98-top-nav';top.setAttribute('aria-label','Ana gezinme');host.insertAdjacentElement('afterend',top)}
  const defs=[['home','⌂'],['library','▤'],['arena','⚔'],['events','◈']];
  defs.forEach(([view,icon])=>{
    let b=$(`.yb98-top-link[data-view="${view}"]`,top);
@@ -40,7 +38,7 @@ function styleShell(){
 `;
  document.head.appendChild(s);
 }
-function sync(){cleanDrawer();ensureTopNav();styleShell();}
+function sync(){loadLearningIndex();cleanDrawer();ensureTopNav();styleShell()}
 document.addEventListener('yb:navigate',()=>setTimeout(sync,30));
 window.addEventListener('load',()=>setTimeout(sync,100));
 new MutationObserver(()=>setTimeout(sync,50)).observe(document.body,{childList:true,subtree:true});
