@@ -1,36 +1,36 @@
 /* Yurdunu Bil — canonical style entrypoint. */
-@import url('../style.css?v=99.0.4');
-@import url('../theme-terra.css?v=99.0.4');
-@import url('../auth.css?v=99.0.4');
-@import url('../auth-v73.css?v=99.0.4');
-@import url('../v72-layout.css?v=99.0.4');
-@import url('../v92-ui-hardening.css?v=99.0.4');
-@import url('../onboarding.css?v=99.0.4');
-@import url('../notifications.css?v=99.0.4');
-@import url('../flashcards.css?v=99.0.4');
-@import url('../leaderboard.css?v=99.0.4');
-@import url('../responsive.css?v=99.0.4');
-@import url('../v100-terra-mobile.css?v=99.0.4');
-@import url('../features/home/home.css?v=99.0.4');
-@import url('../features/library/library.css?v=99.0.4');
-@import url('../features/library/study.css?v=99.0.4');
-@import url('../features/library/review.css?v=99.0.4');
-@import url('../features/library/polish.css?v=99.0.4');
-@import url('../features/library/arena.css?v=99.0.4');
-@import url('../features/library/expansion.css?v=99.0.4');
-@import url('../features/library/deepening.css?v=99.0.4');
-@import url('../features/library/readability.css?v=99.0.4');
-@import url('../features/games/games.css?v=99.0.4');
-@import url('../features/games/events.css?v=99.0.4');
-@import url('../features/arena/arena.css?v=99.0.4');
-@import url('../features/arena/social.css?v=99.0.4');
-@import url('../features/arena/effects.css?v=99.0.4');
-@import url('../features/progress/progress.css?v=99.0.4');
-@import url('../features/progress/progress-loop.css?v=99.0.4');
-@import url('../features/progress/game-progression.css?v=99.0.4');
-@import url('../features/questions/questions.css?v=99.0.4');
+@import url('../style.css?v=99.0.5');
+@import url('../theme-terra.css?v=99.0.5');
+@import url('../auth.css?v=99.0.5');
+@import url('../auth-v73.css?v=99.0.5');
+@import url('../v72-layout.css?v=99.0.5');
+@import url('../v92-ui-hardening.css?v=99.0.5');
+@import url('../onboarding.css?v=99.0.5');
+@import url('../notifications.css?v=99.0.5');
+@import url('../flashcards.css?v=99.0.5');
+@import url('../leaderboard.css?v=99.0.5');
+@import url('../responsive.css?v=99.0.5');
+@import url('../v100-terra-mobile.css?v=99.0.5');
+@import url('../features/home/home.css?v=99.0.5');
+@import url('../features/library/library.css?v=99.0.5');
+@import url('../features/library/study.css?v=99.0.5');
+@import url('../features/library/review.css?v=99.0.5');
+@import url('../features/library/polish.css?v=99.0.5');
+@import url('../features/library/arena.css?v=99.0.5');
+@import url('../features/library/expansion.css?v=99.0.5');
+@import url('../features/library/deepening.css?v=99.0.5');
+@import url('../features/library/readability.css?v=99.0.5');
+@import url('../features/games/games.css?v=99.0.5');
+@import url('../features/games/events.css?v=99.0.5');
+@import url('../features/arena/arena.css?v=99.0.5');
+@import url('../features/arena/social.css?v=99.0.5');
+@import url('../features/arena/effects.css?v=99.0.5');
+@import url('../features/progress/progress.css?v=99.0.5');
+@import url('../features/progress/progress-loop.css?v=99.0.5');
+@import url('../features/progress/game-progression.css?v=99.0.5');
+@import url('../features/questions/questions.css?v=99.0.5');
 
-/* 99.0.4 shell: deterministic desktop sidebar + scrollable content + mobile bottom bar */
+/* 99.0.5 shell: deterministic desktop sidebar + scrollable content + mobile bottom bar */
 html,body{width:100%;min-height:100%;overflow:hidden}
 body{overscroll-behavior:none}
 .app-shell{height:100dvh;min-height:0;overflow:hidden}
