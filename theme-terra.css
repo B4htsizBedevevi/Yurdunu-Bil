@@ -1,4 +1,4 @@
-@import url('v101-ui-controls.css?v=99.0.9');
+@import url('styles/ui-controls.css?v=99.0.9');
 @import url('styles/navigation.css?v=99.0.9');
 @import url('styles/learning-bridge.css?v=99.0.9');
 /* Runtime feature styles are loaded from styles/app.css. */
