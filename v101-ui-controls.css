@@ -1,0 +1,115 @@
+/* Yurdunu Bil 101 — Terra controls
+   Visual-only: buttons, inputs, chips, navigation and touch states. */
+:root{
+  --yb-accent:#61d59a;
+  --yb-accent-2:#39c8a5;
+  --yb-accent-soft:rgba(97,213,154,.14);
+  --yb-control:#102b21;
+  --yb-control-2:#15372a;
+  --yb-border:rgba(117,190,157,.24);
+  --yb-focus:#8be0b3;
+}
+
+/* Buttons feel like controls, not plain text links. */
+.btn,.quick-test,.icon-btn,.profile-chip,.nav-item,.back-link,
+.yb98-top-link,.profile-menu button,
+button[data-view],button[data-action],button[data-mode],
+input[type=button],input[type=submit]{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+
+.btn{
+  position:relative;
+  isolation:isolate;
+  min-height:44px;
+  border-radius:13px!important;
+  border:1px solid var(--yb-border)!important;
+  background:linear-gradient(180deg,var(--yb-control-2),var(--yb-control))!important;
+  color:#eef8f2!important;
+  box-shadow:0 7px 18px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.045)!important;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease!important;
+}
+.btn:hover{transform:translateY(-2px)!important;border-color:rgba(97,213,154,.5)!important;box-shadow:0 11px 25px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.06)!important}
+.btn:active{transform:translateY(0) scale(.985)!important;box-shadow:0 4px 10px rgba(0,0,0,.16)!important}
+.btn.primary{background:linear-gradient(135deg,#63dfa0,#39c8a5)!important;color:#062017!important;border-color:transparent!important;font-weight:950;box-shadow:0 10px 25px rgba(57,200,165,.2),inset 0 1px 0 rgba(255,255,255,.25)!important}
+.btn.primary:hover{box-shadow:0 14px 30px rgba(57,200,165,.28),inset 0 1px 0 rgba(255,255,255,.3)!important}
+.btn.secondary{background:linear-gradient(180deg,#173a2d,#102b21)!important}
+.btn.ghost{background:rgba(13,42,32,.38)!important;box-shadow:none!important}
+.btn.danger-btn{background:linear-gradient(180deg,#3a2026,#29181d)!important;border-color:rgba(239,119,127,.4)!important;color:#ffb6bc!important}
+.btn-lg{min-height:50px!important;border-radius:14px!important}
+
+.icon-btn{border-radius:12px!important;background:linear-gradient(180deg,#15372a,#10271e)!important;border-color:var(--yb-border)!important;transition:transform .16s ease,background .16s ease,border-color .16s ease!important}
+.icon-btn:hover{transform:translateY(-2px);background:#194432!important;border-color:rgba(97,213,154,.5)!important}
+.icon-btn:active{transform:scale(.94)}
+
+.quick-test{border-radius:14px!important;background:linear-gradient(135deg,#174432,#10291f)!important;border-color:rgba(97,213,154,.3)!important;box-shadow:0 8px 22px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.04)!important;transition:transform .16s ease,border-color .16s ease!important}
+.quick-test:hover{transform:translateY(-2px);border-color:rgba(97,213,154,.55)!important}
+.quick-test:active{transform:scale(.985)}
+
+.nav-item{min-height:45px!important;border-radius:12px!important;transition:transform .15s ease,background .15s ease,border-color .15s ease!important}
+.nav-item:hover{transform:translateX(2px)}
+.nav-item.active{box-shadow:inset 3px 0 0 var(--yb-accent),0 5px 14px rgba(0,0,0,.1)!important}
+
+/* Top navigation: compact segmented control. */
+.yb98-top-nav-wrap{min-width:0;display:flex;align-items:center}
+.yb98-top-nav{border-color:rgba(117,190,157,.2)!important;background:rgba(7,26,19,.9)!important}
+.yb98-top-link{min-height:37px;border-radius:10px!important}
+.yb98-top-link.active{background:linear-gradient(180deg,rgba(97,213,154,.19),rgba(57,200,165,.08))!important;border-color:rgba(97,213,154,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+
+/* Form controls */
+input,select,textarea{border-radius:12px}
+.global-search,.library-toolbar label{transition:border-color .16s ease,box-shadow .16s ease,background .16s ease!important}
+.global-search:focus-within,.library-toolbar label:focus-within{border-color:rgba(97,213,154,.55)!important;box-shadow:0 0 0 3px rgba(97,213,154,.08)!important;background:#0c251b!important}
+input[type=checkbox],input[type=radio]{accent-color:var(--yb-accent)}
+
+/* Chips / filters / learning index pills */
+.learning-index button,.yb-learning-index button,.filter-chip,.chip,.tag,
+.arena-mini-pills b{
+  border:1px solid rgba(117,190,157,.22)!important;
+  background:linear-gradient(180deg,#17352a,#11281f)!important;
+  color:#dcece3!important;
+  border-radius:999px!important;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease!important;
+}
+.learning-index button:hover,.yb-learning-index button:hover,.filter-chip:hover,.chip:hover,.tag:hover{transform:translateY(-1px);border-color:rgba(97,213,154,.48)!important}
+
+/* Interactive cards: preserve their content, make the affordance obvious. */
+.note-card,.game-card,.game-tile,.topic-card,.feature-card,.events-info-grid .surface,.events-feature,.yb99-map-card{
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important;
+}
+.note-card:hover,.game-card:hover,.game-tile:hover,.topic-card:hover,.feature-card:hover,.events-info-grid .surface:hover,.events-feature:hover,.yb99-map-card:hover{
+  transform:translateY(-3px)!important;
+  border-color:rgba(97,213,154,.38)!important;
+  box-shadow:0 18px 38px rgba(0,0,0,.18)!important;
+}
+
+/* Make common action text read as a real action. */
+.back-link{color:var(--yb-accent-2)!important;border-radius:9px;padding:7px 9px!important}
+.back-link:hover{background:var(--yb-accent-soft)!important}
+
+/* Touch targets and mobile controls. */
+@media(max-width:760px){
+  .btn,.quick-test,.icon-btn,.profile-chip,.nav-item{min-height:46px!important}
+  .page-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px!important}
+  .page-actions .btn{width:100%;padding-inline:10px}
+  .btn.full{grid-column:1/-1}
+  .yb98-top-link{min-height:42px!important}
+  .top-actions .icon-btn{width:42px!important;height:42px!important}
+  .profile-chip{min-height:42px!important}
+}
+@media(max-width:480px){
+  .page-actions{grid-template-columns:1fr!important}
+  .btn{min-height:48px!important}
+  .quick-test{min-height:48px!important}
+}
+
+/* Respect reduced motion without disabling usability. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+
+body.light .btn,body.light .icon-btn,body.light .quick-test,body.light .profile-chip{color:#173025!important;background:linear-gradient(180deg,#ffffff,#edf6f0)!important;border-color:#c4dbce!important;box-shadow:0 7px 18px rgba(31,65,49,.08)!important}
+body.light .btn.primary{color:#062017!important;background:linear-gradient(135deg,#56d895,#35bfa0)!important;border-color:transparent!important}
+body.light .yb98-top-nav{background:rgba(242,249,245,.96)!important;border-color:#c7ddd0!important}
+body.light .yb98-top-link.active{background:#dcefe4!important}
