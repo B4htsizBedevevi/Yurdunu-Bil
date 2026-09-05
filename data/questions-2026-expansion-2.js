@@ -22,4 +22,5 @@
   var ids={}; window.QUESTION_BANK.forEach(function(x){if(x&&x.id)ids[x.id]=1;});
   q.forEach(function(x){if(!ids[x.id]){window.QUESTION_BANK.push(x);ids[x.id]=1;}});
   window.YBQuestionExpansion2={version:'2026.2',count:q.length,loaded:true};
+  if(window.YBQuestionPool&&window.YBQuestionPool.refresh)window.YBQuestionPool.refresh();
 })();
