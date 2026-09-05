@@ -1,0 +1,4 @@
+-- Production mirror for the applied arena_autoround_v7 migration.
+-- Arena answers are server-authoritative: correctness, elapsed time and points are derived in SQL.
+-- A round advances atomically only after every match member answers; the final round finishes the match and applies rating results.
+-- Timeout answers may use answer_index=-1 and are persisted as NULL.
