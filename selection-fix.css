@@ -1,6 +1,0 @@
-/* Selection must never replace the active map theme with a blue fill. */
-.province-shape.selected{fill:var(--fill)!important;stroke:#f4fbff!important;stroke-width:2.4!important;filter:brightness(1.12) drop-shadow(0 10px 8px rgba(0,0,0,.48)) drop-shadow(0 0 10px rgba(255,255,255,.26))!important;transform:translateY(-7px)!important}
-.province-shape.selected:hover{filter:brightness(1.16) drop-shadow(0 12px 10px rgba(0,0,0,.52)) drop-shadow(0 0 12px rgba(255,255,255,.3))!important}
-/* In water mode the selected province keeps the water theme but remains distinguishable by its outline. */
-.feature-label{font-size:10px;font-weight:900;paint-order:stroke;stroke:#071321;stroke-width:3px;stroke-linejoin:round}
-@media(max-width:560px){.province-shape.selected{stroke-width:2!important;transform:translateY(-4px)!important}.feature-label{font-size:8px}}
