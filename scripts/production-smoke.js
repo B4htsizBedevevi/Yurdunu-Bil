@@ -10,5 +10,8 @@ for(const f of ['v64-learning.js','v64-learning2.js','v64-arena2.js','v65-contin
 const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
 if(/data-view=["']map["']/.test(index))fail.push('map navigation resurrected');
 if(!index.includes('v55-loader.js'))fail.push('unified loader missing');
+const release=JSON.parse(fs.readFileSync(path.join(root,'yb-release.json'),'utf8'));
+if(release.version!=='63.1.0')fail.push(`unexpected release ${release.version}`);
+if(!release.changes.some(x=>/Arena.*tur/i.test(x)))fail.push('release does not document Arena lifecycle');
 if(fail.length){console.error('PRODUCTION SMOKE FAILED\n- '+fail.join('\n- '));process.exit(1)}
-console.log('PRODUCTION SMOKE OK — release loader, adaptive learning, Arena runtime, continuity guard and map retirement validated.');
+console.log('PRODUCTION SMOKE OK — release loader, learning, Arena runtime, continuity and map retirement validated.');
