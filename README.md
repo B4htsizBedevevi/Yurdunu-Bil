@@ -1,40 +1,55 @@
-# Yurdunu Bil — KPSS Coğrafya Atlası 44.0
+# Yurdunu Bil — KPSS Coğrafya
 
-2026 KPSS Önlisans için Türkiye coğrafyasını **harita + kısa ders notu + soru bankası + il kartları** mantığıyla çalıştıran responsive web uygulaması.
+2026 KPSS Önlisans için Türkiye coğrafyasını **konu + harita verisi + soru bankası + oyun + Arena** mantığıyla çalıştıran responsive web uygulaması.
 
-## Mimari
+## Durum
 
-Uygulama artık yeni özelliklerin bağlandığı **kanonik v44 katmanına** sahiptir. Eski sürüm dosyaları geriye dönük uyumluluk için şimdilik korunur; yeni kod doğrudan eski hotfix zincirine eklenmez.
+- Sürüm: **63.1.0**
+- 81 il verisi ve coğrafi veri kaynakları
+- KPSS coğrafya soru bankası ve konu kütüphanesi
+- Mini oyunlar, flashcard, ilerleme ve liderlik özellikleri
+- Supabase giriş/kayıt, sonuç ve favori senkronizasyonu
+- Canlı Arena altyapısı ve Supabase migration'ları
+- Mobil / tablet / masaüstü responsive arayüz
+- Render üzerinde statik yayın
 
-- `app.js` — ana uygulama çekirdeği, auth, navigasyon, quiz ve sayfa renderları
-- `data/` — konu, soru, il, nüfus ve coğrafi veri kaynakları
-- `v44-map-engine.js` — gerçek 81 il geometrisine göre atlas katmanlarını kırpar ve temizler
-- `data/geo-features-v44.js` — v44 coğrafi unsur veri genişletmesi
-- `v44-architecture.js` — kanonik runtime kayıt/diagnostic/uyumluluk katmanı
-- `v44-architecture.css` — mimari seviyede responsive görsel normalizasyon
-- `v41-atlas.*` — mevcut atlas arayüzünün geriye dönük uyumluluk katmanı
+## Yapı
 
-## İçerik
+- `index.html` — uygulama kabuğu ve yükleme sırası
+- `app.js` — ana uygulama çekirdeği, auth, navigasyon ve temel ekranlar
+- `data/` — soru, konu, il, nüfus ve coğrafi veri kaynakları
+- `arena-v1.js` / `v53-arena-social.js` — Arena ve sosyal oyun altyapısı
+- `v55-games-plus.js` — oyun merkezi
+- `v89-command-center.js` / `v90-command-center.js` — ana sayfa ve çalışma merkezi
+- `core/runtime.js` — deterministik runtime kaynağı
+- `scripts/` — site, veri, JavaScript ve release doğrulamaları
+- `supabase/migrations/` — Arena ve öğrenme sistemi veritabanı değişiklikleri
 
-- 81 il
-- Türkiye il geometrileri
-- Bölge, iklim, tarım ve nüfus tematik haritaları
-- Akarsu, göl, ova, plato, dağ ve maden katmanları
-- İl bazlı çalışma kartları
-- KPSS coğrafya soru bankası
-- Mini test ve sonuç takibi
-- Favoriler
-- Supabase giriş/kayıt ve ilerleme senkronizasyonu
-- Mobil/tablet/masaüstü responsive arayüz
+## Geliştirme
 
-## Çalıştırma
+```bash
+npm install
+npm test
+```
 
-`npm install`
+Statik geliştirme için:
 
-`npm test`
+```bash
+python -m http.server 5500
+```
 
-veya statik geliştirme için `python -m http.server 5500`
+## Kalite kontrolü
 
-## Doğrulama
+`npm test` şu kontrolleri çalıştırır:
 
-`npm test` artık 81 il geometrisini, yerel assetleri, JavaScript sözdizimini, tek mobil harita hedefini ve v44 kanonik mimari dosyalarını kontrol eder.
+1. Yerel asset ve HTML referansları
+2. Soru / konu / il veri bütünlüğü
+3. Tüm JavaScript dosyalarının syntax kontrolü
+4. Üretim dosyalarının bulunabilirliği
+5. Sürüm ve release bütünlüğü
+
+GitHub Actions, `main` dalına yapılan değişikliklerde bu kontrolleri otomatik çalıştırır.
+
+## Mimari hedef
+
+Yeni özellikler eski sürüm dosyalarının üzerine rastgele eklenmek yerine, mevcut çalışan çekirdeği koruyarak kademeli şekilde kanonik modüllere taşınacaktır. Eski dosyalar yalnızca gerçekten kullanılmıyorsa temizlenecektir; çalışan özellikler sırf dosya adı eski diye silinmeyecektir.
