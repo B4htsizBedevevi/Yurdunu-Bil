@@ -1,3 +1,4 @@
+@import url('v101-ui-controls.css?v=101.0.0');
 /* Yurdunu Bil Terra UI — visual skin only; learning, games, Arena and map engines are untouched. */
 :root{--bg:#07130f;--bg2:#0b1c15;--panel:#10271d;--panel2:#153326;--line:#285141;--text:#f3f7f1;--muted:#91aaa0;--cyan:#54d7c0;--mint:#65df9b;--violet:#9acb73;--red:#ef777f;--green:#63e0a0;--sand:#d7c79a;--shadow:0 20px 60px rgba(0,0,0,.25)}
 html,body{background:radial-gradient(circle at 12% 0%,rgba(42,112,78,.24),transparent 34%),radial-gradient(circle at 90% 90%,rgba(35,120,91,.12),transparent 32%),linear-gradient(145deg,#081710,#07130f 55%,#0b1c15)!important;color:var(--text)}
@@ -10,4 +11,3 @@ body{--focus-ring:rgba(99,224,160,.42)}body :focus-visible{outline:2px solid var
 body.light{--bg:#eff7f1;--bg2:#f8fbf8;--panel:#fff;--panel2:#f3f8f4;--line:#c7dacd;--text:#173024;--muted:#607a6d;background:linear-gradient(180deg,#f8fbf8,#e9f3ec)!important}body.light .sidebar,body.light .topbar{background:rgba(247,251,248,.96)!important;border-color:#c7dacd!important}
 @media(max-width:760px){#sidebar.sidebar{background:#071812!important;border-right-color:#2c5e4b!important}.page-wrap{padding-left:14px;padding-right:14px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
-@import url('v101-ui-controls.css?v=101.0.0');
