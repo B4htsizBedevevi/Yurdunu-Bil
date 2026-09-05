@@ -1,0 +1,19 @@
+/* Yurdunu Bil 87 — deeper library modules visual */
+#view-library .study-zone{margin-top:14px}
+#view-library .study-zone-stat b{font-size:25px;color:#6edfff}
+#view-library .yb87-module{background:linear-gradient(145deg,#132f45,#0d2235);border-color:#31556b}
+#view-library .yb87-module:hover{border-color:#4b7890;box-shadow:0 16px 35px rgba(0,0,0,.2)}
+#view-library .yb87-module h3{font-size:16px;margin-top:10px}
+#view-library .yb87-module p{font-size:10.5px;line-height:1.55}
+#view-library .yb87-module .study-points-preview{display:grid;gap:6px;margin-top:10px}
+#view-library .yb87-module .study-points-preview span{font-size:9.5px;line-height:1.4;padding:8px 9px;background:rgba(10,30,46,.64);border-color:#294c61}
+#view-library .yb87-module .review-launch{margin-top:9px}
+#yb87-module-modal{position:fixed;inset:0;z-index:1100;display:none;place-items:center;padding:18px}
+#yb87-module-modal.show{display:grid;animation:yb87Fade .18s ease both}
+.yb87-backdrop{position:absolute;inset:0;background:rgba(4,12,20,.78);backdrop-filter:blur(9px)}
+.yb87-modal{position:relative;width:min(720px,100%);max-height:min(86vh,760px);overflow:auto;padding:24px;border:1px solid #355f77;border-radius:21px;background:linear-gradient(145deg,#15364f,#0b1d2e);box-shadow:0 35px 100px rgba(0,0,0,.5)}
+.yb87-close{position:absolute;right:14px;top:13px;width:34px;height:34px;border:1px solid #2d536a;border-radius:10px;background:#112a3f;color:#cbe0ea;font-size:21px}
+.yb87-kicker{color:#69dcff;font-size:9px;font-weight:950;letter-spacing:.13em}.yb87-title{display:flex;align-items:flex-start;gap:13px;margin:11px 35px 17px 0}.yb87-title>span{font-size:31px}.yb87-title h2{margin:0;font-size:26px;letter-spacing:-.04em}.yb87-title p{margin:5px 0 0;color:#91aabb;font-size:11px;line-height:1.55}.yb87-modal>h3{margin:0 0 9px;font-size:14px}.yb87-list{display:grid;gap:7px}.yb87-list>div{display:grid;grid-template-columns:34px 1fr;gap:9px;align-items:start;padding:10px;border:1px solid #2b5066;border-radius:11px;background:#10283c}.yb87-list b{display:grid;place-items:center;min-height:30px;border-radius:8px;background:#163c53;color:#6bdcff;font-size:9px}.yb87-list span{color:#c5d7df;font-size:10.5px;line-height:1.5;padding-top:4px}.yb87-memory{margin:12px 0;padding:13px;border:1px solid #315e71;border-radius:12px;background:#123247}.yb87-memory span{display:block;color:#67dcff;font-size:8px;font-weight:950;letter-spacing:.12em}.yb87-memory b{display:block;margin-top:5px;font-size:11px;line-height:1.5}.yb87-modal>[data-review-topic]{width:100%;margin-top:2px}
+@keyframes yb87Fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.yb87-modal{padding:19px}.yb87-title h2{font-size:22px}}
+@media(prefers-reduced-motion:reduce){#yb87-module-modal.show{animation:none}.yb87-module:hover{transform:none}}

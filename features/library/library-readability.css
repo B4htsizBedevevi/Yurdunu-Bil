@@ -1,0 +1,25 @@
+/* Yurdunu Bil 91 — library readability and progressive disclosure */
+.study-zone{margin-top:24px!important}
+.library-note-grid{gap:14px!important}
+.note-card{padding:18px!important;min-height:0!important}
+.note-card h2{font-size:clamp(20px,1.35vw,26px)!important;line-height:1.14!important;margin:10px 0 7px!important}
+.note-card p{font-size:14px!important;line-height:1.5!important;max-width:58ch}
+.note-preview{gap:7px!important;margin:12px 0!important}
+.note-preview>div,.note-preview>span{font-size:13px!important;line-height:1.45!important;padding:9px 10px!important}
+.note-card .btn{font-size:13px!important;font-weight:800!important;min-height:42px!important}
+.study-module-grid{gap:12px!important}
+.study-module{padding:15px!important;min-height:0!important}
+.study-module h3{font-size:17px!important;line-height:1.2!important;margin:8px 0 6px!important}
+.study-module>p{font-size:13px!important;line-height:1.45!important}
+.study-points-preview{gap:6px!important;margin-top:10px!important}
+.study-points-preview span{font-size:12px!important;line-height:1.35!important;padding:7px 8px!important}
+.review-launch{margin-top:10px!important;padding:10px!important}
+.review-launch-copy span{font-size:10px!important}.review-launch-copy b{font-size:12px!important}.review-launch-copy small{font-size:10px!important;line-height:1.35!important}
+.study-zone-head p{font-size:13px!important;line-height:1.45!important}
+.yb91-module-toggle{display:inline-flex!important;align-items:center;justify-content:center;gap:7px;margin-top:12px;padding:10px 14px;border:1px solid var(--border,#2d4d67);border-radius:12px;background:rgba(32,65,89,.55);color:inherit;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.yb91-module-toggle:hover{transform:translateY(-1px)}
+.yb91-hidden-module{display:none!important}
+.view{animation:none!important;transition:none!important}
+@media (min-width:1200px){.library-note-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.study-module-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.note-card p{font-size:14px!important}.study-module h3{font-size:18px!important}}
+@media (max-width:900px){.note-card h2{font-size:21px!important}.note-preview>div{font-size:12px!important}.study-module-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-width:640px){.study-module-grid{grid-template-columns:1fr!important}.note-card p{font-size:13px!important}}
