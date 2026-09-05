@@ -3,7 +3,6 @@
 if(window.__YB56_EVENTS_UX__)return;window.__YB56_EVENTS_UX__=true;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 let arenaOpen=false;
-const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
 const games=[
  ['🧭','Bölge Blitz','8 soruda Türkiye’nin bölgelerini hızlıca pekiştir.','BÖLGELER','region'],
  ['⚡','Bilgi Sprinti','60 saniyede mümkün olduğunca çok doğru yap.','SÜRELİ','sprint'],
@@ -18,11 +17,12 @@ function showEvents(){if(arenaOpen)return;const v=$('#view-events');if(!v||!v.cl
 function bind(v){$$('[data-yb56-game]',v).forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>{const id=b.dataset.yb56Game;if(window.YB55Games?.start)window.YB55Games.start(id);else setTimeout(()=>window.YB55Games?.start?.(id),300)}});$$('[data-yb56-arena-open]',v).forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=async()=>{arenaOpen=true;window.__YB56_ARENA_OPEN__=true;await wait(()=>window.YBArena?.open,2500);if(window.YBArena?.open)window.YBArena.open();else{arenaOpen=false;window.__YB56_ARENA_OPEN__=false;window.showToast?.('Arena şu anda yüklenemedi.','error')}}});$$('[data-yb56-social-open]',v).forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=async()=>{await wait(()=>window.YB53Social?.open,1800);if(window.YB53Social?.open)window.YB53Social.open();else if(window.YBArena?.open){arenaOpen=true;window.__YB56_ARENA_OPEN__=true;window.YBArena.open()}else window.showToast?.('Sosyal Arena şu anda yüklenemedi.','error')}})}
 function wait(fn,ms){return new Promise(resolve=>{if(fn()){resolve(true);return}const t=Date.now();const i=setInterval(()=>{if(fn()){clearInterval(i);resolve(true)}else if(Date.now()-t>=ms){clearInterval(i);resolve(false)}},80)})}
 function patchArena(){if(!arenaOpen)return;const v=$('#view-events');if(!v||!v.querySelector('.ybArena'))return;if(v.querySelector('[data-yb56-back-events]'))return;const hero=$('.ybArenaHero',v)||$('.ybArena',v).firstElementChild;if(!hero)return;const b=document.createElement('button');b.type='button';b.className='btn ghost yb56-back-events';b.dataset.yb56BackEvents='1';b.textContent='← Etkinliklere dön';hero.insertBefore(b,hero.firstChild)}
+function injectSocialSidebar(){const nav=$('.side-nav');if(!nav||nav.querySelector('[data-yb56-social-sidebar]'))return;const labels=$$('.nav-label',nav);const perf=labels.find(x=>x.textContent.trim()==='PERFORMANS');const b=document.createElement('button');b.type='button';b.className='nav-item yb56-social-nav';b.dataset.yb56SocialSidebar='1';b.innerHTML='<span>⚔</span><span class="yb56-social-nav-text">Sosyal Arena</span><em><i></i> CANLI</em>';if(perf)nav.insertBefore(b,perf);else nav.appendChild(b);b.onclick=async()=>{await wait(()=>window.YB53Social?.open,1800);if(window.YB53Social?.open)window.YB53Social.open();else if(window.YBArena?.open){arenaOpen=true;window.__YB56_ARENA_OPEN__=true;window.YBArena.open()}else window.showToast?.('Sosyal Arena şu anda yüklenemedi.','error')};}
 function onBack(e){const b=e.target.closest('[data-yb56-back-events]');if(!b)return;arenaOpen=false;window.__YB56_ARENA_OPEN__=false;window.navigate?.('events');setTimeout(showEvents,80)}
 document.addEventListener('click',onBack,true);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-view="events"]');if(!b)return;arenaOpen=false;window.__YB56_ARENA_OPEN__=false;setTimeout(showEvents,80)},true);
-new MutationObserver(()=>{if(window.__YB56_ARENA_OPEN__)patchArena();else showEvents()}).observe(document.body,{childList:true,subtree:true});
-setInterval(()=>{if(window.__YB56_ARENA_OPEN__)patchArena();else showEvents()},700);
+new MutationObserver(()=>{injectSocialSidebar();if(window.__YB56_ARENA_OPEN__)patchArena();else showEvents()}).observe(document.body,{childList:true,subtree:true});
+setInterval(()=>{injectSocialSidebar();if(window.__YB56_ARENA_OPEN__)patchArena();else showEvents()},700);
 window.addEventListener('yb45:ready',()=>setTimeout(showEvents,180));
-setTimeout(showEvents,700);
+setTimeout(()=>{injectSocialSidebar();showEvents()},700);
 })();
