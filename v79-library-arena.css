@@ -1,0 +1,34 @@
+/* Yurdunu Bil 79 — library density + arena matchmaking polish */
+.view{max-width:1540px}
+@media(min-width:1500px){.page-wrap{padding-left:22px;padding-right:22px}.library-note-grid{gap:11px}.note-card{padding:14px}.note-card h2{font-size:19px}.note-card>p{font-size:11px}.note-preview div{padding:7px 8px;font-size:10px}}
+@media(min-width:1800px){.view{max-width:1640px}}
+
+/* Expanded study area should feel like part of the library, not a detached page. */
+.study-zone{margin-top:16px;padding:17px}
+.study-zone-head{margin-bottom:12px}
+.study-zone-head h2{font-size:22px}
+.study-module-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.study-module{padding:12px;border-radius:13px}
+.study-module-top{margin-bottom:8px}
+.study-module-icon{width:31px;height:31px;flex-basis:31px;font-size:15px}
+.study-module h3{font-size:14px}
+.study-module p{min-height:32px;font-size:9.5px}
+.study-points-preview{gap:4px;margin-top:8px}
+.study-points-preview span{padding:6px 7px;font-size:8.5px}
+.study-open{margin-top:8px;padding:8px;font-size:8.5px}
+
+/* Arena matchmaking choice */
+.yb79-mode-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:15px}
+.yb79-mode-option{position:relative;text-align:left;padding:12px 12px 11px;border:1px solid #294b63;border-radius:13px;background:linear-gradient(145deg,#10283d,#0c2033);color:#d9eaf3;cursor:pointer;transition:.18s ease;overflow:hidden}
+.yb79-mode-option:hover{transform:translateY(-2px);border-color:#3a6b86;box-shadow:0 13px 28px rgba(0,0,0,.16)}
+.yb79-mode-option.active{border-color:#4bcaf4;background:linear-gradient(145deg,#143a54,#103346);box-shadow:0 0 0 1px rgba(75,202,244,.08),0 15px 30px rgba(30,150,196,.12)}
+.yb79-mode-option:after{content:"";position:absolute;inset:auto -20% -65% 25%;height:90px;background:radial-gradient(circle,rgba(66,212,191,.13),transparent 68%);pointer-events:none}
+.yb79-mode-icon{font-size:19px;display:block;margin-bottom:5px}
+.yb79-mode-option b{display:block;font-size:12px;letter-spacing:-.01em}
+.yb79-mode-option small{display:block;margin-top:3px;color:#88a5b6;font-size:8.5px;line-height:1.35}
+.yb79-mode-check{position:absolute;right:9px;top:9px;width:17px;height:17px;border:1px solid #3a6076;border-radius:50%;display:grid;place-items:center;font-size:10px;color:transparent}
+.yb79-mode-option.active .yb79-mode-check{background:#45cce8;border-color:#45cce8;color:#05202b}
+.yb79-match-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.yb79-selected-label{color:#79dfff;font-size:9px;font-weight:900}
+.yb79-mode-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid #31566e;border-radius:8px;background:#0d2337;color:#a9c4d2;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:720px){.yb79-mode-picker{grid-template-columns:1fr}.yb79-mode-option{min-height:84px}}
