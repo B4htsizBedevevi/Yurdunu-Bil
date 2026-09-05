@@ -7,7 +7,7 @@ const dataFiles=['data/questions.js','data/questions-v55.js','data/questions-v59
 const coreFiles=['core/runtime.js','app.js','core/ui-guard.js'];
 const featureGroups=[
  ['features/games/games-core.js','features/games/events.js','features/games/events-plus.js'],
- ['features/arena/arena.js','features/arena/social.js','features/arena/matchmaking.js'],
+ ['features/arena/arena.js','features/arena/social.js'],
  ['features/library/content.js','features/library/library.js','features/library/study.js','features/library/review.js','features/library/expansion.js','features/library/deepening.js','features/library/compact.js','features/library/interactions.js'],
  ['features/progress/progress.js','features/progress/progress-loop.js','features/progress/game-progression.js'],
  ['features/questions/questions.js','features/questions/question-center.js'],
