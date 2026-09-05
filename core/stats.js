@@ -1,2 +1,0 @@
-/* Yurdunu Bil 44 — statistics intelligence core */
-(()=>{'use strict';const r=window.YB44;if(!r)return;const results=()=>{try{return JSON.parse(localStorage.getItem('yb_state_25')||'{}').results||[]}catch{return[]}};const api={version:'44.0.0',results,solved:()=>results().reduce((n,x)=>n+(Number(x.total)||0),0),correct:()=>results().reduce((n,x)=>n+(Number(x.correct)||0),0),accuracy:()=>{const a=api.solved();return a?Math.round(api.correct()/a*100):0}};r.register('stats',api);})();
