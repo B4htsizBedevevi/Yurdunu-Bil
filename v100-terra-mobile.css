@@ -1,0 +1,81 @@
+/* Yurdunu Bil 100 — Terra mobile visual polish
+   Visual-only layer. Does not own navigation, games, Arena, library or data logic. */
+:root{
+  --terra-bg:#06140f;
+  --terra-bg-soft:#0a2118;
+  --terra-surface:#0d2a20;
+  --terra-surface-2:#123326;
+  --terra-line:rgba(117,190,157,.20);
+  --terra-accent:#61d59a;
+  --terra-accent-2:#8be0b3;
+  --terra-text:#f2f7f3;
+  --terra-muted:#91a9a0;
+}
+
+html,body{background:var(--terra-bg)!important;color:var(--terra-text)}
+body{overflow-x:hidden!important}
+#app-shell{overflow-x:hidden}
+.main-shell,.page-wrap,.view{min-width:0;max-width:100%;overflow-x:clip}
+
+/* Existing blue surfaces become deep botanical green. */
+.surface,.note-card,.events-feature,.events-info-grid .surface,.settings-profile,.settings-actions,
+.game-card,.game-tile,.library-card,.topic-card,.question-card,.study-card,.feature-card,
+.yb99-map-card,.yb99-map-shell,.yb99-modal,.arena-card,.arena-panel{
+  background:linear-gradient(145deg,rgba(13,42,32,.98),rgba(8,29,22,.98))!important;
+  border-color:var(--terra-line)!important;
+  color:var(--terra-text)!important;
+}
+
+/* Keep cards readable and tactile on touch screens. */
+button,.btn,[role="button"]{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,.btn:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--terra-accent)!important;outline-offset:2px}
+
+/* Remove the old off-canvas decorative slivers visible at the left edge on phones. */
+@media(max-width:760px){
+  html,body{width:100%;max-width:100%;}
+  .app-shell,.main-shell{width:100%;max-width:100%;}
+  .main-shell{margin-left:0!important;}
+  .page-wrap{width:100%;padding:14px 14px 110px!important;box-sizing:border-box;}
+  .view{width:100%;box-sizing:border-box;}
+
+  /* Mobile top bar: compact, stable and never wider than viewport. */
+  .topbar{width:100%;box-sizing:border-box;overflow:visible!important;padding-left:14px!important;padding-right:14px!important;}
+  .breadcrumbs{min-width:0;max-width:58%;overflow:hidden;}
+  .breadcrumbs>strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* Content columns collapse cleanly. */
+  .library-grid,.games-grid,.events-grid,.topic-grid,.cards-grid,.feature-grid,.stats-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  .library-grid,.topic-grid{gap:12px!important;}
+  .games-grid,.events-grid{gap:12px!important;}
+
+  /* Long labels should wrap instead of pushing the viewport. */
+  .game-card h3,.game-tile h3,.topic-card h3,.library-card h3,.feature-card h3,
+  .game-card p,.game-tile p,.topic-card p,.library-card p{overflow-wrap:anywhere;}
+
+  /* Learning index pills. */
+  .learning-index,.yb-learning-index{width:100%;box-sizing:border-box;}
+  .learning-index button,.yb-learning-index button{max-width:100%;}
+
+  /* Fixed bottom navigation gets safe-area breathing room. */
+  .yb98-mobile-nav,.mobile-bottom-nav,[class*="bottom-nav"]{padding-bottom:max(6px,env(safe-area-inset-bottom))!important;}
+}
+
+@media(max-width:480px){
+  .page-wrap{padding-left:12px!important;padding-right:12px!important;}
+  .library-grid,.games-grid,.events-grid,.topic-grid,.cards-grid,.feature-grid,.stats-grid{
+    grid-template-columns:1fr!important;
+  }
+  .games-grid,.events-grid{gap:10px!important;}
+}
+
+/* Light mode follows the same Terra identity. */
+body.light{background:linear-gradient(180deg,#f5faf6,#e8f2eb)!important;color:#173025}
+body.light .surface,body.light .note-card,body.light .events-feature,body.light .game-card,
+body.light .game-tile,body.light .library-card,body.light .topic-card,body.light .feature-card{
+  background:linear-gradient(145deg,#ffffff,#f1f7f3)!important;
+  border-color:#c7ddd0!important;
+  color:#173025!important;
+}
