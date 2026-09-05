@@ -1,23 +1,18 @@
-/* Yurdunu Bil 44 — canonical application architecture bridge */
+/* Yurdunu Bil 45.6 — canonical shell + retired map remover */
 (()=>{
 'use strict';
-if(window.__YB44_ARCHITECTURE__)return;
-window.__YB44_ARCHITECTURE__=true;
-const VERSION='44.0.0';
+if(window.__YB45_ARCHITECTURE__)return;
+window.__YB45_ARCHITECTURE__=true;
+const VERSION='45.6.0';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
-const state=window.YB44=window.YB44||{};state.version=state.version||VERSION;state.modules=state.modules||{};
+const state=window.YB44=window.YB44||{};state.version=VERSION;state.modules=state.modules||{};
 state.register=state.register||((name,api={})=>{state.modules[name]={...api,version:VERSION};return state.modules[name]});
 state.ready=state.ready||((name)=>Boolean(state.modules[name]));
-state.diagnostics=()=>({version:state.version,modules:Object.keys(state.modules),provinceCount:qa('.yb41-province').length,featureLayers:qa('.yb41-feature-layer').length,activeView:q('.view.active')?.id||null});
-function mergeModule(name,api={}){const old=state.modules[name]||{};state.modules[name]={...old,...api,version:old.version||VERSION}}
-function dedupeNav(){const nav=q('.mobile-nav');if(!nav)return;const seen=new Set();qa('button[data-view]',nav).forEach(b=>{const key=b.dataset.view;if(seen.has(key))b.remove();else seen.add(key)})}
-function cleanLegacyDuplicates(){qa('.yb34-duplicate').forEach((el,i)=>{if(i)el.remove()});qa('#view-dashboard .atlas-shell > .map-v31-panel,#view-dashboard .atlas-shell > .map-v31-tooltip').forEach(el=>el.remove());qa('#view-map #yb42-turkey-silhouette').forEach(el=>el.remove())}
-function bindProvinceSearch(){const input=q('#global-search');if(!input||input.dataset.yb44Bound)return;input.dataset.yb44Bound='1';input.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const p=state.modules.province?.find?.(input.value);if(p){if(typeof window.navigate==='function')window.navigate('provinceStudy');requestAnimationFrame(()=>state.modules.province.open?.(p))}})}
-function markRuntime(){document.documentElement.dataset.ybArchitecture=VERSION;document.body.dataset.ybArchitecture=VERSION}
-function run(){markRuntime();dedupeNav();cleanLegacyDuplicates();bindProvinceSearch();state.diagnostics()}
-mergeModule('shell',{navigate:v=>window.navigate?.(v)});
-mergeModule('atlas',{mapEngine:'v44-map-engine',data:'data/geo-features-v44.js'});
-mergeModule('runtime',{boot:true});
+function removeMap(){qa('[data-view="map"],[data-study-map],[data-vlesson-map]').forEach(x=>x.remove());q('#view-map')?.remove();const d=q('#view-dashboard');if(d)qa('.atlas-card,.atlas-shell,.map-v31-panel,.map-v31-tooltip,#dash-atlas,#dash-svg',d).forEach(x=>x.closest('.atlas-card')?.remove()||x.remove());qa('button,a').forEach(el=>{const t=(el.textContent||'').trim();if(/^harita(\s|$)/i.test(t)&&el.closest('.sidebar,.mobile-nav,.topbar'))el.remove()});qa('.yb45-map-maintenance,.yb45-dashboard-map-notice,.yb45-map-disabled').forEach(x=>x.remove())}
+function bindSearch(){const input=q('#global-search');if(!input||input.dataset.yb45Bound)return;input.dataset.yb45Bound='1';input.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const p=state.modules.province?.find?.(input.value);if(p){window.navigate?.('provinceStudy');requestAnimationFrame(()=>state.modules.province.open?.(p))}})}
+function mark(){document.documentElement.dataset.ybArchitecture=VERSION;if(document.body){document.body.dataset.ybArchitecture=VERSION;document.body.classList.add('yb45-ready')}}
+function run(){removeMap();bindSearch();mark()}
+state.register('shell',{navigate:v=>window.navigate?.(v)});state.register('runtime',{boot:true});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
-let timer=0;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(run,180)}).observe(document.body,{childList:true,subtree:true});
+let timer=0;new MutationObserver(()=>{clearTimeout(timer);timer=setTimeout(run,25)}).observe(document.body,{childList:true,subtree:true});
 })();
