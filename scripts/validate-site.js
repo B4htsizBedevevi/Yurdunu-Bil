@@ -28,7 +28,8 @@ if(!index.includes('id="view-settings"'))fail.push('Settings view missing');
 const mobile=(index.match(/<nav class="mobile-nav">([\s\S]*?)<\/nav>/)||[])[1]||'';
 if((mobile.match(/data-view="map"/g)||[]).length>0)fail.push('Retired map target still present in static mobile navigation');
 try{const g=JSON.parse(read('data/provinces.geojson'));if(!Array.isArray(g.features)||g.features.length!==81)fail.push(`GeoJSON province count is ${g.features?.length}, expected 81`)}catch(e){fail.push('GeoJSON cannot be parsed')}
-try{const p=JSON.parse(read('package.json'));if(p.version!=='56.0.0')fail.push(`package version is ${p.version}, expected 56.0.0`)}catch(e){fail.push('package.json cannot be parsed')}
-try{const r=JSON.parse(read('version.json'));if(r.version!=='56.0.0')fail.push(`version.json is ${r.version}, expected 56.0.0`)}catch(e){fail.push('version.json cannot be parsed')}
+try{const p=JSON.parse(read('package.json'));if(p.version!==version)fail.push(`package version is ${p.version}, expected release ${version}`)}catch(e){fail.push('package.json cannot be parsed')}
+try{const r=JSON.parse(read('version.json'));if(r.version!==version)fail.push(`version.json is ${r.version}, expected release ${version}`)}catch(e){fail.push('version.json cannot be parsed')}
+if(!index.includes(`v=${version}`))fail.push(`index asset cache version ${version} missing`);
 if(fail.length){console.error('YB SITE VALIDATION FAILED');fail.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log(`YB SITE VALIDATION OK — release ${version} — index ${indexVersion} — 81 provinces — v56 interactions/Arena/profile checks valid — retired map target absent`);
+console.log(`YB SITE VALIDATION OK — release ${version} — index ${indexVersion} — 81 provinces — single-version assets — retired map target absent`);
