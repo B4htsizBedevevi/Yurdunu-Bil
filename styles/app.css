@@ -2,6 +2,7 @@
 @import url('../style.css?v=99.0.9');
 @import url('../theme-terra.css?v=99.0.9');
 @import url('../auth.css?v=99.0.9');
+@import url('./layout.css?v=99.0.9');
 @import url('./ui-hardening.css?v=99.0.9');
 @import url('../features/auth/light.css?v=99.0.9');
 @import url('../features/home/home.css?v=99.0.9');
