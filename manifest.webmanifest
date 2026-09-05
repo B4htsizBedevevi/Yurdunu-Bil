@@ -1,1 +1,23 @@
-{"name":"Yurdunu Bil — KPSS Coğrafya","short_name":"Yurdunu Bil","start_url":"/?yb-force=63.1.0","display":"standalone","background_color":"#06101d","theme_color":"#07111f","lang":"tr","description":"KPSS Coğrafya çalışma, oyun ve tekrar alanı.","icons":[{"src":"/icon-192.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"},{"src":"/icon-512.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name": "Yurdunu Bil — KPSS Coğrafya",
+  "short_name": "Yurdunu Bil",
+  "description": "KPSS Türkiye Coğrafyası için çalışma, soru, oyun ve canlı Arena platformu.",
+  "start_url": "/?v=97.0.0",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#06101d",
+  "theme_color": "#07111f",
+  "lang": "tr",
+  "dir": "ltr",
+  "categories": ["education"],
+  "screenshots": [],
+  "icons": [
+    {"src": "/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any maskable"},
+    {"src": "/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Hızlı Oyun", "short_name": "Oyun", "url": "/?goto=events", "description": "Hemen oyun başlat"},
+    {"name": "Kütüphane", "short_name": "Kütüphane", "url": "/?goto=library", "description": "Konu notlarını aç"},
+    {"name": "Arena", "short_name": "Arena", "url": "/?goto=arena", "description": "Canlı Arena'ya gir"}
+  ]
+}

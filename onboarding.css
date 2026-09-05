@@ -1,0 +1,116 @@
+/* Yurdunu Bil — Onboarding CSS */
+#yb-onboarding{
+  position:fixed;inset:0;z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;transform:scale(.96);
+  transition:opacity .32s ease,transform .32s ease;
+  pointer-events:none;
+}
+#yb-onboarding.yb-ob-visible{opacity:1;transform:scale(1);pointer-events:auto}
+
+.yb-ob-backdrop{
+  position:absolute;inset:0;
+  background:rgba(4,10,20,.82);
+  backdrop-filter:blur(12px);
+}
+
+.yb-ob-card{
+  position:relative;z-index:1;
+  width:min(540px,100%);
+  background:linear-gradient(145deg,#0f243a,#091828);
+  border:1px solid rgba(75,201,255,.2);
+  border-radius:24px;
+  padding:36px 32px;
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);
+  animation:obCardIn .36s ease both;
+}
+@keyframes obCardIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+
+.yb-ob-logo{
+  width:56px;height:56px;border-radius:16px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#4bc9ff,#8e7dff);
+  font-size:26px;margin:0 auto 20px;
+  box-shadow:0 8px 28px rgba(75,201,255,.3);
+}
+
+.yb-ob-card h2{font-size:26px;font-weight:900;letter-spacing:-.04em;margin:6px 0 8px;text-align:center}
+.yb-ob-card p{color:#8fa7ba;font-size:13px;line-height:1.7;margin:0 0 20px;text-align:center}
+.yb-ob-card .eyebrow{display:block;text-align:center;margin-bottom:4px}
+
+.yb-ob-step{display:flex;flex-direction:column;align-items:center;gap:0}
+.yb-ob-step.hidden{display:none}
+
+/* İsim alanı */
+.yb-ob-name-wrap{
+  position:relative;width:100%;margin-bottom:6px;
+}
+#yb-ob-name{
+  width:100%;height:52px;padding:0 44px 0 16px;
+  border:2px solid rgba(75,201,255,.25);border-radius:14px;
+  background:#091828;color:#fff;font-size:16px;font-weight:700;
+  outline:none;transition:.2s;
+}
+#yb-ob-name:focus{border-color:#4bc9ff;background:#0b1f32;box-shadow:0 0 0 3px rgba(75,201,255,.12)}
+#yb-ob-name::placeholder{color:#4a6b80;font-weight:400}
+.yb-ob-name-count{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:10px;color:#5a7890;
+}
+.yb-ob-err{min-height:16px;color:#ff8e98;font-size:11px;font-weight:700;margin-bottom:8px}
+
+/* Avatar ızgarası */
+.yb-ob-avatar-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  width:100%;margin-bottom:20px;
+}
+.yb-ob-av-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:12px 6px;border:2px solid rgba(75,201,255,.15);
+  border-radius:14px;background:#0e2035;
+  cursor:pointer;transition:.18s;
+}
+.yb-ob-av-btn:hover{border-color:rgba(75,201,255,.4);background:#12324a;transform:translateY(-2px)}
+.yb-ob-av-btn.active{
+  border-color:#4bc9ff;background:#12324a;
+  box-shadow:0 0 0 3px rgba(75,201,255,.18);
+}
+.yb-ob-av-emoji{font-size:28px;line-height:1}
+.yb-ob-av-btn small{font-size:9px;color:#8fa7ba;font-weight:700;text-align:center;line-height:1.3}
+
+/* Step 2 butonlar */
+.yb-ob-step2-actions{display:flex;gap:10px;width:100%;justify-content:flex-end}
+
+/* Step 3 — tamamlandı */
+.yb-ob-done-emoji{font-size:64px;text-align:center;margin:0 auto 12px;line-height:1;animation:obBounce .6s ease both .1s}
+@keyframes obBounce{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.yb-ob-checklist{
+  display:grid;gap:8px;width:100%;margin:16px 0;
+}
+.yb-ob-checklist>div{
+  padding:10px 14px;border:1px solid rgba(78,226,173,.2);
+  border-radius:10px;background:rgba(78,226,173,.06);
+  font-size:12px;font-weight:800;color:#b4f0d4;
+}
+
+/* Next buton tam genişlik */
+.yb-ob-next,.yb-ob-go{width:100%;min-height:50px;font-size:15px;margin-top:8px}
+
+/* Light mode */
+body.light .yb-ob-card{background:linear-gradient(145deg,#f7fafc,#edf3f7);border-color:#c8d5df}
+body.light .yb-ob-card h2{color:#0f2236}
+body.light .yb-ob-card p{color:#4c6878}
+body.light #yb-ob-name{background:#fff;color:#0f2236;border-color:#c8d5df}
+body.light #yb-ob-name:focus{border-color:#4bc9ff}
+body.light .yb-ob-av-btn{background:#f0f5f9;border-color:#c8d5df}
+body.light .yb-ob-av-btn:hover{background:#e2eef5;border-color:#91c0d8}
+body.light .yb-ob-av-btn.active{background:#e2f4fc;border-color:#4bc9ff}
+body.light .yb-ob-av-btn small{color:#4c6878}
+body.light .yb-ob-checklist>div{background:rgba(30,150,90,.06);border-color:rgba(30,150,90,.2);color:#1a6040}
+
+@media(max-width:480px){
+  .yb-ob-card{padding:24px 18px;border-radius:18px}
+  .yb-ob-avatar-grid{grid-template-columns:repeat(3,1fr)}
+  .yb-ob-card h2{font-size:22px}
+}

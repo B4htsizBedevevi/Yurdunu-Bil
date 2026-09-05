@@ -27,10 +27,445 @@ const labels={home:'Ana Sayfa',library:'Kütüphane',events:'Etkinlikler & Oyunl
 function navigate(v){if(!['home','library','events','settings'].includes(v))v='home';currentView=v;$$('.view').forEach(x=>x.classList.remove('active'));const el=$('#view-'+v);if(!el)return;el.classList.add('active');$$('.nav-item[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('.yb82-home-nav').forEach(x=>x.classList.toggle('active',v==='home'));$$('.yb81-arena').forEach(x=>x.classList.toggle('active',false));setText('page-title',labels[v]);render(v);const sc=$('#page-wrap');if(sc)sc.scrollTop=0;window.dispatchEvent(new CustomEvent('yb:navigate',{detail:{view:v}}));if(v==='home')setTimeout(()=>window.YB90Home?.render?.(),0)}
 function setText(id,v){const e=$('#'+id);if(e)e.textContent=v}
 function render(v){if(v==='home'){return window.YB90Home?.render?.()}if(v==='library')renderLibrary();else if(v==='events')renderEvents();else renderSettings();updateUser()}
-function renderLibrary(){const el=$('#view-library');if(!el)return;el.innerHTML=`<div class="page-title"><div><span class="eyebrow">KPSS COĞRAFYA • ÇALIŞMA MERKEZİ</span><h1>Kütüphane</h1><p>${TOPICS.length} konu ve ${QUESTIONS.length} soruluk genişletilmiş havuz. Notları çalış, ardından oyunlara veya canlı Arena'ya geç.</p></div><div class="page-actions"><button class="btn primary" data-view="events">🎮 Etkinliklere geç →</button></div></div><div class="library-toolbar surface"><label>⌕<input id="library-search" placeholder="Konu veya bilgi ara..."></label><span><b>${TOPICS.length}</b> konu • <b>${QUESTIONS.length}</b> soru</span></div><div id="library-content"><div class="library-note-grid">${TOPICS.map(t=>`<article class="note-card surface"><div class="note-top"><span class="topic-icon">${t.icon||'📚'}</span><span class="eyebrow">${esc(t.level||'KPSS')}</span></div><h2>${esc(t.title||t.name)}</h2><p>${esc(t.desc||t.description||'KPSS odaklı çalışma notları.')}</p><div class="note-preview">${(t.bullets||[]).slice(0,4).map(x=>`<div>✓ ${esc(x)}</div>`).join('')}</div><button class="btn secondary full" data-open-topic="${esc(t.id)}">Tüm notları aç →</button></article>`).join('')}</div></div>`;$('#library-search')?.addEventListener('input',e=>{const n=norm(e.target.value);$$('.note-card').forEach(c=>c.classList.toggle('is-hidden',!!n&&!norm(c.textContent).includes(n)))});$$('[data-open-topic]').forEach(b=>b.onclick=()=>showTopic(b.dataset.openTopic))}
-function showTopic(id){const t=TOPICS.find(x=>String(x.id)===String(id));if(!t)return;const c=$('#library-content');if(!c)return;c.innerHTML=`<section class="topic-detail surface"><button class="back-link" id="library-back">← Kütüphaneye dön</button><div class="topic-detail-head"><span class="topic-icon">${t.icon||'📚'}</span><div><span class="eyebrow">${esc(t.level||'KPSS')} • ${t.minutes||10} DK</span><h2>${esc(t.title||t.name)}</h2><p>${esc(t.desc||t.description||'')}</p></div></div><div class="detail-columns"><div><h3>Temel bilgiler</h3><div class="detail-list">${(t.bullets||[]).map((x,i)=>`<article><b>${String(i+1).padStart(2,'0')}</b><p>${esc(x)}</p></article>`).join('')}</div></div><aside class="tip-card"><span>⚡ SINAV İPUCU</span><p>${esc(t.tip||'Anahtar kavramları karşılaştırarak tekrar et.')}</p></aside></div></section>`;$('#library-back').onclick=renderLibrary}
-function renderEvents(){const el=$('#view-events');if(!el)return;el.innerHTML=`<div class="page-title"><div><span class="eyebrow">ETKİNLİK MERKEZİ</span><h1>Öğren, oyna, kendini sına.</h1><p>${QUESTIONS.length} soruluk havuz, mini oyunlar ve gerçek zamanlı Arena aynı merkezde.</p></div><div class="events-pulse"><i></i><span>Sistem hazır</span></div></div><section class="arena-entry surface"><div class="arena-entry-icon">⚔️</div><div class="arena-entry-copy"><span class="eyebrow">CANLI ARENA</span><h2>Gerçek oyuncuya karşı yarış.</h2><p>1 VS 1 canlı düello, otomatik eşleşme, oda kodu, reyting ve canlı skor.</p><div class="arena-mini-pills"><b>1 VS 1</b><b>⚡ Hız</b><b>🏆 Reyting</b><b>👥 Sosyal</b></div></div><div class="arena-entry-actions"><button class="btn primary" id="open-arena">⚔️ Arena'yı Aç</button><button class="btn secondary" id="open-social">🏆 Sosyal Arena</button></div></section><section class="events-feature surface"><div><span class="eyebrow">BUGÜNÜN ETKİNLİĞİ</span><h2>Coğrafya Hız Turu</h2><p>60 saniyede mümkün olduğunca çok doğru yap. Skorunu yükselt, sonra farklı modlara geç.</p></div><button class="btn primary" data-yb55-game="sprint">⚡ Hemen oyna</button></section><section class="events-info-grid"><article class="surface"><b>🎯 Günlük görev</b><p>En az bir oyun tamamla ve bilgini pekiştir.</p></article><article class="surface"><b>🔥 Seri hedefi</b><p>Arka arkaya doğru cevaplarla kişisel rekorunu kır.</p></article><article class="surface"><b>🏆 Rekabet</b><p>Mini oyun, Arena ve sosyal sıralamayla skorunu yükselt.</p></article></section><div id="games-host"></div>`;$('#games-host').innerHTML='<div class="yb55-games-panel"></div>';$('#open-arena')?.addEventListener('click',()=>window.YBArena?.open?.());$('#open-social')?.addEventListener('click',()=>window.YB53Social?.open?.());$$('[data-yb55-game]',el).forEach(b=>b.onclick=()=>window.YB55Games?.start?.(b.dataset.yb55Game))}
-function renderSettings(){const el=$('#view-settings');if(!el)return;el.innerHTML=`<div class="page-title"><div><span class="eyebrow">HESAP</span><h1>Ayarlar</h1><p>Profil ve görünüm tercihlerin.</p></div></div><div class="settings-grid"><section class="surface settings-profile"><div class="avatar big">${esc(initials(state.profile.displayName))}</div><h2>${esc(state.profile.displayName)}</h2><p>${esc(state.profile.email||'Misafir hesap')}</p></section><section class="surface settings-actions"><h2>Görünüm</h2><p>Siteyi açık veya koyu temada kullan.</p><button class="btn secondary" id="settings-theme">${state.theme==='dark'?'☼ Açık temaya geç':'☾ Koyu temaya geç'}</button><button class="btn danger-btn" id="reset-local">Yerel ilerlemeyi sıfırla</button></section></div>`;$('#settings-theme').onclick=toggleTheme;$('#reset-local').onclick=()=>{state.results=[];state.favorites=[];save();toast('Yerel ilerleme sıfırlandı.');renderSettings()}}
+function renderLibrary(){
+  const el=$('#view-library');if(!el)return;
+  const qBank=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:QUESTIONS;
+  const topicCounts={};
+  qBank.forEach(q=>{if(q.topic)topicCounts[q.topic]=(topicCounts[q.topic]||0)+1});
+  const LEVEL_COLOR={
+    'Yüksek Getiri':'#4bc9ff','Orta':'#f5a623','Düşük':'#8fa7ba'
+  };
+  el.innerHTML=`
+  <div class="page-title">
+    <div>
+      <span class="eyebrow">KPSS COĞRAFYA • ÇALIŞMA MERKEZİ</span>
+      <h1>Kütüphane</h1>
+      <p>${TOPICS.length} konu ve <b>${qBank.length}</b> soruluk genişletilmiş havuz. Konu notlarını oku, soru merkezinde çalış, sonra Arena'ya geç.</p>
+    </div>
+    <div class="page-actions">
+      <button class="btn secondary" id="lib-goto-questions">🎯 Soru Merkezi</button>
+      <button class="btn primary" data-view="events">🎮 Etkinlikler →</button>
+    </div>
+  </div>
+
+  <!-- Arama + filtre araç çubuğu -->
+  <div class="library-toolbar surface">
+    <label class="lib-search-label">
+      <span>⌕</span>
+      <input id="library-search" placeholder="Konu, kavram veya anahtar kelime ara..." autocomplete="off">
+    </label>
+    <div class="lib-filter-row">
+      <select id="lib-level-filter">
+        <option value="all">Tüm seviyeler</option>
+        <option value="Yüksek Getiri">⭐ Yüksek Getiri</option>
+        <option value="Orta">📊 Orta</option>
+      </select>
+    </div>
+    <span class="lib-count-badge"><b>${TOPICS.length}</b> konu · <b>${qBank.length}</b> soru</span>
+  </div>
+
+  <!-- Konu ızgarası -->
+  <div id="library-content">
+    <div class="library-note-grid" id="library-note-grid">
+      ${TOPICS.map(t=>{
+        const qCount=topicCounts[t.id]||0;
+        const lvColor=LEVEL_COLOR[t.level]||'#8fa7ba';
+        return `<article class="note-card surface" data-topic-id="${esc(t.id)}" data-level="${esc(t.level||'')}">
+          <div class="note-top">
+            <span class="topic-icon">${t.icon||'📚'}</span>
+            <span class="note-level-badge" style="color:${lvColor}">${esc(t.level||'KPSS')}</span>
+          </div>
+          <h2>${esc(t.title||t.name)}</h2>
+          <p>${esc(t.desc||t.description||'KPSS odaklı çalışma notları.')}</p>
+          <div class="note-preview">
+            ${(t.bullets||[]).slice(0,3).map(x=>`<div>✓ ${esc(x)}</div>`).join('')}
+          </div>
+          <div class="note-card-footer">
+            <span class="note-q-count">${qCount} soru</span>
+            <button class="btn secondary" data-open-topic="${esc(t.id)}">Tüm notları aç →</button>
+          </div>
+        </article>`;
+      }).join('')}
+    </div>
+    <div id="lib-no-results" class="lib-no-results hidden">
+      <span>🔍</span><p>Aramanızla eşleşen konu bulunamadı.</p>
+      <button class="btn secondary" id="lib-clear-search">Aramayı temizle</button>
+    </div>
+  </div>`;
+
+  /* Arama */
+  const searchInput=$('#library-search');
+  const levelFilter=$('#lib-level-filter');
+  function applyFilter(){
+    const q=norm(searchInput?.value||'');
+    const lv=levelFilter?.value||'all';
+    let anyVisible=false;
+    $$('.note-card').forEach(c=>{
+      const matchQ=!q||norm(c.textContent).includes(q);
+      const matchLv=lv==='all'||c.dataset.level===lv;
+      const visible=matchQ&&matchLv;
+      c.classList.toggle('is-hidden',!visible);
+      if(visible)anyVisible=true;
+    });
+    $('#lib-no-results')?.classList.toggle('hidden',anyVisible);
+  }
+  searchInput?.addEventListener('input',applyFilter);
+  levelFilter?.addEventListener('change',applyFilter);
+  $('#lib-clear-search')?.addEventListener('click',()=>{if(searchInput)searchInput.value='';if(levelFilter)levelFilter.value='all';applyFilter()});
+
+  /* Soru merkezi butonu */
+  $('#lib-goto-questions')?.addEventListener('click',()=>{
+    const qc=$('.yb88-question-center');
+    if(qc)qc.scrollIntoView({behavior:'smooth'});
+    else{window.YB88QuestionCenter?.openQuiz?.('all')}
+  });
+
+  $$('[data-open-topic]').forEach(b=>b.onclick=()=>showTopic(b.dataset.openTopic));
+}
+function showTopic(id){
+  const t=TOPICS.find(x=>String(x.id)===String(id));
+  if(!t)return;
+  const c=$('#library-content');if(!c)return;
+  const qBank=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK:QUESTIONS;
+  const relatedQs=qBank.filter(q=>q.topic===t.id);
+  const diffBreak={kolay:relatedQs.filter(q=>q.difficulty==='kolay').length,orta:relatedQs.filter(q=>q.difficulty==='orta').length,zor:relatedQs.filter(q=>q.difficulty==='zor').length};
+  const subtopics=[...new Set(relatedQs.map(q=>q.subtopic).filter(Boolean))];
+
+  c.innerHTML=`
+  <section class="topic-detail surface">
+    <div class="topic-detail-nav">
+      <button class="back-link" id="library-back">← Kütüphaneye dön</button>
+      <div class="topic-detail-actions">
+        <button class="btn primary" id="td-start-quiz">🎯 ${relatedQs.length} soruyu çöz</button>
+        <button class="btn secondary" id="td-start-wrong">🧠 Yanlışlarım</button>
+      </div>
+    </div>
+
+    <div class="topic-detail-head">
+      <span class="topic-icon large">${t.icon||'📚'}</span>
+      <div>
+        <span class="eyebrow">${esc(t.level||'KPSS')} • ${t.minutes||10} DK OKUMA</span>
+        <h2>${esc(t.title||t.name)}</h2>
+        <p>${esc(t.desc||t.description||'')}</p>
+        <div class="topic-detail-meta">
+          <span>📝 ${relatedQs.length} soru</span>
+          <span>🟢 ${diffBreak.kolay} kolay</span>
+          <span>🟡 ${diffBreak.orta} orta</span>
+          <span>🔴 ${diffBreak.zor} zor</span>
+          ${subtopics.length?`<span>📌 ${subtopics.length} alt konu</span>`:''}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-columns">
+      <div>
+        <h3>Temel Bilgiler</h3>
+        <div class="detail-list">
+          ${(t.bullets||[]).map((x,i)=>`<article>
+            <b>${String(i+1).padStart(2,'0')}</b>
+            <p>${esc(x)}</p>
+          </article>`).join('')}
+        </div>
+
+        ${subtopics.length?`
+        <h3 style="margin-top:20px">Alt Konular</h3>
+        <div class="topic-subtopics">
+          ${subtopics.map(s=>`<span class="topic-subtopic-tag" data-td-subtopic="${esc(s)}">${esc(s)}</span>`).join('')}
+        </div>`:'' }
+
+        ${relatedQs.length?`
+        <h3 style="margin-top:20px">Örnek Sorular <small style="font-size:12px;font-weight:400;color:var(--muted)">(rastgele 3 soru)</small></h3>
+        <div class="topic-sample-qs">
+          ${relatedQs.sort(()=>Math.random()-.5).slice(0,3).map((q,i)=>`
+          <article class="topic-sample-q">
+            <div class="tsq-head"><b>${i+1}.</b><span class="tsq-diff tsq-diff-${q.difficulty||'orta'}">${q.difficulty||'orta'}</span></div>
+            <p>${esc(q.q)}</p>
+            <button class="btn ghost tsq-show" data-tsq="${i}" type="button">Cevabı gör</button>
+            <div class="tsq-answer hidden" id="tsq-ans-${i}">
+              ✓ <b>${esc(q.options[q.answer])}</b>
+              ${q.explain?`<small>${esc(q.explain)}</small>`:''}
+            </div>
+          </article>`).join('')}
+        </div>`:'' }
+      </div>
+
+      <aside>
+        <div class="tip-card">
+          <span>⚡ SINAV İPUCU</span>
+          <p>${esc(t.tip||'Anahtar kavramları karşılaştırarak tekrar et.')}</p>
+        </div>
+
+        ${relatedQs.length?`
+        <div class="topic-quiz-card surface">
+          <h3>Bu Konuyu Test Et</h3>
+          <div class="topic-quiz-stats">
+            <div><b>${relatedQs.length}</b><span>soru</span></div>
+            <div><b>${diffBreak.kolay}</b><span>kolay</span></div>
+            <div><b>${diffBreak.orta}</b><span>orta</span></div>
+            <div><b>${diffBreak.zor}</b><span>zor</span></div>
+          </div>
+          <button class="btn primary full" id="td-quiz-btn" style="margin-top:12px">🎯 Hemen çöz →</button>
+        </div>`:''}
+      </aside>
+    </div>
+  </section>`;
+
+  /* Butonlar */
+  $('#library-back').onclick=renderLibrary;
+  const startQuiz=()=>{
+    const pool=relatedQs.length?relatedQs:null;
+    if(pool)window.YB88QuestionCenter?.openQuiz?.(pool);
+    else window.YB55Games?.start?.('ten');
+  };
+  $('#td-start-quiz')?.addEventListener('click',startQuiz);
+  $('#td-quiz-btn')?.addEventListener('click',startQuiz);
+  $('#td-start-wrong')?.addEventListener('click',()=>window.YB88QuestionCenter?.openQuiz?.('wrong'));
+
+  /* Örnek soru cevap göster */
+  $$('[data-tsq]').forEach(b=>b.addEventListener('click',()=>{
+    const ans=$('#tsq-ans-'+b.dataset.tsq);
+    if(ans){ans.classList.toggle('hidden');b.textContent=ans.classList.contains('hidden')?'Cevabı gör':'Gizle'}
+  }));
+
+  /* Alt konu filtresi */
+  $$('[data-td-subtopic]').forEach(s=>s.addEventListener('click',()=>{
+    $$('[data-td-subtopic]').forEach(x=>x.classList.remove('active'));
+    s.classList.add('active');
+    const val=s.dataset.tdSubtopic;
+    const pool=relatedQs.filter(q=>q.subtopic===val);
+    if(pool.length)window.YB88QuestionCenter?.openQuiz?.(pool);
+  }));
+}
+function renderEvents(){
+  const el=$('#view-events');if(!el)return;
+  const qCount=Array.isArray(window.QUESTION_BANK)?window.QUESTION_BANK.length:QUESTIONS.length;
+  el.innerHTML=`
+  <div class="page-title">
+    <div>
+      <span class="eyebrow">ETKİNLİK MERKEZİ</span>
+      <h1>Öğren, oyna, kendini sına.</h1>
+      <p>${qCount}+ soruluk havuz, 9 oyun modu ve gerçek zamanlı Arena tek merkezde.</p>
+    </div>
+    <div class="events-pulse"><i></i><span>Sistem hazır • ${qCount}+ soru</span></div>
+  </div>
+
+  <!-- Arena giriş kartı -->
+  <section class="arena-entry surface">
+    <div class="arena-entry-icon">⚔️</div>
+    <div class="arena-entry-copy">
+      <span class="eyebrow">CANLI ARENA</span>
+      <h2>Gerçek oyuncuya karşı yarış.</h2>
+      <p>1 VS 1 düello, konu seçimi, oda kodu, reyting sistemi ve Sosyal Arena.</p>
+      <div class="arena-mini-pills">
+        <b>1 VS 1</b><b>⚡ Hız</b><b>🏆 Reyting</b><b>👥 Sosyal</b><b>📚 8 Konu</b>
+      </div>
+    </div>
+    <div class="arena-entry-actions">
+      <button class="btn primary" id="open-arena">⚔️ Arena'yı Aç</button>
+      <button class="btn secondary" id="open-social">🏆 Sosyal Arena</button>
+    </div>
+  </section>
+
+  <!-- Bugünün etkinliği -->
+  <section class="events-feature surface">
+    <div>
+      <span class="eyebrow">BUGÜNÜN ETKİNLİĞİ</span>
+      <h2>Coğrafya Hız Turu</h2>
+      <p>60 saniyede mümkün olduğunca çok doğru cevap ver. Seriyi kır, skoru yükselt.</p>
+    </div>
+    <button class="btn primary" data-yb55-game="sprint">⚡ Hemen Oyna</button>
+  </section>
+
+  <!-- Bilgi kartları -->
+  <section class="events-info-grid">
+    <article class="surface">
+      <b>🎯 Günlük görev</b>
+      <p>En az bir oyun tamamla ve bilgini pekiştir.</p>
+      <button class="btn secondary" style="margin-top:10px" data-yb55-game="ten">10'da 10 →</button>
+    </article>
+    <article class="surface">
+      <b>🔥 Seri hedefi</b>
+      <p>Arka arkaya doğru cevaplarla kişisel rekorunu kır.</p>
+      <button class="btn secondary" style="margin-top:10px" data-yb55-game="streak">Seri Ustası →</button>
+    </article>
+    <article class="surface">
+      <b>🧠 Akıllı tekrar</b>
+      <p>Yanlışlarını bir sonraki turda öncelikli olarak gör.</p>
+      <button class="btn secondary" style="margin-top:10px" id="events-wrong-btn">Yanlışlarımı Çöz →</button>
+    </article>
+  </section>
+
+  <!-- Oyun paneli buraya mount edilir -->
+  <div id="games-host"></div>`;
+
+  /* Buton bağlamaları */
+  $('#open-arena')?.addEventListener('click',()=>window.YBArena?.open?.());
+  $('#open-social')?.addEventListener('click',()=>window.YB53Social?.open?.());
+  $('#events-wrong-btn')?.addEventListener('click',()=>window.YB88QuestionCenter?.openQuiz?.('wrong'));
+  $$('[data-yb55-game]',el).forEach(b=>b.addEventListener('click',()=>window.YB55Games?.start?.(b.dataset.yb55Game)));
+}
+function renderSettings(){
+  const el=$('#view-settings');if(!el)return;
+  const p=function(){try{return JSON.parse(localStorage.getItem('yb52_progress_v1')||'{}')}catch{return {}}}();
+  const gc=function(){try{return JSON.parse(localStorage.getItem('yb55_game_state_v1')||'{}')}catch{return {}}}();
+  const qc=function(){try{return JSON.parse(localStorage.getItem('yb88_question_center')||'{}')}catch{return {}}}();
+  const totalAnswers=Number(p.answers||0);
+  const totalCorrect=Number(p.correct||0);
+  const acc=totalAnswers?Math.round(totalCorrect/totalAnswers*100):0;
+  const xp=Number(p.xp||0);
+  const streak=Number(p.bestStreak||0);
+  const games=Number(gc.games||0);
+  const wrong=Array.isArray(qc.wrong)?qc.wrong.length:0;
+  const isGuest=!user;
+  el.innerHTML=`
+<div class="page-title">
+  <div><span class="eyebrow">HESAP & AYARLAR</span><h1>Ayarlar</h1><p>Profilini düzenle, istatistiklerine bak, görünümü özelleştir.</p></div>
+</div>
+<div class="settings-layout">
+
+  <!-- Profil kartı -->
+  <section class="surface settings-profile-card">
+    <div class="settings-avatar-wrap">
+      <div class="avatar big" id="settings-avatar-display">${esc(initials(state.profile.displayName))}</div>
+      ${isGuest?'<span class="settings-guest-badge">Misafir</span>':'<span class="settings-active-badge">● Aktif</span>'}
+    </div>
+    <div class="settings-profile-info">
+      <h2 id="settings-display-name">${esc(state.profile.displayName)}</h2>
+      <p>${esc(state.profile.email||'Misafir hesap')}</p>
+      ${!isGuest?`<button class="btn secondary settings-edit-btn" id="settings-edit-toggle">✏️ Profili Düzenle</button>`:''}
+    </div>
+    <!-- Profil düzenleme formu (başlangıçta gizli) -->
+    <form id="settings-profile-form" class="settings-edit-form hidden">
+      <label>Görünen Ad
+        <input type="text" id="settings-name-input" value="${esc(state.profile.displayName)}" maxlength="40" placeholder="Adın Soyadın">
+      </label>
+      <div class="settings-form-actions">
+        <button type="submit" class="btn primary">Kaydet</button>
+        <button type="button" class="btn ghost" id="settings-edit-cancel">İptal</button>
+      </div>
+      <div id="settings-profile-msg" class="form-error"></div>
+    </form>
+  </section>
+
+  <!-- İstatistikler -->
+  <section class="surface settings-stats-card">
+    <h2>📊 İlerleme İstatistikleri</h2>
+    <div class="settings-stats-grid">
+      <div class="settings-stat"><b>${totalAnswers}</b><span>Toplam cevap</span></div>
+      <div class="settings-stat"><b>${totalCorrect}</b><span>Doğru cevap</span></div>
+      <div class="settings-stat"><b>${acc}%</b><span>Doğruluk oranı</span></div>
+      <div class="settings-stat"><b>${xp}</b><span>Toplam XP</span></div>
+      <div class="settings-stat"><b>${streak}</b><span>En iyi seri</span></div>
+      <div class="settings-stat"><b>${games}</b><span>Oynanan oyun</span></div>
+      <div class="settings-stat"><b>${wrong}</b><span>Tekrar bekleyen</span></div>
+      <div class="settings-stat"><b>${QUESTIONS.length}</b><span>Soru bankası</span></div>
+    </div>
+    ${wrong?`<button class="btn secondary" id="settings-go-wrong">🧠 ${wrong} yanlışı çöz →</button>`:''}
+  </section>
+
+  <!-- Görünüm -->
+  <section class="surface settings-appearance-card">
+    <h2>🎨 Görünüm</h2>
+    <p>Koyu veya açık tema seçeneğiyle siteyi istediğin gibi kullan.</p>
+    <div class="settings-theme-row">
+      <button class="settings-theme-opt${state.theme==='dark'?' active':''}" id="theme-dark-btn">
+        <span>🌙</span><b>Koyu Tema</b>
+      </button>
+      <button class="settings-theme-opt${state.theme==='light'?' active':''}" id="theme-light-btn">
+        <span>☀️</span><b>Açık Tema</b>
+      </button>
+    </div>
+  </section>
+
+  <!-- Veri yönetimi -->
+  <section class="surface settings-data-card">
+    <h2>🗄️ Veri Yönetimi</h2>
+    <p>Yerel ilerleme verilerini sıfırlamak için aşağıdaki butonu kullan. Bu işlem geri alınamaz.</p>
+    <div class="settings-data-actions">
+      <button class="btn danger-btn" id="reset-progress">İlerlemeyi Sıfırla</button>
+      <button class="btn danger-btn" id="reset-all-local">Tüm Yerel Veriyi Sil</button>
+    </div>
+  </section>
+
+  <!-- Hesap işlemleri -->
+  <section class="surface settings-account-card">
+    <h2>🔐 Hesap</h2>
+    ${isGuest
+      ?`<p>Şu an misafir modundasın. Kayıt olarak ilerlemeni koru.</p>
+         <div class="settings-account-actions">
+           <button class="btn primary" id="settings-goto-register">Hesap Oluştur →</button>
+         </div>`
+      :`<p>Hesabın: <b>${esc(state.profile.email||user?.email||'')}</b></p>
+         <div class="settings-account-actions">
+           <button class="btn danger-btn" id="settings-logout">↪ Çıkış Yap</button>
+         </div>`
+    }
+  </section>
+
+</div>`;
+
+  /* Tema butonları */
+  $('#theme-dark-btn')?.addEventListener('click',()=>{if(state.theme!=='dark'){state.theme='dark';save();document.body.classList.remove('light');renderSettings()}});
+  $('#theme-light-btn')?.addEventListener('click',()=>{if(state.theme!=='light'){state.theme='light';save();document.body.classList.add('light');renderSettings()}});
+
+  /* Profil düzenleme toggle */
+  $('#settings-edit-toggle')?.addEventListener('click',()=>{
+    $('#settings-profile-form')?.classList.remove('hidden');
+    $('#settings-edit-toggle')?.classList.add('hidden');
+  });
+  $('#settings-edit-cancel')?.addEventListener('click',()=>{
+    $('#settings-profile-form')?.classList.add('hidden');
+    $('#settings-edit-toggle')?.classList.remove('hidden');
+  });
+
+  /* Profil kaydet */
+  $('#settings-profile-form')?.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const newName=$('#settings-name-input')?.value.trim();
+    if(!newName)return;
+    state.profile.displayName=newName;save();updateUser();
+    if(sb&&user){
+      const r=await sb.from('profiles').upsert({id:user.id,display_name:newName},{onConflict:'id'});
+      const msg=$('#settings-profile-msg');
+      if(msg)msg.textContent=r.error?r.error.message:'Kaydedildi!';
+    }
+    renderSettings();toast('Profil güncellendi.');
+  });
+
+  /* Yanlışları çöz */
+  $('#settings-go-wrong')?.addEventListener('click',()=>window.YB88QuestionCenter?.openQuiz?.('wrong'));
+
+  /* İlerlemeyi sıfırla */
+  $('#reset-progress')?.addEventListener('click',()=>{
+    if(!confirm('Tüm XP, seri ve doğruluk verisi silinecek. Emin misin?'))return;
+    localStorage.removeItem('yb52_progress_v1');
+    localStorage.removeItem('yb55_game_state_v1');
+    localStorage.removeItem('yb88_question_center');
+    localStorage.removeItem('yb55_recent_questions_v1');
+    toast('İlerleme sıfırlandı.');renderSettings();
+  });
+
+  /* Tüm yerel veriyi sil */
+  $('#reset-all-local')?.addEventListener('click',()=>{
+    if(!confirm('Tüm yerel veriler silinecek (ilerleme, favoriler, test geçmişi). Bu işlem geri alınamaz!'))return;
+    state.results=[];state.favorites=[];save();
+    localStorage.removeItem('yb52_progress_v1');
+    localStorage.removeItem('yb55_game_state_v1');
+    localStorage.removeItem('yb88_question_center');
+    localStorage.removeItem('yb55_recent_questions_v1');
+    toast('Tüm veriler silindi.');renderSettings();
+  });
+
+  /* Hesap işlemleri */
+  $('#settings-goto-register')?.addEventListener('click',()=>{
+    showAuth();
+    setTimeout(()=>{
+      const t=document.querySelector('[data-auth-tab="register"]');
+      if(t)t.click();
+    },100);
+  });
+  $('#settings-logout')?.addEventListener('click',logout);
+}
 function globalSearch(q){const n=norm(q);if(!n){if(currentView!=='library')navigate('library');return}const t=TOPICS.find(x=>norm(x.title||x.name).includes(n)||norm(x.desc||x.description).includes(n)||(x.bullets||[]).some(b=>norm(b).includes(n)));if(t){navigate('library');setTimeout(()=>showTopic(t.id),0)}else toast('Kütüphanede eşleşme bulunamadı.','error')}
 window.YURDUNUBIL_STATE=state;window.YURDUNUBIL_NAVIGATE=navigate;window.navigate=navigate;window.showToast=toast;window.YBQuestionCount=QUESTIONS.length;setupAuth();setupShell();boot();
 })();
