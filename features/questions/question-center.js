@@ -73,5 +73,5 @@
   }
   document.addEventListener('yb:navigate',e=>{if(e.detail&&e.detail.view==='library')setTimeout(render,100)});
   window.addEventListener('load',()=>setTimeout(render,500));
-  window.YB88QuestionCenter={openQuiz:(mode='all')=>openQuiz(mode==='wrong'?filtered('wrong'):filtered(),mode==='wrong'?'Yanlışlarım':'Hızlı Test'),render};
+  window.YB88QuestionCenter={openQuiz:(mode='all',title='Hızlı Test')=>Array.isArray(mode)?openQuiz(mode,title):openQuiz(mode==='wrong'?filtered('wrong'):filtered(),mode==='wrong'?'Yanlışlarım':title),render};
 })();
