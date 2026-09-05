@@ -3,7 +3,7 @@
   "version": "99.0.4",
   "private": true,
   "scripts": {
-    "test": "node scripts/validate-data.js && node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js",
-    "check": "node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js"
+    "test": "node scripts/validate-data.js && node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/architecture-audit.js && node scripts/release-integrity.js",
+    "check": "node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/architecture-audit.js && node scripts/release-integrity.js"
   }
 }
