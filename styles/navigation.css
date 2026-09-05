@@ -1,0 +1,39 @@
+/* Yurdunu Bil — semantic navigation UX layer. */
+
+.sidebar{width:248px!important;padding:14px 12px!important;background:linear-gradient(180deg,rgba(7,24,18,.98),rgba(6,20,15,.98))!important;border-right:1px solid rgba(97,213,154,.16)!important}
+.sidebar-top{min-height:52px!important;padding:0 4px 10px!important}
+.sidebar-top .brand{gap:9px!important}
+.sidebar-top .brand-mark{width:38px!important;height:38px!important;border-radius:12px!important}
+.sidebar .quick-test{width:100%!important;min-height:50px!important;padding:0 13px!important;border-radius:14px!important;display:flex!important;align-items:center!important;gap:9px!important}
+.sidebar .side-nav{margin-top:14px!important;padding:0 2px!important}
+.sidebar .nav-label{padding:0 9px!important;color:#638578!important;font-size:8px!important;letter-spacing:.15em!important}
+.sidebar .nav-item{width:100%!important;margin:3px 0!important;padding:0 10px!important;gap:10px!important;color:#a8c2b5!important;border:1px solid transparent!important}
+.sidebar .nav-item span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:rgba(97,213,154,.07);color:#7bdcad!important;border:1px solid rgba(97,213,154,.1)}
+.sidebar .nav-item:hover{color:#eaf8ef!important;background:rgba(97,213,154,.08)!important;border-color:rgba(97,213,154,.16)!important}
+.sidebar-user{margin:12px 2px 2px!important;padding:10px!important;border:1px solid rgba(97,213,154,.12)!important;border-radius:15px!important;background:rgba(97,213,154,.045)!important}
+.topbar{min-height:64px!important;padding-inline:16px!important}
+.breadcrumbs{min-width:120px!important}
+.yb98-top-nav-wrap{flex:0 1 auto!important}
+.yb98-top-nav{box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important}
+.top-actions{gap:8px!important}
+@media(max-width:760px){
+  .main-shell{min-width:0!important}
+  .topbar{min-height:58px!important;padding:8px 12px!important}
+  .breadcrumbs{min-width:0!important}
+  .breadcrumbs>strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55vw}
+  #yb98-mobile-nav{left:8px!important;right:8px!important;bottom:max(7px,env(safe-area-inset-bottom))!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:4px!important;padding:5px!important;border-radius:21px!important;border:1px solid rgba(97,213,154,.24)!important;background:rgba(5,20,14,.96)!important;box-shadow:0 15px 42px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.04)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important}
+  #yb98-mobile-nav button{position:relative!important;min-height:50px!important;padding:7px 2px 5px!important;border-radius:15px!important;color:#78978a!important;font-size:9px!important;gap:4px!important;transition:transform .14s ease,background .14s ease,color .14s ease!important}
+  #yb98-mobile-nav button span{width:28px;height:24px;display:grid;place-items:center;font-size:18px!important;line-height:1!important}
+  #yb98-mobile-nav button b{font-weight:850!important;white-space:nowrap}
+  #yb98-mobile-nav button:hover{transform:translateY(-1px);color:#d7eee1!important;background:rgba(97,213,154,.07)!important}
+  #yb98-mobile-nav button.active{transform:translateY(-2px)!important;color:#ecfff4!important;background:linear-gradient(180deg,rgba(97,213,154,.18),rgba(57,200,165,.07))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important}
+  #yb98-mobile-nav button.active::after{content:"";position:absolute;left:50%;bottom:3px;width:20px;height:3px;border-radius:99px;background:linear-gradient(90deg,#61d59a,#39c8a5);transform:translateX(-50%);box-shadow:0 0 10px rgba(97,213,154,.35)}
+  #yb98-mobile-nav button.active span{filter:drop-shadow(0 0 8px rgba(97,213,154,.48))}
+  .page-wrap{padding-bottom:94px!important}
+}
+@media(max-width:480px){#yb98-mobile-nav{left:6px!important;right:6px!important;padding:4px!important;border-radius:19px!important}#yb98-mobile-nav button{min-height:49px!important;font-size:8.5px!important}#yb98-mobile-nav button span{font-size:17px!important}.topbar{padding-inline:9px!important}}
+body.light #yb98-mobile-nav{background:rgba(247,251,248,.97)!important;border-color:#c7dacd!important;box-shadow:0 15px 42px rgba(31,65,49,.14)!important}
+body.light #yb98-mobile-nav button{color:#668174!important}
+body.light #yb98-mobile-nav button.active{color:#173025!important;background:#e1f2e8!important}
+body.light .sidebar-user{background:#edf7f1!important;border-color:#c7dacd!important}
+@media(prefers-reduced-motion:reduce){#yb98-mobile-nav button{transition:none!important}}
