@@ -1,6 +1,6 @@
 {
   "name": "yurdunu-bil",
-  "version": "98.0.0",
+  "version": "99.0.0",
   "private": true,
   "scripts": {
     "test": "node scripts/validate-data.js && node scripts/validate-site.js && node scripts/production-smoke.js && node scripts/release-integrity.js",
