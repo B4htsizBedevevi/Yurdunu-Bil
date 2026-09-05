@@ -8,8 +8,9 @@ const ROUTES=new Set(Object.keys(LABELS));
 const $=(s,r=document)=>r.querySelector(s);
 const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const pending=new Map();
+const NAV_SELECTOR='.nav-item[data-view],.yb98-top-link[data-view],.mobile-bottom-link[data-view],[data-mobile-view]';
 
-/* app.js owns the actual view renderer; this bridge owns click routing + active state. */
+/* app.js owns view rendering; this bridge owns primary navigation clicks and active-state sync. */
 const appNavigate=typeof window.navigate==='function'?window.navigate:null;
 
 function routeFromView(){
@@ -20,7 +21,7 @@ function routeFromView(){
 
 function syncActive(view=routeFromView()){
   const route=ROUTES.has(view)?view:'home';
-  $$('[data-view],[data-mobile-view]').forEach(el=>{
+  $$(NAV_SELECTOR).forEach(el=>{
     const value=el.dataset.view||el.dataset.mobileView;
     if(ROUTES.has(value))el.classList.toggle('active',value===route);
   });
@@ -65,7 +66,7 @@ async function openMap(){
 }
 
 async function openArena(){
-  /* Arena is rendered inside the Events host. Never mark Arena active while Home is still visible. */
+  /* Arena is rendered inside the Events host. Never mark Arena active while Home is visible. */
   if(typeof appNavigate==='function')appNavigate('events');
   else if(typeof window.navigate==='function')window.navigate('events');
 
@@ -107,7 +108,7 @@ function navigate(view){
   return false;
 }
 
-/* Capture every primary navigation click before legacy bubble listeners can also consume it. */
+/* Capture primary navigation before legacy bubble listeners consume the same tap. */
 document.addEventListener('click',e=>{
   const b=e.target?.closest?.('[data-view],[data-mobile-view]');
   if(!b)return;
