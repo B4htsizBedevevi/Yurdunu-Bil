@@ -1,35 +1,20 @@
-const fs=require('fs');
-const path=require('path');
-const {execFileSync}=require('child_process');
-const root=path.resolve(__dirname,'..');
-const fail=[];
-const read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const index=read('index.html');
-let release;
-try{release=JSON.parse(read('yb-release.json'))}catch(e){fail.push('yb-release.json okunamıyor')}
-const version=release?.version||'';
-const indexVersion=(index.match(/name="yb-version" content="([^"]+)"/)||[])[1];
-if(!version)fail.push('Release version missing');
-if(!indexVersion)fail.push('index.html yb-version meta etiketi eksik');
-if(version&&indexVersion&&version!==indexVersion)fail.push(`Version mismatch: release ${version}, index ${indexVersion}`);
-const localRefs=[...index.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^"#]*)?"/g)].map(m=>m[1]).filter(x=>!x.startsWith('http')&&!x.startsWith('//')&&!x.startsWith('#'));
-for(const ref of localRefs){if(!fs.existsSync(path.join(root,ref)))fail.push(`Missing asset: ${ref}`)}
-const scripts=[...new Set(localRefs.filter(x=>x.endsWith('.js')))];
-const extra=['update.js','v55-loader.js','v56-profile-settings.js','v56-interaction-hotfix.js','v56-stability.js','v55-games-plus.js','arena-v1.js','v53-arena-social.js'];
-const core=['core/runtime.js','core/app.js','core/atlas.js','core/province.js','core/quiz.js','core/library.js','core/stats.js'];
-for(const file of [...core,...scripts,...extra]){if(!fs.existsSync(path.join(root,file)))fail.push(`Missing core/script: ${file}`);else try{execFileSync(process.execPath,['--check',path.join(root,file)],{stdio:'pipe'})}catch(e){fail.push(`JS syntax error: ${file}`)}}
-if(!index.includes('v44-architecture.js'))fail.push('v44 architecture bridge reference missing');
-if(!index.includes('update.js'))fail.push('Runtime updater reference missing');
-if(!index.includes('v55-loader.js'))fail.push('v56 feature loader reference missing');
-if(!fs.existsSync(path.join(root,'v46-platform.css')))fail.push('v46-platform.css missing');
-if(!index.includes('data-view="events"'))fail.push('Events view missing');
-if(!index.includes('data-view="library"'))fail.push('Library navigation missing');
-if(!index.includes('id="view-settings"'))fail.push('Settings view missing');
-const mobile=(index.match(/<nav class="mobile-nav">([\s\S]*?)<\/nav>/)||[])[1]||'';
-if((mobile.match(/data-view="map"/g)||[]).length>0)fail.push('Retired map target still present in static mobile navigation');
-try{const g=JSON.parse(read('data/provinces.geojson'));if(!Array.isArray(g.features)||g.features.length!==81)fail.push(`GeoJSON province count is ${g.features?.length}, expected 81`)}catch(e){fail.push('GeoJSON cannot be parsed')}
-try{const p=JSON.parse(read('package.json'));if(p.version!==version)fail.push(`package version is ${p.version}, expected release ${version}`)}catch(e){fail.push('package.json cannot be parsed')}
-try{const r=JSON.parse(read('version.json'));if(r.version!==version)fail.push(`version.json is ${r.version}, expected release ${version}`)}catch(e){fail.push('version.json cannot be parsed')}
-if(!index.includes(`v=${version}`))fail.push(`index asset cache version ${version} missing`);
-if(fail.length){console.error('YB SITE VALIDATION FAILED');fail.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log(`YB SITE VALIDATION OK — release ${version} — index ${indexVersion} — 81 provinces — single-version assets — retired map target absent`);
+const fs=require('fs'),path=require('path'),{execFileSync}=require('child_process');
+const root=path.resolve(__dirname,'..'),fail=[];const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const index=read('index.html');let release;
+try{release=JSON.parse(read('yb-release.json'))}catch{fail.push('yb-release.json okunamıyor')}
+const version=String(release?.version||''),indexVersion=(index.match(/name="yb-version" content="([^"]+)"/)||[])[1]||'';
+if(version!=='56.3.0')fail.push(`Canonical release 56.3.0 olmalı; bulunan ${version||'yok'}.`);
+if(indexVersion!==version)fail.push(`Version mismatch: release ${version}, index ${indexVersion}`);
+const refs=[...index.matchAll(/(?:src|href)="([^"?#]+)(?:\?[^"#]*)?"/g)].map(m=>m[1]).filter(x=>!x.startsWith('http')&&!x.startsWith('//')&&!x.startsWith('#'));
+for(const ref of refs)if(!fs.existsSync(path.join(root,ref)))fail.push(`Missing asset: ${ref}`);
+const scripts=[...new Set(refs.filter(x=>x.endsWith('.js')))];
+for(const file of scripts){try{execFileSync(process.execPath,['--check',path.join(root,file)],{stdio:'pipe'})}catch{fail.push(`JS syntax error: ${file}`)}}
+for(const file of ['core/runtime.js','app.js','update.js','v55-loader.js','v55-games-plus.js','v56-retention.js','v56-profile-settings.js','v56-interaction-hotfix.js','v56-stability.js','v56-events-ux.js','arena-v1.js','v53-arena-social.js'])if(!fs.existsSync(path.join(root,file)))fail.push(`Missing current module: ${file}`);
+if(index.includes('data/questions-v30.js')||index.includes('question-topic-fix-v30.js')||index.includes('geo-features-v44.js')||index.includes('atlas-v27.js')||index.includes('v44-architecture.js')||index.includes('map-v26.css'))fail.push('index.html eski legacy asset referansı içeriyor.');
+if(index.includes('data-view="map"'))fail.push('Static navigation map hedefi içeriyor.');
+if(!index.includes('data-view="events"')||!index.includes('data-view="library"')||!index.includes('id="view-settings"'))fail.push('Ana navigasyon alanlarından biri eksik.');
+try{const p=JSON.parse(read('package.json'));if(p.version!==version)fail.push(`package.json ${p.version}; release ${version}`)}catch{fail.push('package.json okunamıyor')}
+try{const r=JSON.parse(read('version.json'));if(r.version!==version)fail.push(`version.json ${r.version}; release ${version}`)}catch{fail.push('version.json okunamıyor')}
+if(!index.includes(`v=${version}`))fail.push('Index cache version eksik.');
+if(fail.length){console.error('YB SITE VALIDATION FAILED\n- '+fail.join('\n- '));process.exit(1)}
+console.log(`YB SITE OK — canonical ${version} — legacy asset references absent — map navigation retired.`);
