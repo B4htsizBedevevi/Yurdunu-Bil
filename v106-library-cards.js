@@ -23,3 +23,6 @@ function bind(){style();document.addEventListener('click',e=>{const direct=e.tar
 function loadReader(){if(window.YB105LibraryReader){bind();return}if(window.__YB105_LOADING__)return;window.__YB105_LOADING__=true;const s=document.createElement('script');s.src='v105-library-reader.js?v=105.0.0';s.onload=()=>{window.__YB105_LOADING__=false;bind()};s.onerror=()=>{window.__YB105_LOADING__=false};document.body.appendChild(s)}
 loadReader();window.addEventListener('load',()=>setTimeout(loadReader,100));
 })();
+
+/* 108 loader — loaded once from the existing library bootstrap. */
+(()=>{'use strict';if(window.__YB108_LOADING__||window.__YB108_MAP_NAV__)return;window.__YB108_LOADING__=true;const s=document.createElement('script');s.src='v108-map-navigation.js?v=108.0.0';s.onload=()=>window.__YB108_LOADING__=false;s.onerror=()=>window.__YB108_LOADING__=false;document.body.appendChild(s)})();
