@@ -1,0 +1,88 @@
+/* Yurdunu Bil 54 — compact card-first layout
+ * Long vertical lists are converted into readable responsive grids.
+ * Existing interactions stay untouched; this file only changes presentation.
+ */
+:root{--yb54-gap:14px}
+
+/* Core study surfaces */
+.yb45-topic-grid,
+.yb45-activity-grid,
+.yb45-quiz-dashboard,
+.yb45-bank-list{width:100%;box-sizing:border-box}
+
+.yb45-topic-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--yb54-gap)}
+.yb45-activity-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--yb54-gap)}
+.yb45-quiz-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--yb54-gap)}
+
+/* Topic cards: compact, but never tiny */
+.yb45-topic-card{min-width:0;min-height:270px;padding:18px;display:flex;flex-direction:column}
+.yb45-topic-card h2{font-size:20px;line-height:1.18;letter-spacing:-.35px}
+.yb45-topic-card p{font-size:14px;line-height:1.5;min-height:63px;margin-bottom:0}
+.yb45-topic-meta{margin-top:auto;margin-bottom:12px;flex-wrap:wrap}
+.yb45-topic-actions{margin-top:0}
+.yb45-topic-actions .btn{min-height:38px}
+
+/* Activity cards become a real card grid instead of a long feed */
+.yb45-activity-card{min-width:0;min-height:235px;display:flex;flex-direction:column}
+.yb45-activity-card p{font-size:14px}
+.yb45-activity-card .btn{margin-top:auto}
+
+/* Question-bank topic list becomes cards too */
+.yb45-bank-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:stretch}
+.yb45-bank-list>.yb45-section-title{grid-column:1/-1;margin-bottom:2px}
+.yb45-bank-row{height:100%;min-height:92px;margin:0;box-sizing:border-box;border-radius:18px;padding:15px;grid-template-columns:auto 1fr auto;gap:11px}
+.yb45-bank-row small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35}
+.yb45-bank-row strong{white-space:nowrap;font-size:12px}
+
+/* Preserve comfortable desktop reading width */
+@media(max-width:1200px){
+  .yb45-topic-grid,.yb45-activity-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .yb45-bank-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* Tablet + mobile: two-column cards are the default */
+@media(max-width:800px){
+  .yb45-topic-grid,.yb45-activity-grid,.yb45-quiz-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb45-bank-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb45-topic-card{min-height:285px;padding:16px;border-radius:20px}
+  .yb45-topic-card h2{font-size:18px}
+  .yb45-topic-card p{font-size:13px;min-height:74px}
+  .yb45-topic-top>span{font-size:28px}
+  .yb45-topic-top small{font-size:10px}
+  .yb45-topic-actions{display:grid;grid-template-columns:1fr;gap:7px}
+  .yb45-topic-actions .btn{width:100%;font-size:12px;padding:9px 8px}
+  .yb45-activity-card{min-height:245px;padding:17px}
+  .yb45-activity-card h2{font-size:18px}
+  .yb45-activity-card p{font-size:13px;min-height:68px}
+}
+
+@media(max-width:560px){
+  .yb45-stat-strip,.yb45-difficulty{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .yb45-topic-grid,.yb45-activity-grid,.yb45-bank-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .yb45-topic-card{min-height:275px;padding:14px;border-radius:18px}
+  .yb45-topic-card h2{font-size:17px;margin:13px 0 7px}
+  .yb45-topic-card p{font-size:12.5px;line-height:1.45;min-height:70px}
+  .yb45-topic-meta{font-size:11px;gap:6px;margin-top:auto;margin-bottom:9px}
+  .yb45-topic-actions .btn{font-size:11px;min-height:36px}
+  .yb45-activity-card{min-height:230px;padding:14px;border-radius:18px}
+  .yb45-activity-icon{font-size:29px;margin-bottom:11px}
+  .yb45-activity-card h2{font-size:17px}
+  .yb45-activity-card p{font-size:12.5px;min-height:68px}
+  .yb45-bank-row{min-height:100px;padding:13px 11px;grid-template-columns:1fr auto;gap:8px}
+  .yb45-bank-row>span{font-size:24px;grid-row:1/3}
+  .yb45-bank-row>div{min-width:0}
+  .yb45-bank-row b{font-size:13px;line-height:1.2}
+  .yb45-bank-row small{font-size:10px}
+  .yb45-bank-row strong{grid-column:2;font-size:10px;align-self:end}
+}
+
+/* Very narrow phones: keep the two-column idea only where it remains readable. */
+@media(max-width:350px){
+  .yb45-topic-grid,.yb45-activity-grid,.yb45-bank-list{grid-template-columns:1fr}
+  .yb45-topic-card{min-height:245px}
+}
+
+/* Touch devices: no hover jump that can cause accidental layout movement */
+@media(hover:none){
+  .yb45-topic-card:hover,.yb45-activity-card:hover,.yb45-bank-row:hover{transform:none}
+}
